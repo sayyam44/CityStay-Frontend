@@ -1,0 +1,299 @@
+import React,{ useState,useEffect } from 'react';
+import Axios from "axios";
+import { useImmerReducer } from 'use-immer';
+import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap,} from 'react-leaflet';
+import { Grid2,
+  AppBar,
+  Typography,
+  Button, 
+  Card, 
+  CardHeader,
+  CardMedia,
+  CardContent,
+  CircularProgress,
+  IconButton,
+  CardActions, } from '@mui/material';
+
+import { Icon } from "leaflet";
+import houseIconPng from "./Assets/Mapicons/house.png"
+import apartmentIconPng from "./Assets/Mapicons/apartment.png"
+import officeIconPng from "./Assets/Mapicons/office.png"
+
+import img1 from './Assets/img1.jpg'
+import myListings from './Assets/Data/Dummydata';
+import RoomIcon from '@mui/icons-material/Room';
+
+function Listings() {
+  fetch('http://127.0.0.1:8000/api/listings/')
+  .then(response=>response.json())
+  .then(data=>console.log(data))
+
+  const houseIcon = new Icon({
+		iconUrl: houseIconPng,
+		iconSize: [40, 40],
+	});
+
+	const apartmentIcon = new Icon({
+		iconUrl: apartmentIconPng,
+		iconSize: [40, 40],
+	});
+
+	const officeIcon = new Icon({
+		iconUrl: officeIconPng,
+		iconSize: [40, 40],
+	});
+
+  const[latitude,setLatitude] = useState(47.56431808943282)
+  const[longitude,setLongitude] = useState(-52.730079775120906)
+  
+  const initialState = {
+  mapInstance:null, //map initial position is null defined here but 
+  //still when we load the page we will be at the centre as per 
+  //mp component being defined below
+  };
+
+function ReducerFunction(draft, action) {
+    switch (action.type) {
+    // the utility function for below case is for TheMapComponent() function
+  case "getMap": //this case is to zoom into map for the area selected 
+    draft.mapInstance = action.mapData;
+    //mapInstance now holds all the map data
+    break
+  }
+
+  }
+
+  const [state, dispatch] = useImmerReducer(ReducerFunction, initialState);
+
+  // This function defines the functionality for zooming in into the
+  //map when the user selects some area 
+  // TheMapComponent function is being called below in mapContainer
+  function TheMapComponent(){
+    const map=useMap(); //useMap function is an inbuilt function of react leaflet
+    dispatch({type: 'getMap', mapData: map }); //mapData have all the current map cata
+    return null;
+  }
+
+
+  function GoEast(){
+    setLatitude(47.56582430655992)
+    setLongitude(-52.722741113637845)
+  }
+
+  function GoCenter(){
+    setLatitude(47.56431808943282)
+    setLongitude(-52.730079775120906)
+  }
+  // console.log(myListings)
+
+  const polyOne = [
+    [51.505, -0.09],
+    [51.51, -0.1],
+    [51.51, -0.12],
+  ];
+
+  //this useState hook is to hold allListings data 
+  const [allListings,setAllListings] = useState([]);
+
+  // the below hook is created to get over the issue we got in 
+  //console when we were reloading the page, we were unable to access 
+  // the data for location using console.log(allListings[0].location)
+  const [dataIsLoading, setDataIsLoading] = useState(true)
+
+  useEffect(() => {
+    // The below canceltoken can cancel the request even before the 
+    // request is not finished yet to prevent data leaks.
+    const source = Axios.CancelToken.source();
+    async function GetAllListings(){
+      try{
+        //response holds all the lising data
+      const response = await Axios.get('http://127.0.0.1:8000/api/listings/',{cancelToken: source.token});
+      // console.log(response.data);
+      setAllListings(response.data);
+      setDataIsLoading(false);
+    } catch(error){
+      console.log(error.response);
+    }}
+    GetAllListings();
+    return ()=>{
+      source.cancel();
+    }
+  }, []);
+
+  if (dataIsLoading === false) {
+    console.log(allListings[0].location);
+  }
+
+  //this is to show the loading circle
+  if (dataIsLoading === true) {
+    return (
+      <Grid2 
+        container 
+        justifyContent="center" 
+        alignItems="center"
+        style={{ height: "100vh" }}
+      >
+        <CircularProgress />
+      </Grid2>
+    );
+}
+
+  return (
+    <Grid2 container>
+      {/* The below grid is the left side grid for listings */}
+      <Grid2 size={4}>
+        {/* here we are getting each listing from the above useState hook for alllistings */}
+        {allListings.map((listing)=>{ //for getting the value of each listing
+          return (
+          <Card key={listing.id} style={{margin: '0.5rem',border: "1px solid black",position: 'relative'}}>
+          <CardHeader
+            //this is to zoom into the location on the map when listing's
+            //top right corner marker is clicked 
+            action={
+              <IconButton 
+              aria-label="settings" 
+              //here mapInstance holds all the data of the listing
+              //whos top write marker button is clicked
+              
+              onClick={()=>state.mapInstance.flyTo(
+                [listing.latitude,listing.longitude],
+                16)}>
+                <RoomIcon />
+              </IconButton>
+            }
+            title={listing.title}
+          />
+          <CardMedia
+            component="img"
+            image={listing.picture1}
+            alt={listing.title}
+            style={{
+              paddingRight: "4rem",
+              paddingLeft: "1rem",
+              height: "20rem",
+              width: "30rem",
+              cursor: "pointer",
+            }}/>
+          <CardContent>
+            <Typography variant="body2">
+            {listing.description.substring(0,200)}...
+            </Typography>
+          </CardContent>
+          
+          {listing.property_status === "Sale" ? (
+								<Typography
+									style={{
+										position: "absolute",
+										backgroundColor: 'rgba(0, 128, 0, 0.5)',
+										zIndex: "1000",
+										color: "white",
+										top: "100px",
+										left: "20px",
+										padding: "5px",
+									}}
+								>
+									{listing.listing_type}: $
+									{listing.price
+										.toString()
+										.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+								</Typography>
+							) : (
+								<Typography
+									style={{
+										position: "absolute",
+										backgroundColor: 'rgba(0, 128, 0, 0.5)',
+										zIndex: "1000",
+										color: "white",
+										top: "100px",
+										left: "20px",
+										padding: "5px",
+									}}
+								>
+									{listing.listing_type}: $
+									{listing.price
+										.toString()
+										.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
+									/ {listing.rental_frequency}
+								</Typography>
+							)}
+          <CardActions disableSpacing>
+            <IconButton aria-label="add to favorites">
+            {/* this is to get the username for each listing on cards from the logic at serializer.py file in backend */}
+              {listing.seller_username} 
+            </IconButton>
+          </CardActions>
+        </Card>
+        );
+      })}
+    </Grid2>
+
+      {/* The below grid is the Right side grid for map */}
+      <Grid2 size={8} style={{marginTop: "0.5rem"}}>
+        <AppBar position="sticky">
+          <div style={{ height: "100vh" }}>
+            <MapContainer 
+            center={[47.56431808943282,-52.730079775120906]} 
+            zoom={15} 
+            scrollWheelZoom={true}>
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+
+              {/* below is to execute the case for zooming into the selected listing's top right corner map marker*/}
+              <TheMapComponent />
+
+              <Polyline positions={polyOne} />
+
+              {allListings.map((listing)=>{
+                function IconDisplay(){
+                  if (listing.listing_type === 'House'){
+                    return houseIcon;
+                  }
+                  else if (listing.listing_type === 'Apartment'){
+                    return apartmentIcon;
+                  }
+                  else if (listing.listing_type === 'Office'){
+                    return officeIcon;
+                  }
+                }
+                return (
+                  <Marker 
+                  key={listing.id}
+                  icon={IconDisplay()}
+                  position={[
+                  listing.latitude,
+                  listing.longitude]}>
+                    <Popup>
+                      <Typography variant="h5">{listing.title}</Typography>
+                      <img src={listing.picture1} style={{height: "14rem",width: "18rem"}} />
+                      <Typography variant="body1">
+                        {listing.description.substring(0,150)}...
+                      </Typography>
+                      <Button variant="contained" fullWidth>Details</Button>
+                    </Popup>
+                  </Marker>
+                )
+              })}
+
+              {/* <Marker 
+              icon={houseIcon}
+              position={[latitude,longitude]}>
+              <Popup>
+                <Typography variant="h5">A title</Typography>
+                <img src={img1} style={{height: "14rem",width: "18rem"}} />
+                <Typography variant="body1">
+                  This is my house.
+                </Typography>
+                <Button variant="contained" fullWidth>Link</Button>
+              </Popup>
+              </Marker> */}
+            </MapContainer>
+          </div>
+        </AppBar>
+      </Grid2>
+    </Grid2>
+  );
+}
+
+export default Listings;
