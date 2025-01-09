@@ -7,6 +7,8 @@ import { useImmerReducer } from 'use-immer';
 import StateContext from '../Contexts/StateContext';
 import ProfileUpdate from './ProfileUpdate';
 
+import defaultProfilePicture from './Assets/defaultProfilePicture.jpg'
+
 function Profile() {
     // const navigate = useNavigate();
     const GlobalState = useContext(StateContext);
@@ -98,7 +100,10 @@ function Profile() {
             <Grid2 xs={6}>
                 <img 
                 style={{height:"10rem",width: "15rem"}} 
-                src={state.userProfile.profilePic}/>
+                src={state.userProfile.profilePic !== null ?
+                    state.userProfile.profilePic 
+                    : defaultProfilePicture
+                }/>
             </Grid2>
 
             <Grid2 
@@ -107,7 +112,7 @@ function Profile() {
             justifyContent="center"
             xs={6}
             marginLeft='18rem'
-            marginTop='-6rem'
+            marginTop='-8rem'
             marginBottom= '4rem'> 
                 <Grid2>
                     <Typography 

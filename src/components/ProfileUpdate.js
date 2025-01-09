@@ -11,7 +11,7 @@ import StateContext from '../Contexts/StateContext';
 function ProfileUpdate(props) {
     //here We are getting the userProfile details as a prop from its
     //parent component that is profile.js
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
     const GlobalState = useContext(StateContext);
 
     console.log(props.userProfile);
@@ -74,11 +74,23 @@ function ProfileUpdate(props) {
         if (state.sendRequest){ //this hooks runs as the update button is clicked
           async function UpdateProfile(){
             const formData = new FormData()
+
+            //As we know that when a user uploads a picture it 
+            // becomes an object  
+            if (typeof state.profilePictureValue === "string" || state.profilePictureValue === null){
+            formData.append("agency_name", state.agencyNameValue);
+            formData.append("phone_number", state.phoneNumberValue);
+            formData.append("bio", state.bioValue);
+            // formData.append("profile_picture", state.profilePictureValue);
+            formData.append("seller", GlobalState.userId);
+            }
+            else {
             formData.append("agency_name", state.agencyNameValue);
             formData.append("phone_number", state.phoneNumberValue);
             formData.append("bio", state.bioValue);
             formData.append("profile_picture", state.profilePictureValue);
             formData.append("seller", GlobalState.userId);
+            }
 
             try {
                 //since the profile of the user already exists that is 
@@ -88,7 +100,7 @@ function ProfileUpdate(props) {
                 formData
               );
               console.log("Success:", response.data);
-            //   navigate('/listings');
+              navigate(0);//here navigate is 0 that is to update the profile
             } catch (e) {
               // Log detailed error information for debugging
               if (e.response) {
@@ -111,124 +123,153 @@ function ProfileUpdate(props) {
         e.preventDefault()
         dispatch({type: 'changeSendRequest'});
     }
-    
-  return (
-    <>
-        <div
-            style={{
-                width: "50%",
-                marginLeft: "auto",
-                marginRight: "auto",
-                marginTop: "3rem",
-                border: "5px solid black",
-                padding: "3rem",
-            }}
-        >
-            <form onSubmit={FormSubmit}>
-                <Grid2 container justifyContent="center">
-                    <Typography variant="h4">My Profile</Typography>
-                </Grid2>
 
-                <Grid2 container style={{ marginTop: "1rem" }}>
-                    <TextField 
-                    id="agencyName" 
-                    label="Agency Name*" 
-                    variant="outlined" 
-                    fullWidth 
-                    value = {state.agencyNameValue}
+    //This is to display the name of the profile picture that is being 
+    //uploaded
+    function ProfilePictureDisplay(){
+        //When a user uploads a picture it becomes an object 
+        if (typeof state.profilePictureValue !== "string"){
+            return (
+            <ul>
+            {state.profilePictureValue ? (
+                <li>{state.profilePictureValue.name}</li>
+            ) : ( 
+            ""
+            )}
+            </ul>
+        );
+    }
+    //and if the user opens the profile page and if it already 
+    //have a profile picture then it will be a string
+    else if (typeof state.profilePictureValue === "string"){
+        return (
+            <Grid2 
+        style={{marginTop:"0.5rem", marginRight: "auto", marginLeft:"auto"}}>
+            <img src={props.userProfile.profilePic} 
+            style={{height: "5rem", width: "5rem"}} />
+        </Grid2>
+        )
+    }
+    }
 
-                    onChange = {(e)=>dispatch({
-                        type: 'catchAgencyNameChange', 
-                        agencyNameChosen: e.target.value})}  />
-                </Grid2>
 
-                <Grid2 container style={{ marginTop: "1rem" }}>
-                    <TextField
-                        id="phoneNumber"
-                        label="Phone Number*"
-                        variant="outlined"
-                        fullWidth                
-                        value = {state.phoneNumberValue}
+    return (
+        <>
+            <div
+                style={{
+                    width: "50%",
+                    marginLeft: "auto",
+                    marginRight: "auto",
+                    marginTop: "3rem",
+                    border: "5px solid black",
+                    padding: "3rem",
+                }}
+            >
+                <form onSubmit={FormSubmit}>
+                    <Grid2 container justifyContent="center">
+                        <Typography variant="h4">My Profile</Typography>
+                    </Grid2>
+
+                    <Grid2 container style={{ marginTop: "1rem" }}>
+                        <TextField 
+                        id="agencyName" 
+                        label="Agency Name*" 
+                        variant="outlined" 
+                        fullWidth 
+                        value = {state.agencyNameValue}
+
                         onChange = {(e)=>dispatch({
-                            type: 'catchPhoneNumberChange', 
-                            phoneNumberChosen: e.target.value})}
+                            type: 'catchAgencyNameChange', 
+                            agencyNameChosen: e.target.value})}  />
+                    </Grid2>
+
+                    <Grid2 container style={{ marginTop: "1rem" }}>
+                        <TextField
+                            id="phoneNumber"
+                            label="Phone Number*"
+                            variant="outlined"
+                            fullWidth                
+                            value = {state.phoneNumberValue}
+                            onChange = {(e)=>dispatch({
+                                type: 'catchPhoneNumberChange', 
+                                phoneNumberChosen: e.target.value})}
+                        />
+                    </Grid2>
+
+                    <Grid2 container style={{ marginTop: "1rem" }}>
+                        <TextField
+                            id="bio"
+                            label="Bio"
+                            variant="outlined"
+                            multiline
+                            rows={6}
+                            fullWidth                
+                            value = {state.bioValue}
+                            onChange = {(e)=>dispatch({
+                                type: 'catchBioChange', 
+                                bioChosen: e.target.value})}
+                        />
+                    </Grid2>
+
+                    {/* to show the name of the profile picture uploaded */}
+                    <Grid2 container>
+                        {ProfilePictureDisplay()}
+                    </Grid2>
+
+                    <Grid2 container style={{ marginTop: "1rem" }} xs={6}>
+                    <Button
+                        variant="contained"
+                        component="label"
+                        fullWidth
+                        sx={{
+                            color: "white",
+                            backgroundColor: "blue",
+                            fontSize: "1rem",
+                            // marginLeft: "3rem",
+                            // marginRight: "3rem",
+                            marginBottom: "2rem",
+                            border: '1px solid black',
+                        }}
+                    >
+                        Choose Pofile Picture
+
+                        {/* to upload the images in particular format */}
+                        <input 
+                        type="file" 
+                        accept="image/png , image/gif, image/jpeg"
+                        hidden
+                        onChange={(e)=> dispatch({
+                        type: "catchUploadedPicture",
+                        pictureChosen: e.target.files,
+                        })
+                    } 
                     />
+                    </Button>
                 </Grid2>
+                
 
-                <Grid2 container style={{ marginTop: "1rem" }}>
-                    <TextField
-                        id="bio"
-                        label="Bio"
-                        variant="outlined"
-                        multiline
-                        rows={6}
-                        fullWidth                
-                        value = {state.bioValue}
-                        onChange = {(e)=>dispatch({
-                            type: 'catchBioChange', 
-                            bioChosen: e.target.value})}
-                    />
+                <Grid2 container style={{ marginTop: "-1rem" }}>
+                    <Button
+                        variant="contained"
+                        fullWidth
+                        type="submit"
+                        sx={{
+                            color: "white",
+                            backgroundColor: "green",
+                            fontSize: "1.1rem",
+                            "&:hover": {
+                                backgroundColor: "orange",
+                            },
+                        }}
+                    >
+                        Update
+                    </Button>
                 </Grid2>
+                </form>
+            </div>
+        </>
+        // new
+    )
+    }
 
-                <Grid2 container style={{ marginTop: "1rem" }} xs={6}>
-                <Button
-                    variant="contained"
-                    component="label"
-                    fullWidth
-                    sx={{
-                        color: "white",
-                        backgroundColor: "blue",
-                        fontSize: "1rem",
-                        // marginLeft: "3rem",
-                        // marginRight: "3rem",
-                        border: '1px solid black',
-                    }}
-                >
-                    Choose Pofile Picture
-
-                    {/* to upload the images in particular format */}
-                    <input 
-                    type="file" 
-                    accept="image/png , image/gif, image/jpeg"
-                    hidden
-                    onChange={(e)=> dispatch({
-                    type: "catchUploadedPicture",
-                    pictureChosen: e.target.files,
-                    })
-                } 
-                />
-                </Button>
-            </Grid2>
-            
-            {/* to show the name of the profile picture uploaded */}
-            <Grid2 container>
-                <ul>
-                {state.profilePictureValue ? <li>{state.profilePictureValue.name}</li>:""}
-                </ul>
-            </Grid2>
-
-            <Grid2 container style={{ marginTop: "-1rem" }}>
-                <Button
-                    variant="contained"
-                    fullWidth
-                    type="submit"
-                    sx={{
-                        color: "white",
-                        backgroundColor: "green",
-                        fontSize: "1.1rem",
-                        "&:hover": {
-                            backgroundColor: "orange",
-                        },
-                    }}
-                >
-                    Update
-                </Button>
-            </Grid2>
-            </form>
-        </div>
-    </>
-    // new
-  )
-}
-
-export default ProfileUpdate
+    export default ProfileUpdate
