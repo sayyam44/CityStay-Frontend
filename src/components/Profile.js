@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useRef, useMemo,useContext} from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Grid2, Typography, Button, TextField, FormControlLabel, Checkbox } from '@mui/material';
+import { Grid2, Typography,CircularProgress, Button, TextField, FormControlLabel, Checkbox } from '@mui/material';
 import Axios from "axios";
 import { useImmerReducer } from 'use-immer';
 
 import StateContext from '../Contexts/StateContext';
+import ProfileUpdate from './ProfileUpdate';
 
 function Profile() {
     // const navigate = useNavigate();
@@ -12,17 +13,17 @@ function Profile() {
 
     const initialState = {
         userProfile: {
+            //To prefill these values in the my profile page 
+            //go to profileUpdate that is a child component of this component.
             agencyName: '',
             phoneNumber: '',
             profilePic: '',
             bio: '',
     },
-    agencyNameValue: '',
-    phoneNumberValue: '',
-    bioValue: '',
-    uploadedPicture: [],
-    profilePictureValue: '',
-    sendRequest: 0
+    //this is to check whether we get data from the server or not 
+    //i.e. whether we are getting the predefined userProfile data 
+    //see the below dispatch for type loadingDone
+    dataIsLoading: true,
   };
 
     function ReducerFunction(draft, action) {
@@ -33,109 +34,39 @@ function Profile() {
             draft.userProfile.profilePic = action.profileObject.profile_picture;
             draft.userProfile.bio = action.profileObject.bio;
             break;
-
-        case 'catchAgencyNameChange':
-            draft.agencyNameValue = action.agencyNameChosen;
+        case "loadingdone": //to check whther the userprofile data 
+        //is already present or not 
+            draft.dataIsLoading = false;
             break;
-        
-        case 'catchPhoneNumberChange':
-            draft.phoneNumberValue = action.phoneNumberChosen;
-            break;
-
-        case 'catchBioChange':
-            draft.bioValue = action.bioChosen;
-            break;
-        
-        case 'catchUploadedPicture':
-            draft.uploadedPicture = action.pictureChosen;
-            break;
-        
-        case 'catchProfilePictureChange':
-            draft.profilePictureValue = action.profilePictureChosen;
-            break;
-        
-        case 'changeSendRequest':
-            draft.sendRequest =draft.sendRequest+1;
-            break; 
       }
     }
 
     const [state, dispatch] = useImmerReducer(ReducerFunction, initialState);
-
-    //useeffect to catch uploaded picture and store it in profilePictureValue
-    //this hook runs as soon as the user uploads the profile picture
-    //and it shows the picture name below at state.profilePictureValue
-    useEffect(()=>{
-        if  (state.uploadedPicture[0]){
-            dispatch({
-                type: 'catchProfilePictureChange',
-                profilePictureChosen: state.uploadedPicture[0]})
-        }
-    },[state.uploadedPicture[0]])
 
     //to get the user's profile details
     useEffect(()=>{
         async function GetProfileInfo(){
           try{
             const response = await Axios.get(
-              // GlobalState.userId gives the info of currently logged in user
-              `http://127.0.0.1:8000/api/profiles/${GlobalState.userId}/`);
-              console.log(response.data);
-              //response.data holds all the data of the user who 
-              //is signed in and have clicked on add property button
-              dispatch({
-                type: 'catchUserProfileInfo', 
-                profileObject: response.data})
-  
+            // GlobalState.userId gives the info of currently logged in user
+            `http://127.0.0.1:8000/api/profiles/${GlobalState.userId}/`);
+            console.log(response.data);
+            //response.data holds all the data of the user who 
+            //is signed in and have clicked on add property button
+            dispatch({
+            type: 'catchUserProfileInfo', 
+            profileObject: response.data});
+            //this is to check whether we have a predefined data of the 
+            //user or not 
+            dispatch({
+                type: 'loadingdone',
+            })
             } catch(e){
             console.log(e.response);
           }
         }
         GetProfileInfo()
       },[])
-
-    //this is used to update the user profile
-    useEffect(()=>{
-        if (state.sendRequest){ //this hooks runs as the update button is clicked
-          async function UpdateProfile(){
-            const formData = new FormData()
-            formData.append("agency_name", state.agencyNameValue);
-            formData.append("phone_number", state.phoneNumberValue);
-            formData.append("bio", state.bioValue);
-            formData.append("profile_picture", state.profilePictureValue);
-            formData.append("seller", GlobalState.userId);
-
-            try {
-                //since the profile of the user already exists that is 
-                //why we send the patch request
-              const response = await Axios.patch(
-                `http://127.0.0.1:8000/api/profiles/${GlobalState.userId}/update/`,
-                formData
-              );
-              console.log("Success:", response.data);
-            //   navigate('/listings');
-            } catch (e) {
-              // Log detailed error information for debugging
-              if (e.response) {
-                console.error("Error Response:", e.response.data);
-                console.error("Status Code:", e.response.status);
-              } else if (e.request) {
-                console.error("No Response Received:", e.request);
-              } else {
-                console.error("Error:", e.message);
-              }
-            }
-          }
-          UpdateProfile()
-        }
-      },[state.sendRequest]);
-  
-    //this runs as soon as the user hits update button
-    //it changes sendRequest to sendRequest+1
-    function FormSubmit(e){ 
-        e.preventDefault()
-        dispatch({type: 'changeSendRequest'});
-    }
 
     //this function checks whether to show the welcome message or 
     //to show the already saved data in the userProfile form
@@ -202,127 +133,32 @@ function Profile() {
         }
     }
 
-  return (
-    <>
-        <div>
-        {WelcomeDisplay()}
-        </div>
+    if (state.dataIsLoading === true) {
+        return (
+          <Grid2 
+            container 
+            justifyContent="center" 
+            alignItems="center"
+            style={{ height: "100vh" }}
+          >
+            <CircularProgress />
+          </Grid2>
+        );
+    }
 
-        <div
-            style={{
-                width: "50%",
-                marginLeft: "auto",
-                marginRight: "auto",
-                marginTop: "3rem",
-                border: "5px solid black",
-                padding: "3rem",
-            }}
-        >
-            <form onSubmit={FormSubmit}>
-                <Grid2 container justifyContent="center">
-                    <Typography variant="h4">My Profile</Typography>
-                </Grid2>
+    return (
+        <>
+            <div>
+            {WelcomeDisplay()}
+            </div>
 
-                <Grid2 container style={{ marginTop: "1rem" }}>
-                    <TextField 
-                    id="agencyName" 
-                    label="Agency Name*" 
-                    variant="outlined" 
-                    fullWidth 
-                    value = {state.agencyNameValue}
-
-                    onChange = {(e)=>dispatch({
-                        type: 'catchAgencyNameChange', 
-                        agencyNameChosen: e.target.value})}  />
-                </Grid2>
-
-                <Grid2 container style={{ marginTop: "1rem" }}>
-                    <TextField
-                        id="phoneNumber"
-                        label="Phone Number*"
-                        variant="outlined"
-                        fullWidth                
-                        value = {state.phoneNumberValue}
-                        onChange = {(e)=>dispatch({
-                            type: 'catchPhoneNumberChange', 
-                            phoneNumberChosen: e.target.value})}
-                    />
-                </Grid2>
-
-                <Grid2 container style={{ marginTop: "1rem" }}>
-                    <TextField
-                        id="bio"
-                        label="Bio"
-                        variant="outlined"
-                        multiline
-                        rows={6}
-                        fullWidth                
-                        value = {state.bioValue}
-                        onChange = {(e)=>dispatch({
-                            type: 'catchBioChange', 
-                            bioChosen: e.target.value})}
-                    />
-                </Grid2>
-
-                <Grid2 container style={{ marginTop: "1rem" }} xs={6}>
-                <Button
-                    variant="contained"
-                    component="label"
-                    fullWidth
-                    sx={{
-                        color: "white",
-                        backgroundColor: "blue",
-                        fontSize: "1rem",
-                        // marginLeft: "3rem",
-                        // marginRight: "3rem",
-                        border: '1px solid black',
-                    }}
-                >
-                    Choose Pofile Picture
-
-                    {/* to upload the images in particular format */}
-                    <input 
-                    type="file" 
-                    accept="image/png , image/gif, image/jpeg"
-                    hidden
-                    onChange={(e)=> dispatch({
-                    type: "catchUploadedPicture",
-                    pictureChosen: e.target.files,
-                    })
-                } 
-                />
-                </Button>
-            </Grid2>
-            
-            {/* to show the name of the profile picture uploaded */}
-            <Grid2 container>
-                <ul>
-                {state.profilePictureValue ? <li>{state.profilePictureValue.name}</li>:""}
-                </ul>
-            </Grid2>
-
-            <Grid2 container style={{ marginTop: "-1rem" }}>
-                <Button
-                    variant="contained"
-                    fullWidth
-                    type="submit"
-                    sx={{
-                        color: "white",
-                        backgroundColor: "green",
-                        fontSize: "1.1rem",
-                        "&:hover": {
-                            backgroundColor: "orange",
-                        },
-                    }}
-                >
-                    Update
-                </Button>
-            </Grid2>
-            </form>
-        </div>
-    </>
-    // new
-  )
-}
+            {/* the below component will have autofill values in the form
+            for my profile for a user  */}
+            {/* we are sending the userprofile of the current user as the props */}
+            <ProfileUpdate userProfile={state.userProfile} />
+        </>
+        // new
+    )
+    }
 
 export default Profile
