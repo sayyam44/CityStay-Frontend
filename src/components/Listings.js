@@ -216,13 +216,25 @@ function ReducerFunction(draft, action) {
 									/ {listing.rental_frequency}
 								</Typography>
 							)}
-          <CardActions disableSpacing>
-            <IconButton aria-label="add to favorites">
-            {/* this is to get the username for each listing on cards from the logic at serializer.py file in backend */}
-              {listing.seller_username} 
-            </IconButton>
-          </CardActions>
-        </Card>
+            <CardActions disableSpacing>
+              <IconButton aria-label="add to favorites">
+              {/* this is to get the username for each listing on cards from the logic at serializer.py file in backend */}
+                {listing.seller_username} {' -by- '}
+                {listing.seller_agency_name} 
+              </IconButton>
+            </CardActions>
+            </Card>
+          // <CardActions disableSpacing>
+          //   <IconButton aria-label="add to favorites">
+          //     <span style={{ color: "black" }}>
+          //       {listing.seller_username}
+          //     </span>{" "}
+          //     -{" "}
+          //     <span style={{ color: "gray" }}>
+          //       {listing.seller_agency_name}
+          //     </span>
+          //   </IconButton>
+          // </CardActions>
         );
       })}
     </Grid2>

@@ -45,7 +45,7 @@ function Profile() {
 
     const [state, dispatch] = useImmerReducer(ReducerFunction, initialState);
 
-    //to get the user's profile details
+    //to get the current user's profile details
     useEffect(()=>{
         async function GetProfileInfo(){
           try{
