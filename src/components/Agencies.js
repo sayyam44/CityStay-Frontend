@@ -13,6 +13,7 @@ import defaultProfilePicture from './Assets/defaultProfilePicture.jpg'
 //api/profiles/ , so here we are making an axios get request to this url.
 
 function Agencies() {
+    const navigate = useNavigate();
     const GlobalState = useContext(StateContext);
 
     const initialState = {
@@ -86,14 +87,26 @@ function Agencies() {
         //that we are getting from serializers of profile models
         function PropertiesDisplay(){
             if (agency.seller_listings.length === 0){
-                return <Button disabled size="small">No Property Listed</Button>;
+                return <Button
+                 disabled 
+                 size="small"
+                 //this is to get all the listings of this current agency
+                 //on basis of the this seller id
+                 onClick={()=> navigate(`/agencies/${agency.seller}`)}>
+                    No Property Listed</Button>;
             }
             else if (agency.seller_listings.length === 1){
-            return <Button size="small">One Property Listed</Button>;
+            return <Button 
+            size="small"
+            //this is to get all the listings of this current agency
+            //on basis of the this seller id
+            onClick={()=> navigate(`/agencies/${agency.seller}`)}>
+                One Property Listed</Button>;
             }
             else {
             return(
-            <Button size="small">{agency.seller_listings.length} PROPERTIES</Button>
+            <Button size="small" 
+            onClick={()=> navigate(`/agencies/${agency.seller}`)}>{agency.seller_listings.length} PROPERTIES</Button>
             );
             }
         }
@@ -101,7 +114,7 @@ function Agencies() {
 
             if (agency.agency_name && agency.phone_number)
             return (
-        //here we are generating key id for each of the listing 
+        //here we are generating key id for each of the agency(seller)
             <Grid2 key={agency.id} sx={{ marginTop: '1rem', maxWidth: "20rem" }}> 
                 <Card>
                 <CardMedia

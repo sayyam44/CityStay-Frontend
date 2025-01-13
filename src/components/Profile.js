@@ -9,8 +9,10 @@ import ProfileUpdate from './ProfileUpdate';
 
 import defaultProfilePicture from './Assets/defaultProfilePicture.jpg'
 
+//in this file all the data from the backend is being accessed using 
+//state.userProfile....
 function Profile() {
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
     const GlobalState = useContext(StateContext);
 
     const initialState = {
@@ -21,6 +23,9 @@ function Profile() {
             phoneNumber: '',
             profilePic: '',
             bio: '',
+            sellerId: [], //this is to get the seller id of this user
+            //in order to display the count of listings of the current user
+            sellerListings:[]//this holds all the listings of the current seller
     },
     //this is to check whether we get data from the server or not 
     //i.e. whether we are getting the predefined userProfile data 
@@ -35,6 +40,8 @@ function Profile() {
             draft.userProfile.phoneNumber = action.profileObject.phone_number;
             draft.userProfile.profilePic = action.profileObject.profile_picture;
             draft.userProfile.bio = action.profileObject.bio;
+            draft.userProfile.sellerListings = action.profileObject.seller_listings;
+            draft.userProfile.sellerId = action.profileObject.seller;
             break;
         case "loadingdone": //to check whther the userprofile data 
         //is already present or not 
@@ -69,7 +76,34 @@ function Profile() {
         }
         GetProfileInfo()
       },[])
-
+    
+    //this function displays the number of properties listed by each user
+    //sellerListings hold all the listings of the current seller
+    function PropertiesDisplay(){
+        if (state.userProfile.sellerListings.length === 0){
+            return <Button 
+            disabled 
+            size="small"
+            //this isthe button to get all the listings of this current agency
+            //on basis of the this seller id
+            onClick={()=> navigate(`/agencies/${state.userProfile.sellerId}`)}
+            >No Property Listed</Button>;
+        }
+        else if (state.userProfile.sellerListings.length === 1){
+        return <Button 
+        size="small"
+        //this is to get all the listings of this current agency
+        //on basis of the this seller id
+        onClick={()=> navigate(`/agencies/${state.userProfile.sellerId}`)}
+        >One Property Listed</Button>;
+        }
+        else {
+        return(
+        <Button size="small"
+        onClick={()=> navigate(`/agencies/${state.userProfile.sellerId}`)}>{state.userProfile.sellerListings.length} PROPERTIES</Button>
+        );
+        }
+    }
     //this function checks whether to show the welcome message or 
     //to show the already saved data in the userProfile form
     function WelcomeDisplay(){
@@ -127,7 +161,7 @@ function Profile() {
                     <Typography 
                         variant="h5"
                         style={{textAlign: 'center',marginTop: '1rem'}}>
-                            You have x properties listed.
+                            You have {PropertiesDisplay()}
                             <span style={{color: 'green',fontWeight:'bolder'}}>
                             </span>
                     </Typography>
