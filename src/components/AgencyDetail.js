@@ -14,6 +14,7 @@ import defaultProfilePicture from './Assets/defaultProfilePicture.jpg'
 
 //**In this we used useParams hook to get the agency data on basis of
 //its id directly by the url defined in app.js file at path="/agencies/:id"
+//as well as the backend url defined for agency/id 
 //useParams hook returns an object with url parameters.(here useParams
 //is used to get the id of the particular agency)
 function AgencyDetail() {
@@ -21,7 +22,7 @@ function AgencyDetail() {
     // console.log(useParams());
     const params = useParams(); //useParams hook is used to get the
     //id of the particular agency from the url by using params.id 
-
+    const navigate = useNavigate();
     const initialState = {
         userProfile: {
             //To prefill these values in the my profile page 
@@ -167,6 +168,7 @@ function AgencyDetail() {
                       height: 140, // Enforce consistent height
                       width: "100%", // Ensure it fills the width of the card
                       objectFit: "cover", // Crop or scale image to fit the defined dimensions
+                      cursor: "pointer",
                     }}
                     image={
                         //we are accessing the pictures like this
@@ -177,6 +179,7 @@ function AgencyDetail() {
                         ? `http://127.0.0.1:8000${listing.picture1}` :
                         defaultProfilePicture }
                     alt="Listing Picture"
+                    onClick={()=>navigate(`/listings/${listing.id}`)}
                 />
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="div">

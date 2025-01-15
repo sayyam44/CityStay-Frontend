@@ -1,6 +1,7 @@
 import React,{ useState,useEffect } from 'react';
 import Axios from "axios";
 import { useImmerReducer } from 'use-immer';
+import { useNavigate } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap,} from 'react-leaflet';
 import { Grid2,
   AppBar,
@@ -24,9 +25,11 @@ import myListings from './Assets/Data/Dummydata';
 import RoomIcon from '@mui/icons-material/Room';
 
 function Listings() {
-  fetch('http://127.0.0.1:8000/api/listings/')
-  .then(response=>response.json())
-  .then(data=>console.log(data))
+  // fetch('http://127.0.0.1:8000/api/listings/')
+  // .then(response=>response.json())
+  // .then(data=>console.log(data))
+
+  const navigate = useNavigate();
 
   const houseIcon = new Icon({
 		iconUrl: houseIconPng,
@@ -173,7 +176,10 @@ function ReducerFunction(draft, action) {
               height: "20rem",
               width: "30rem",
               cursor: "pointer",
-            }}/>
+            }}
+            //this is to navigate to the particular listing 
+            //when click on the card of that lisitng
+            onClick={()=>navigate(`/listings/${listing.id}`)}/>
           <CardContent>
             <Typography variant="body2">
             {listing.description.substring(0,200)}...
@@ -278,11 +284,17 @@ function ReducerFunction(draft, action) {
                   listing.longitude]}>
                     <Popup>
                       <Typography variant="h5">{listing.title}</Typography>
-                      <img src={listing.picture1} style={{height: "14rem",width: "18rem"}} />
+                      <img src={listing.picture1} style={{height: "14rem",width: "18rem", cursor: "pointer"}}
+                      onClick={()=>navigate(`/listings/${listing.id}`)} />
+                      
                       <Typography variant="body1">
                         {listing.description.substring(0,150)}...
                       </Typography>
-                      <Button variant="contained" fullWidth>Details</Button>
+                      <Button 
+                      variant="contained" 
+                      fullWidth
+                      onClick={()=>navigate(`/listings/${listing.id}`)}
+                      >Details</Button>
                     </Popup>
                   </Marker>
                 )

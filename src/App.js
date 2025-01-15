@@ -13,6 +13,7 @@ import AddProperty from "./components/AddProperty";
 import Profile from "./components/Profile";
 import Agencies from "./components/Agencies";
 import AgencyDetail from "./components/AgencyDetail";
+import ListingDetail from "./components/ListingDetail";
 
 // Context for sharing the props from app.js to header.js 
 import DispatchContext from "./Contexts/DispatchContext";
@@ -86,7 +87,8 @@ function App() {
               <Route path="/addproperty" element={<AddProperty />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/agencies" element={<Agencies />} />  
-              <Route path="/agencies/:id" element={<AgencyDetail />} /> 
+              <Route path="/agencies/:id" element={<AgencyDetail />} />
+              <Route path="/listings/:id" element={<ListingDetail />} /> 
               <Route path="/Listings" element={<Listings />} />
               <Route path="/Testing" element={<Testing />} />            
             </Routes>
