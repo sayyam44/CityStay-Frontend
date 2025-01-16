@@ -93,8 +93,8 @@ function App() {
               <Route path="/Testing" element={<Testing />} />            
             </Routes>
           </BrowserRouter>
-      //   </DispatchContext.Provider>
-      // </StateContext.Provider>
+      </DispatchContext.Provider>
+      </StateContext.Provider>
     );
 }
 export default App;

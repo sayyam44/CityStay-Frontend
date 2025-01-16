@@ -2,17 +2,19 @@ import React, { useEffect, useState, useRef, useMemo,useContext} from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Grid2, Typography,CircularProgress,Breadcrumbs, Link, Button, TextField, FormControlLabel, Checkbox, IconButton, Card, CardMedia,CardContent, CardActions  } from '@mui/material';
 import Axios from "axios";
-import ContactPhoneIcon from '@mui/icons-material/ContactPhone';
 import { useImmerReducer } from 'use-immer';
+import ContactPhoneIcon from '@mui/icons-material/ContactPhone';
 
 import StateContext from '../Contexts/StateContext';
 
 import defaultProfilePicture from './Assets/defaultProfilePicture.jpg'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import RoomIcon from '@mui/icons-material/Room';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
 
 function ListingDetail() {
-    // const GlobalState = useContext(StateContext);
+    const GlobalState = useContext(StateContext);
     // console.log(useParams());
     const params = useParams(); //useParams hook is used to get the
     //id of the particular agency from the url by using params.id 
@@ -22,6 +24,7 @@ function ListingDetail() {
     //i.e. whether we are getting the predefined userProfile data 
     //see the below dispatch for type loadingDone
     dataIsLoading: true,
+    listingInfo:"",
     listingInfo: "",
   };
 
@@ -34,12 +37,15 @@ function ListingDetail() {
         //is already present or not 
             draft.dataIsLoading = false;
             break;
+        case 'catchSellerProfileInfo':
+            draft.sellerProfileInfo=action.profileObject
+            break
       }
     }
 
     const [state, dispatch] = useImmerReducer(ReducerFunction, initialState);
 
-    //to get the current user's profile details
+    //to get the current listing details
     useEffect(()=>{
         async function GetListingInfo(){
           try{
@@ -54,17 +60,41 @@ function ListingDetail() {
             dispatch({
             type: 'catchListingInfo', 
             listingObject: response.data});
-            //this is to check whether we have a predefined data of the 
-            //user or not 
-            dispatch({
-                type: 'loadingdone',
-            })
             } catch(e){
             console.log(e.response);
           }
         }
         GetListingInfo()
       },[])
+    
+    //to get the current user's profile details
+    useEffect(()=>{
+        if (state.listingInfo){
+            async function GetProfileInfo(){
+            try{
+                const response = await Axios.get(
+                
+                //here we are getting the id of the agency by params.id 
+                // using the useParams hook above
+                `http://127.0.0.1:8000/api/profiles/${state.listingInfo.seller}/`);
+                console.log(response.data);
+                //response.data holds all the data of the user who 
+                //is signed in and have clicked on add property button
+                dispatch({
+                type: 'catchSellerProfileInfo', 
+                profileObject: response.data});
+                //this is to check whether we have a predefined data of the 
+                //user or not 
+                dispatch({
+                    type: 'loadingdone',
+                })
+                } catch(e){
+                console.log(e.response);
+            }
+            }
+            GetProfileInfo()
+        }
+      },[state.listingInfo])
     
     // this array will have all the pictures to create the pitures slider
     const listingPictures=[state.listingInfo.picture1,
@@ -98,6 +128,10 @@ function ListingDetail() {
             return setCurrentPicture(currentPicture+1);
         }
     }
+
+    //this is to show the date in frontend in proper format
+    const date = new Date(state.listingInfo.date_posted)
+    const formattedDate= `${date.getMonth()+1}/${date.getDate()}/${date.getFullYear()}`
 
     if (state.dataIsLoading === true) {
         return (
@@ -183,6 +217,182 @@ function ListingDetail() {
         ): (
             ""
         )}
+        {/* More Information of the property */}
+        <Grid2 container sx={{padding: '1rem',
+            border: '1px solid black', 
+            marginTop:"1rem"
+             }} spacing={20} >
+            <Grid2 container xs={7} 
+            direction="column"
+            spacing={1}>
+                <Grid2>
+                    <Typography variant="h5">
+                        {state.listingInfo.title}
+                    </Typography>
+                </Grid2>
+                <Grid2>
+                    <RoomIcon />{" "}
+                    <Typography variant="h6">
+                        {state.listingInfo.borough}
+                    </Typography>
+                </Grid2>
+                <Grid2>
+                    <Typography variant="subtitle1">
+                        {formattedDate}
+                    </Typography>
+                </Grid2>
+            </Grid2>
+            <Grid2 container xs={5} alignItems="center">
+                <Typography variant='h6' 
+                sx={{fontWeight: "bolder", color: "green"}}>
+                    {state.listingInfo.listing_type} | 
+                    {state.listingInfo.property_staus === 'Sale' ? 
+                    `$${state.listingInfo.price.toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}` : 
+                    `$${state.listingInfo.price.toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}/${state.listingInfo.rental_frequency}`}
+                </Typography>
+            </Grid2>
+        </Grid2>
+
+        <Grid2
+				item
+				container
+				justifyContent="flex-start"
+                spacing={15} 
+				style={{
+					padding: "1rem",
+					border: "1px solid black",
+					marginTop: "1rem",
+				}}
+			>
+				{state.listingInfo.rooms ? (
+					<Grid2 item xs={2} style={{ display: "flex" }}>
+						<Typography variant="h6">
+							{state.listingInfo.rooms} Rooms
+						</Typography>
+					</Grid2>
+				) : (
+					""
+				)}
+
+				{state.listingInfo.furnished ? (
+					<Grid2 item xs={2} style={{ display: "flex" }}>
+						<CheckBoxIcon style={{ color: "green", fontSize: "2rem" }} />{" "}
+						<Typography variant="h6">Furnished</Typography>
+					</Grid2>
+				) : (
+					""
+				)}
+
+				{state.listingInfo.pool ? (
+					<Grid2 item xs={2} style={{ display: "flex" }}>
+						<CheckBoxIcon style={{ color: "green", fontSize: "2rem" }} />{" "}
+						<Typography variant="h6">Pool</Typography>
+					</Grid2>
+				) : (
+					""
+				)}
+
+				{state.listingInfo.elevator ? (
+					<Grid2 item xs={2} style={{ display: "flex" }}>
+						<CheckBoxIcon style={{ color: "green", fontSize: "2rem" }} />{" "}
+						<Typography variant="h6">Elevator</Typography>
+					</Grid2>
+				) : (
+					""
+				)}
+
+				{state.listingInfo.cctv ? (
+					<Grid2 item xs={2} style={{ display: "flex" }}>
+						<CheckBoxIcon style={{ color: "green", fontSize: "2rem" }} />{" "}
+						<Typography variant="h6">Cctv</Typography>
+					</Grid2>
+				) : (
+					""
+				)}
+
+				{state.listingInfo.parking ? (
+					<Grid2 item xs={2} style={{ display: "flex" }}>
+						<CheckBoxIcon style={{ color: "green", fontSize: "2rem" }} />{" "}
+						<Typography variant="h6">Parking</Typography>
+					</Grid2>
+				) : (
+					""
+				)}
+			</Grid2>
+        
+        {/* Description */}
+			{state.listingInfo.description ? (
+				<Grid2
+					item
+					style={{
+						padding: "1rem",
+						border: "1px solid black",
+						marginTop: "1rem",
+					}}
+				>
+					<Typography variant="h5">Description</Typography>
+					<Typography variant="h6">{state.listingInfo.description}</Typography>
+				</Grid2>
+			) : (
+				""
+			)}
+        
+        {/* Seller Info */}
+			<Grid2
+				container
+				style={{
+					width: "50%",
+					marginLeft: "auto",
+					marginRight: "auto",
+					border: "5px solid black",
+					marginTop: "1rem",
+					padding: "5px",
+				}}
+                
+			>
+				<Grid2 item xs={6}>
+					<img
+						style={{ height: "10rem", width: "15rem", cursor: "pointer" }}
+						src={
+							state.sellerProfileInfo.profile_picture !== null
+								? state.sellerProfileInfo.profile_picture
+								: defaultProfilePicture
+						}
+						onClick={() =>
+							navigate(`/agencies/${state.sellerProfileInfo.seller}`)
+						}
+					/>
+				</Grid2>
+				<Grid2 
+                 container 
+                 direction="column" 
+                 justifyContent="center" 
+                 xs={6}
+                 marginLeft="4rem">
+					<Grid2 item>
+						<Typography
+							variant="h5"
+							style={{ textAlign: "center", marginTop: "1rem" }}
+						>
+							<span style={{ color: "green", fontWeight: "bolder" }}>
+								{state.sellerProfileInfo.agency_name}
+							</span>
+						</Typography>
+					</Grid2>
+					<Grid2 item>
+						<Typography
+							variant="h5"
+							style={{ textAlign: "center", marginTop: "1rem" }}
+						>
+							<IconButton>
+                            <ContactPhoneIcon /> {state.sellerProfileInfo.phone_number}
+							</IconButton>
+						</Typography>
+					</Grid2>
+				</Grid2>
+			</Grid2>
     </div>
   )
 }
