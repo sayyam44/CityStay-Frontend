@@ -29,7 +29,7 @@ function Header() {
 
     function HandleProfile(){
         setAnchorEl(null);
-        navigate("/profile");
+        navigate("/profile"); 
     }
 
     //below function is to handle the logout logic
@@ -70,7 +70,9 @@ function Header() {
             <Button color="inherit" onClick={()=>navigate("/Listings")}>
                 <Typography variant="h6">Listings</Typography>
             </Button>
-            <Button color="inherit" style={{marginLeft: "2rem"}} onClick={()=>navigate("/agencies")}>
+            <Button color="inherit" 
+            style={{marginLeft: "2rem"}} 
+            onClick={()=>navigate("/agencies")}>
                 <Typography variant="h6">Agencies</Typography>
             </Button>
             </div>

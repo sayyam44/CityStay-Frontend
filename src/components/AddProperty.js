@@ -5,7 +5,7 @@ import Axios from "axios";
 import { useImmerReducer } from 'use-immer';
 
 // React Leaflet
-import { MapContainer, TileLayer, useMap, Marker } from 'react-leaflet'
+import { MapContainer, TileLayer, useMap, Marker } from 'react-leaflet';
 
 // Contexts
 import StateContext from '../Contexts/StateContext';

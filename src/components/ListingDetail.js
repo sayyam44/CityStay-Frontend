@@ -12,6 +12,8 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import RoomIcon from '@mui/icons-material/Room';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
+//react leaflet
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 
 function ListingDetail() {
     const GlobalState = useContext(StateContext);
@@ -256,7 +258,6 @@ function ListingDetail() {
         </Grid2>
 
         <Grid2
-				item
 				container
 				justifyContent="flex-start"
                 spacing={15} 
@@ -267,7 +268,7 @@ function ListingDetail() {
 				}}
 			>
 				{state.listingInfo.rooms ? (
-					<Grid2 item xs={2} style={{ display: "flex" }}>
+					<Grid2 xs={2} style={{ display: "flex" }}>
 						<Typography variant="h6">
 							{state.listingInfo.rooms} Rooms
 						</Typography>
@@ -277,7 +278,7 @@ function ListingDetail() {
 				)}
 
 				{state.listingInfo.furnished ? (
-					<Grid2 item xs={2} style={{ display: "flex" }}>
+					<Grid2 xs={2} style={{ display: "flex" }}>
 						<CheckBoxIcon style={{ color: "green", fontSize: "2rem" }} />{" "}
 						<Typography variant="h6">Furnished</Typography>
 					</Grid2>
@@ -286,7 +287,7 @@ function ListingDetail() {
 				)}
 
 				{state.listingInfo.pool ? (
-					<Grid2 item xs={2} style={{ display: "flex" }}>
+					<Grid2 xs={2} style={{ display: "flex" }}>
 						<CheckBoxIcon style={{ color: "green", fontSize: "2rem" }} />{" "}
 						<Typography variant="h6">Pool</Typography>
 					</Grid2>
@@ -295,7 +296,7 @@ function ListingDetail() {
 				)}
 
 				{state.listingInfo.elevator ? (
-					<Grid2 item xs={2} style={{ display: "flex" }}>
+					<Grid2 xs={2} style={{ display: "flex" }}>
 						<CheckBoxIcon style={{ color: "green", fontSize: "2rem" }} />{" "}
 						<Typography variant="h6">Elevator</Typography>
 					</Grid2>
@@ -304,7 +305,7 @@ function ListingDetail() {
 				)}
 
 				{state.listingInfo.cctv ? (
-					<Grid2 item xs={2} style={{ display: "flex" }}>
+					<Grid2 xs={2} style={{ display: "flex" }}>
 						<CheckBoxIcon style={{ color: "green", fontSize: "2rem" }} />{" "}
 						<Typography variant="h6">Cctv</Typography>
 					</Grid2>
@@ -313,7 +314,7 @@ function ListingDetail() {
 				)}
 
 				{state.listingInfo.parking ? (
-					<Grid2 item xs={2} style={{ display: "flex" }}>
+					<Grid2 xs={2} style={{ display: "flex" }}>
 						<CheckBoxIcon style={{ color: "green", fontSize: "2rem" }} />{" "}
 						<Typography variant="h6">Parking</Typography>
 					</Grid2>
@@ -325,7 +326,6 @@ function ListingDetail() {
         {/* Description */}
 			{state.listingInfo.description ? (
 				<Grid2
-					item
 					style={{
 						padding: "1rem",
 						border: "1px solid black",
@@ -352,7 +352,7 @@ function ListingDetail() {
 				}}
                 
 			>
-				<Grid2 item xs={6}>
+				<Grid2 xs={6}>
 					<img
 						style={{ height: "10rem", width: "15rem", cursor: "pointer" }}
 						src={
@@ -371,7 +371,7 @@ function ListingDetail() {
                  justifyContent="center" 
                  xs={6}
                  marginLeft="4rem">
-					<Grid2 item>
+					<Grid2>
 						<Typography
 							variant="h5"
 							style={{ textAlign: "center", marginTop: "1rem" }}
@@ -381,7 +381,7 @@ function ListingDetail() {
 							</span>
 						</Typography>
 					</Grid2>
-					<Grid2 item>
+					<Grid2>
 						<Typography
 							variant="h5"
 							style={{ textAlign: "center", marginTop: "1rem" }}
@@ -393,8 +393,31 @@ function ListingDetail() {
 					</Grid2>
 				</Grid2>
 			</Grid2>
+
+            {/* map */}
+            <Grid2 
+            container 
+            style={{marginTop: '1rem'}}
+            spacing={1}
+            justifyContent="space-between">
+                <Grid2 xs={3}> 
+                    Points of Interest 
+                </Grid2>
+                <Grid2 xs={9} style={{height: "35rem"}}>
+                    <MapContainer 
+                    center={[47.56431808943282,-52.730079775120906]} 
+                    zoom={11} 
+                    scrollWheelZoom={true}
+                    >
+                        <TileLayer
+                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        />
+                    </MapContainer>
+                </Grid2>
+            </Grid2>
     </div>
   )
 }
 
-export default ListingDetail
+export default ListingDetail;

@@ -43,6 +43,7 @@ function Example() {
                     boxShadow: "3px 3px 3px 3px black"}}
                     onClick={()=>navigate("/Listings")}>
                     See All Properties</Button>
+				
             </div>
         </div>
       </>

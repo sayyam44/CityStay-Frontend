@@ -206,10 +206,10 @@ function Login() {
                 <Typography variant="body2" sx={{ fontWeight: "bold" }}>
                     Don't have an account yet?{" "}
                     <span
-                        onClick={() => navigate("/register")}
-                        style={{ cursor: "pointer", color: "green" }}
+                    onClick={() => navigate("/register")}
+                    style={{ cursor: "pointer", color: "green" }}
                     >
-                        SIGN UP
+                    SIGN UP
                     </span>
                 </Typography>
             </Grid2>
