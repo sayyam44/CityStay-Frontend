@@ -188,8 +188,27 @@ function ListingUpdate(props) {
     useEffect(()=>{
       if (state.sendRequest){
         async function UpdateProperty(){
-          const formData = new FormData()
-          formData.append("title", state.titleValue);
+          const formData = new FormData();
+          //when the user updates from house to office I dont 
+          //want to show the number of rooms firld anymore
+          if (state.listingTypeValue === 'Office'){
+            formData.append("title", state.titleValue);
+            formData.append("description", state.descriptionValue);
+            formData.append("listing_type", state.listingTypeValue);
+            formData.append("property_status", state.propertyStatusValue);
+            formData.append("price", state.priceValue);
+            formData.append("rental_frequency", state.rentalFrequencyValue);
+            formData.append("rooms", 0);
+            formData.append("furnished", state.furnishedValue);
+            formData.append("pool", state.poolValue);
+            formData.append("elevator", state.elevatorValue);
+            formData.append("cctv", state.cctvValue);
+            formData.append("parking", state.parkingValue);
+            // GlobalState.userId gives the currently logged in user using th useContext hook
+            formData.append("seller", GlobalState.userId);
+          }
+          else{
+            formData.append("title", state.titleValue);
           formData.append("description", state.descriptionValue);
           formData.append("listing_type", state.listingTypeValue);
           formData.append("property_status", state.propertyStatusValue);
@@ -204,24 +223,26 @@ function ListingUpdate(props) {
           // GlobalState.userId gives the currently logged in user using th useContext hook
           formData.append("seller", GlobalState.userId);
 
-        //   try {
-        //     const response = await Axios.post(
-        //       "http://127.0.0.1:8000/api/listings/create/",
-        //       formData
-        //     );
-        //     console.log("Success:", response.data);
-        //     navigate('/listings');
-        //   } catch (e) {
-        //     // Log detailed error information for debugging
-        //     if (e.response) {
-        //       console.error("Error Response:", e.response.data);
-        //       console.error("Status Code:", e.response.status);
-        //     } else if (e.request) {
-        //       console.error("No Response Received:", e.request);
-        //     } else {
-        //       console.error("Error:", e.message);
-        //     }
-        //   }
+          }
+          
+          try {
+            const response = await Axios.patch(
+              `http://127.0.0.1:8000/api/listings/${props.listingData.id}/update/`,
+              formData
+            );
+            console.log("Success:", response.data);
+            navigate(0);
+          } catch (e) {
+            // Log detailed error information for debugging
+            if (e.response) {
+              console.error("Error Response:", e.response.data);
+              console.error("Status Code:", e.response.status);
+            } else if (e.request) {
+              console.error("No Response Received:", e.request);
+            } else {
+              console.error("Error:", e.message);
+            }
+          }
         }
         UpdateProperty()
       }
@@ -459,7 +480,7 @@ function ListingUpdate(props) {
             <Button 
             marginTop= "1rem"
             variant="contained" 
-            onclick={props.closeDialog}>CANCEL</Button>
+            onClick={props.closeDialog}>CANCEL</Button>
         </div>
     );
 }
