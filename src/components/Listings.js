@@ -251,7 +251,7 @@ function ReducerFunction(draft, action) {
           <div style={{ height: "100vh" }}>
             <MapContainer 
             center={[47.56431808943282,-52.730079775120906]} 
-            zoom={15} 
+            zoom={12} 
             scrollWheelZoom={true}>
               <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

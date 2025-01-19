@@ -1,19 +1,29 @@
 import React, { useEffect, useState, useRef, useMemo,useContext} from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Grid2, Typography,CircularProgress,Breadcrumbs, Link, Button, TextField, FormControlLabel, Checkbox, IconButton, Card, CardMedia,CardContent, CardActions  } from '@mui/material';
+import { Grid2, Typography,CircularProgress,Breadcrumbs, Link, Button, TextField, FormControlLabel, Checkbox, IconButton, Card, CardMedia,CardContent, CardActions,Dialog,  } from '@mui/material';
 import Axios from "axios";
 import { useImmerReducer } from 'use-immer';
 import ContactPhoneIcon from '@mui/icons-material/ContactPhone';
-
+//react leaflet
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import {Icon} from "leaflet";
+//Contexts
 import StateContext from '../Contexts/StateContext';
-
+//Assets
 import defaultProfilePicture from './Assets/defaultProfilePicture.jpg'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import RoomIcon from '@mui/icons-material/Room';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
-//react leaflet
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import sadiumIconPng from './Assets/Mapicons/stadium.png'
+import universityIconPng from './Assets/Mapicons/university.png'
+import mallIconPng from './Assets/Mapicons/mall.png'
+import collegeIconPng from './Assets/Mapicons/college.png'
+import hospitalIconPng from './Assets/Mapicons/hospital.png'
+
+//Components
+import ListingUpdate from './ListingUpdate';
+
 
 function ListingDetail() {
     const GlobalState = useContext(StateContext);
@@ -21,6 +31,40 @@ function ListingDetail() {
     const params = useParams(); //useParams hook is used to get the
     //id of the particular agency from the url by using params.id 
     const navigate = useNavigate();
+
+    //creating the const for different types of icon(markers) to be 
+    //shown on the map imported above from the assets folder in frontend
+    const stadiumIcon = new Icon(
+        {
+            iconUrl:sadiumIconPng,
+            iconSize:[40,40],
+        }
+    )
+    const universityIcon = new Icon(
+        {
+            iconUrl:universityIconPng,
+            iconSize:[40,40],
+        }
+    )
+    const mallIcon = new Icon(
+        {
+            iconUrl:mallIconPng,
+            iconSize:[40,40],
+        }
+    )
+    const collegeIcon = new Icon(
+        {
+            iconUrl:collegeIconPng,
+            iconSize:[40,40],
+        }
+    )
+    const hospitalIcon = new Icon(
+        {
+            iconUrl:hospitalIconPng,
+            iconSize:[40,40],
+        }
+    )
+
     const initialState = {
     //this is to check whether we get data from the server or not 
     //i.e. whether we are getting the predefined userProfile data 
@@ -135,6 +179,31 @@ function ListingDetail() {
     const date = new Date(state.listingInfo.date_posted)
     const formattedDate= `${date.getMonth()+1}/${date.getDate()}/${date.getFullYear()}`
 
+    async function DeleteHandler(){
+        const confirmDelete =window.confirm('Are you sure you want to delete this Listing?');
+        if (confirmDelete){
+            try {
+                //deleting the listing on the basis of the listings id
+                const response = 
+                await Axios.delete(`http://127.0.0.1:8000/api/listings/${params.id}/delete/`);
+                console.log(response.data);
+                navigate("/listings");
+            }catch(e){
+                console.log(e.response.data)
+            }
+        }
+    }
+
+    //this is for showing the update dialog box
+    const [open, setOpen] = React.useState(false);
+    const handleClickOpen = () => {
+        setOpen(true);
+        };
+
+    const handleClose = () => {
+        setOpen(false);
+        };
+
     if (state.dataIsLoading === true) {
         return (
             <Grid2 
@@ -246,7 +315,7 @@ function ListingDetail() {
             </Grid2>
             <Grid2 container xs={5} alignItems="center">
                 <Typography variant='h6' 
-                sx={{fontWeight: "bolder", color: "green"}}>
+                sx={{fontWeight: "bolder", color: "blue"}}>
                     {state.listingInfo.listing_type} | 
                     {state.listingInfo.property_staus === 'Sale' ? 
                     `$${state.listingInfo.price.toString()
@@ -376,7 +445,7 @@ function ListingDetail() {
 							variant="h5"
 							style={{ textAlign: "center", marginTop: "1rem" }}
 						>
-							<span style={{ color: "green", fontWeight: "bolder" }}>
+							<span style={{ color: "blue", fontWeight: "bolder" }}>
 								{state.sellerProfileInfo.agency_name}
 							</span>
 						</Typography>
@@ -392,27 +461,149 @@ function ListingDetail() {
 						</Typography>
 					</Grid2>
 				</Grid2>
+
+            {/* updating and deleting functionality*/}
+            {/* GlobalState.userId means to check the user id of the listing
+            that is opened by the user currently */}
+            {GlobalState.userId == state.listingInfo.seller ? (
+                <Grid2 container style={{ paddingLeft: '200px' }} gap={10}>
+                <Button variant="contained" color="primary" onClick={handleClickOpen}>Update</Button>
+                <Button variant="contained" color="error" onClick={DeleteHandler}>Delete</Button>
+                <Dialog
+                    open={open}
+                    onClose={handleClose}
+                    fullScreen 
+                    
+                >
+                    {/* using props to access the data of the current listing */}
+                    <ListingUpdate 
+                    listingData ={state.listingInfo} 
+                    closeDialog={handleClose}
+                    /> 
+                </Dialog>
+
+                </Grid2>
+            ) : ("")}
+
 			</Grid2>
+
 
             {/* map */}
             <Grid2 
-            container 
-            style={{marginTop: '1rem'}}
-            spacing={1}
-            justifyContent="space-between">
-                <Grid2 xs={3}> 
-                    Points of Interest 
+            container spacing={2} style={{marginTop: "1rem"}}>
+            
+                <Grid2  xs={12} sm={3}  > 
+                    {/* mapping through each poi within 2km of the current listing */}
+                {state.listingInfo.listing_pois_within_2km.map((poi)=>{
+                    //this is to convert the degree to radian to use it in below function
+                    function DegreeToRadian(coordinate){
+                        return coordinate*Math.PI/180
+                    }
+                    // This is to find the distance between 2 points on map using their latitude and longitude
+                    function CalculateDistance() {
+                        //converting the corrdinates of current property to radians
+                        const latitude1=DegreeToRadian(state.listingInfo.latitude)
+                        const longitude1=DegreeToRadian(state.listingInfo.longitude)
+
+                        //converting the corrdinates of pois to radians
+                        const latitude2=DegreeToRadian(poi.location.coordinates[0])
+                        const longitude2=DegreeToRadian(poi.location.coordinates[1])
+
+                        //FORMULA
+                        const latDiff = latitude2 - latitude1;
+                        const lonDiff = longitude2 - longitude1;
+                        const R = 6371000 / 1000;
+
+                        const a =
+                            Math.sin(latDiff / 2) * Math.sin(latDiff / 2) +
+                            Math.cos(latitude1) *
+                                Math.cos(latitude2) *
+                                Math.sin(lonDiff / 2) *
+                                Math.sin(lonDiff / 2);
+                        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+                        const d = R * c;
+
+                        const dist =
+                            Math.acos(
+                                Math.sin(latitude1) * Math.sin(latitude2) +
+                                    Math.cos(latitude1) *
+                                        Math.cos(latitude2) *
+                                        Math.cos(lonDiff)
+                            ) * R;
+                        return dist.toFixed(2);
+                    }
+
+                        return (
+                            <div key={poi.id} style={{marginBottom: '0.5rem', border: '1px solid black'}}>
+                            <Typography variant='h6'>
+                                {poi.name}
+                            </Typography >
+                            <Typography variant='subtitle1'>
+                                {poi.type} | <span style={{fontWeight:'bolder', color: 'blue'}}> {CalculateDistance()} Kilometers </span>
+                            </Typography>
+                            </div>
+                        );
+                    })}
                 </Grid2>
-                <Grid2 xs={9} style={{height: "35rem"}}>
+                <Grid2 xs={12} sm={9} style={{ height: '70vh' , width: '120vh'}}>
                     <MapContainer 
-                    center={[47.56431808943282,-52.730079775120906]} 
-                    zoom={11} 
+                    center={[state.listingInfo.latitude,
+                        state.listingInfo.longitude]} 
+                    zoom={13} 
                     scrollWheelZoom={true}
                     >
                         <TileLayer
                             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         />
+                        <Marker 
+                        position={
+                        [state.listingInfo.latitude,
+                        state.listingInfo.longitude]}>
+                            <Popup>
+                                {state.listingInfo.title}
+                            </Popup>
+                        </Marker>
+
+                        {/* this is to show all the pois on the map */}
+                        {state.listingInfo.listing_pois_within_2km.map((poi)=>{
+                            
+                            //this defines the different types of icons(markers)
+                            //used in the map created above in const
+                            function PoiIcon(){
+                                if (poi.type === "Stadium"){
+                                    return stadiumIcon
+                                }
+                                else if (poi.type === "University"){
+                                    return universityIcon
+                                }
+                                else if (poi.type === "Hospital"){
+                                    return hospitalIcon
+                                }
+                                else if (poi.type === "Mall"){
+                                    return mallIcon
+                                }
+                                else if (poi.type === "College"){
+                                    return collegeIcon
+                                }
+                            }
+                            return (
+                                <Marker 
+                                key={poi.id}
+                                position={[
+                                    poi.location.coordinates[0],
+                                    poi.location.coordinates[1],
+                                ]}
+                                // calling the above function to show different types of markers
+                                icon={PoiIcon()} 
+                                >
+                                    <Popup>
+                                    {poi.name}
+                                    </Popup>
+                                </Marker>
+                            );
+                        })}
                     </MapContainer>
                 </Grid2>
             </Grid2>
