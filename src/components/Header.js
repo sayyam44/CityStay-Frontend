@@ -1,6 +1,6 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Link,useNavigate } from "react-router-dom";
-import { Button,Typography,Grid2,AppBar,Toolbar,Menu,MenuItem} from '@mui/material';
+import { Button,Typography,Grid2,AppBar,Toolbar,Menu,MenuItem,Snackbar} from '@mui/material';
 import CustomCard from "./CustomCard";
 import Axios from "axios";
 
@@ -31,6 +31,7 @@ function Header() {
         setAnchorEl(null);
         navigate("/profile"); 
     }
+    const[openSnack, setOpenSnack] = useState(false)
 
     //below function is to handle the logout logic
     //first we need to destroy the token of the current logged out user
@@ -49,12 +50,23 @@ function Header() {
                 console.log(response);
                 //dispatch case for this in app.js is logout
                 GlobalDispatch({type: "logout" });
-                navigate("/");
+                setOpenSnack(true);
+                // navigate("/");
         }catch(e){
             console.log(e.response);
         }
     }
     }
+
+    //this is used to show the popup for 1.5 sec before being navigating
+    //to the homepage 
+    useEffect(()=>{
+        if (openSnack){
+            setTimeout(()=>{
+                navigate(0);
+            },1500);
+        }
+    },[openSnack])
 
     return (
         <AppBar position="static" style={{backgroundColor:'black'}}>
@@ -142,6 +154,15 @@ function Header() {
             onClick={HandleLogout}>Logout</MenuItem> 
             </Menu>
 
+            {/* this is the popup when user logs in  */}
+            <Snackbar
+            open={openSnack}
+            message="You have successfully logged out"
+            anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: "center"
+            }}
+            />
             </div>
             </Toolbar>
         </AppBar>

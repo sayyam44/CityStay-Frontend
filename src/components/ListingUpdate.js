@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useMemo,useContext} from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Grid2, Typography, Button, TextField, FormControlLabel, Checkbox } from '@mui/material';
+import { Grid2, Typography, Button, TextField, FormControlLabel, Checkbox, Snackbar } from '@mui/material';
 import Axios from "axios";
 import { useImmerReducer } from 'use-immer';
 
@@ -104,7 +104,10 @@ function ListingUpdate(props) {
     userProfile: {
       agencyName: '',
       phoneNumber: '',
-    }
+    },
+    openSnack:false, //this is the popup that occurs when the user logs in
+    disabledBtn: false, //this is to disable the login button once it is clicked
+
   };
 
     function ReducerFunction(draft, action) {
@@ -166,10 +169,19 @@ function ListingUpdate(props) {
 				draft.parkingValue = action.parkingChosen;
 				break;
 
-            //to send the data to backend
-            case 'changeSendRequest':
-                draft.sendRequest = draft.sendRequest +1;
-                break;
+      //to send the data to backend
+      case 'changeSendRequest':
+          draft.sendRequest = draft.sendRequest +1;
+          break;
+          case 'openTheSnack':
+            draft.openSnack =true;
+            break
+        case 'disabledButton': //this is to disable the login button for 1.5 sec for the popup
+            draft.disabledBtn = true;    
+            break
+        case 'allowTheButton': //this is to enable the button again once the popup is gone
+            draft.disabledBtn = false;    
+            break
       }
     }
 
@@ -182,6 +194,7 @@ function ListingUpdate(props) {
         e.preventDefault();
         console.log('yessssssssssssssss');
         dispatch({type: 'changeSendRequest'});
+        dispatch({type: 'disabledButton'})
     }
 
     //this use effect is used to submit the form data into backend
@@ -231,22 +244,26 @@ function ListingUpdate(props) {
               formData
             );
             console.log("Success:", response.data);
-            navigate(0);
+            dispatch({type: 'openTheSnack'}) //this is to show the popup when user successfully logs in
+            // navigate(0);
           } catch (e) {
-            // Log detailed error information for debugging
-            if (e.response) {
-              console.error("Error Response:", e.response.data);
-              console.error("Status Code:", e.response.status);
-            } else if (e.request) {
-              console.error("No Response Received:", e.request);
-            } else {
-              console.error("Error:", e.message);
-            }
+            console.log(e.response);
+            dispatch({type: 'allowTheButton'});
           }
         }
         UpdateProperty()
       }
     },[state.sendRequest]);
+
+    //this is used to show the popup for 1.5 sec before being navigating
+    //to 0
+    useEffect(()=>{
+        if (state.openSnack){
+            setTimeout(()=>{
+                navigate(0);
+            },1500);
+        }
+    },[state.openSnack])
 
     function PriceDisplay(){
       if (state.propertyStatusValue === "Rent" && state.rentalFrequencyValue === 'Day'){
@@ -472,6 +489,7 @@ function ListingUpdate(props) {
                                 backgroundColor: "orange",
                             },
                         }}
+                        disabled={state.disabledBtn}
                         >
                         UPDATE
                     </Button>
@@ -481,6 +499,15 @@ function ListingUpdate(props) {
             marginTop= "1rem"
             variant="contained" 
             onClick={props.closeDialog}>CANCEL</Button>
+            {/* this is the popup when user logs in  */}
+            <Snackbar
+            open={state.openSnack}
+            message="You have successfully updated this listing"
+            anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: "center"
+            }}
+            />
         </div>
     );
 }

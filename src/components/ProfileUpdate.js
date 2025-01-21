@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useMemo,useContext} from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Grid2, Typography, Button, TextField, FormControlLabel, Checkbox } from '@mui/material';
+import { Grid2, Typography, Button, TextField, FormControlLabel, Checkbox,Snackbar } from '@mui/material';
 import Axios from "axios";
 import { useImmerReducer } from 'use-immer';
 
@@ -24,7 +24,10 @@ function ProfileUpdate(props) {
     bioValue: props.userProfile.bio,
     uploadedPicture: [],
     profilePictureValue: props.userProfile.profilePic,
-    sendRequest: 0
+    sendRequest: 0,
+    openSnack:false, //this is the popup that occurs when the user logs in
+    disabledBtn: false, //this is to disable the login button once it is clicked
+
   };
 
     function ReducerFunction(draft, action) {
@@ -53,6 +56,16 @@ function ProfileUpdate(props) {
         case 'changeSendRequest':
             draft.sendRequest =draft.sendRequest+1;
             break; 
+
+        case 'openTheSnack':
+            draft.openSnack =true;
+            break
+        case 'disabledButton': //this is to disable the login button for 1.5 sec for the popup
+            draft.disabledBtn = true;    
+            break
+        case 'allowTheButton': //this is to enable the button again once the popup is gone
+            draft.disabledBtn = false;    
+            break
       }
     }
 
@@ -100,28 +113,33 @@ function ProfileUpdate(props) {
                 formData
               );
               console.log("Success:", response.data);
-              navigate(0);//here navigate is 0 that is to update the profile
+              dispatch({type: 'openTheSnack'}) //this is to show the popup when user successfully updates its profile
+            //   navigate(0);//here navigate is 0 that is to update the profile
             } catch (e) {
-              // Log detailed error information for debugging
-              if (e.response) {
-                console.error("Error Response:", e.response.data);
-                console.error("Status Code:", e.response.status);
-              } else if (e.request) {
-                console.error("No Response Received:", e.request);
-              } else {
-                console.error("Error:", e.message);
-              }
+              console.log(e.response);
+              dispatch({type: 'allowTheButton'})
             }
           }
           UpdateProfile()
         }
       },[state.sendRequest]);
-  
+      
+    //this is used to show the popup for 1.5 sec before being navigating
+    //to 0
+    useEffect(()=>{
+        if (state.openSnack){
+            setTimeout(()=>{
+                navigate(0);
+            },1500);
+        }
+    },[state.openSnack])
+
     //this runs as soon as the user hits update button
     //it changes sendRequest to sendRequest+1
     function FormSubmit(e){ 
         e.preventDefault()
         dispatch({type: 'changeSendRequest'});
+        dispatch({type: 'disabledButton'})
     }
 
     //This is to display the name of the profile picture that is being 
@@ -261,11 +279,21 @@ function ProfileUpdate(props) {
                                 backgroundColor: "orange",
                             },
                         }}
+                        disabled={state.disabledBtn}
                     >
                         Update
                     </Button>
                 </Grid2>
                 </form>
+                {/* this is the popup when user updates it profile */}
+                <Snackbar
+                open={state.openSnack}
+                message="You have successfully updated your profile"
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: "center"
+                }}
+                />
             </div>
         </>
         // new

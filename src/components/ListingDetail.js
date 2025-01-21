@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useMemo,useContext} from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Grid2, Typography,CircularProgress,Breadcrumbs, Link, Button, TextField, FormControlLabel, Checkbox, IconButton, Card, CardMedia,CardContent, CardActions,Dialog,  } from '@mui/material';
+import { Grid2, Typography,CircularProgress,Breadcrumbs, Link, Button, TextField, FormControlLabel, Checkbox, IconButton, Card, CardMedia,CardContent, CardActions,Dialog,Snackbar  } from '@mui/material';
 import Axios from "axios";
 import { useImmerReducer } from 'use-immer';
 import ContactPhoneIcon from '@mui/icons-material/ContactPhone';
@@ -72,6 +72,9 @@ function ListingDetail() {
     dataIsLoading: true,
     listingInfo:"",
     listingInfo: "",
+    openSnack:false, //this is the popup that occurs when the user logs in
+    disabledBtn: false, //this is to disable the login button once it is clicked
+
   };
 
     function ReducerFunction(draft, action) {
@@ -85,6 +88,15 @@ function ListingDetail() {
             break;
         case 'catchSellerProfileInfo':
             draft.sellerProfileInfo=action.profileObject
+            break
+        case 'openTheSnack':
+            draft.openSnack =true;
+            break
+        case 'disabledButton': //this is to disable the login button for 1.5 sec for the popup
+            draft.disabledBtn = true;    
+            break
+        case 'allowTheButton': //this is to enable the button again once the popup is gone
+            draft.disabledBtn = false;    
             break
       }
     }
@@ -187,12 +199,25 @@ function ListingDetail() {
                 const response = 
                 await Axios.delete(`http://127.0.0.1:8000/api/listings/${params.id}/delete/`);
                 console.log(response.data);
-                navigate("/listings");
+                dispatch({type: 'openTheSnack'}); //this is to show the popup when user successfully uploads a listing
+                // navigate("/listings");
+                dispatch({type: 'disabledButton'});
             }catch(e){
+                dispatch({type: 'allowTheButton'});
                 console.log(e.response.data)
             }
         }
     }
+
+    //this is used to show the popup for 1.5 sec before being navigating
+    //to the homepage 
+    useEffect(()=>{
+        if (state.openSnack){
+            setTimeout(()=>{
+                navigate("/listings");
+            },1500);
+        }
+    },[state.openSnack])
 
     //this is for showing the update dialog box
     const [open, setOpen] = React.useState(false);
@@ -468,7 +493,12 @@ function ListingDetail() {
             {GlobalState.userId == state.listingInfo.seller ? (
                 <Grid2 container style={{ paddingLeft: '200px' }} gap={10}>
                 <Button variant="contained" color="primary" onClick={handleClickOpen}>Update</Button>
-                <Button variant="contained" color="error" onClick={DeleteHandler}>Delete</Button>
+                <Button 
+                variant="contained" 
+                color="error" 
+                onClick={DeleteHandler} 
+                disabled={state.disabledBtn}>
+                    Delete</Button>
                 <Dialog
                     open={open}
                     onClose={handleClose}
@@ -607,6 +637,15 @@ function ListingDetail() {
                     </MapContainer>
                 </Grid2>
             </Grid2>
+        {/* this is the popup when user logs in  */}
+        <Snackbar
+        open={state.openSnack}
+        message="You have successfully deleted the property"
+        anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: "center"
+        }}
+        />
     </div>
   )
 }

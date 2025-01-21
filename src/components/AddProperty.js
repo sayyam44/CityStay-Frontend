@@ -1,6 +1,11 @@
 import React, { useEffect, useState, useRef, useMemo,useContext} from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Grid2, Typography, Button, TextField, FormControlLabel, Checkbox } from '@mui/material';
+import { Grid2, 
+  Typography,
+   Button, 
+   TextField, 
+   FormControlLabel, 
+   Checkbox, Snackbar } from '@mui/material';
 import Axios from "axios";
 import { useImmerReducer } from 'use-immer';
 
@@ -239,7 +244,10 @@ function AddProperty() {
     userProfile: {
       agencyName: '',
       phoneNumber: '',
-    }
+    },
+    openSnack:false, //this is the popup that occurs when the user logs in
+    disabledBtn: false, //this is to disable the login button once it is clicked
+
   };
 
     function ReducerFunction(draft, action) {
@@ -384,7 +392,16 @@ function AddProperty() {
 				draft.userProfile.agencyName = action.profileObject.agency_name;
 				draft.userProfile.phoneNumber = action.profileObject.phone_number;
 				break;
-        
+      
+      case 'openTheSnack':
+          draft.openSnack =true;
+          break
+      case 'disabledButton': //this is to disable the login button for 1.5 sec for the popup
+          draft.disabledBtn = true;    
+          break
+      case 'allowTheButton': //this is to enable the button again once the popup is gone
+          draft.disabledBtn = false;    
+          break
       }
     }
 
@@ -686,6 +703,7 @@ function AddProperty() {
         e.preventDefault();
         console.log('yessssssssssssssss');
         dispatch({type: 'changeSendRequest'});
+        dispatch({type: 'disabledButton'})
     }
 
     //this use effect is used to submit the form data into backend
@@ -723,17 +741,11 @@ function AddProperty() {
               formData
             );
             console.log("Success:", response.data);
-            navigate('/listings');
+            dispatch({type: 'openTheSnack'})
+            // navigate('/listings');
           } catch (e) {
-            // Log detailed error information for debugging
-            if (e.response) {
-              console.error("Error Response:", e.response.data);
-              console.error("Status Code:", e.response.status);
-            } else if (e.request) {
-              console.error("No Response Received:", e.request);
-            } else {
-              console.error("Error:", e.message);
-            }
+            dispatch({type: 'allowTheButton'});
+            console.log(e.response);
           }
         }
         AddProperty()
@@ -782,6 +794,7 @@ function AddProperty() {
                     backgroundColor: "orange",
                 },
             }}
+            disabled={state.disabledBtn}
             >
             SUBMIT
         </Button>
@@ -839,6 +852,15 @@ function AddProperty() {
       }
     }
   
+    //this is used to show the popup for 1.5 sec before being navigating
+    //to the homepage 
+    useEffect(()=>{
+        if (state.openSnack){
+            setTimeout(()=>{
+                navigate("/listings");
+            },1500);
+        }
+    },[state.openSnack])
 
     return (
         <div
@@ -1194,9 +1216,15 @@ function AddProperty() {
                         {SubmitButtonDisplay()}
                     </Grid2>
             </form>
-            <Button 
-            onClick={()=>
-            console.log(state.uploadedPictures)}>HELLO</Button>
+            {/* this is the popup when user logs in  */}
+            <Snackbar
+            open={state.openSnack}
+            message="You have successfully Added a new property"
+            anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: "center"
+            }}
+            />
         </div>
     );
 }

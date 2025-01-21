@@ -1,6 +1,6 @@
 import React, { useEffect,useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Grid2, Typography, Button, TextField } from '@mui/material';
+import { Grid2, Typography, Button, TextField,Snackbar } from '@mui/material';
 import { useImmerReducer } from 'use-immer';
 import Axios from "axios";
 
@@ -21,6 +21,8 @@ function Login() {
       passwordValue: '',
       sendRequest: 0, //this is to update whether the form is submitted or not
       token: '', //this is to authenticate the user on the basis of its token being generated at the time of login
+      openSnack:false, //this is the popup that occurs when the user logs in
+      disabledBtn: false, //this is to disable the login button once it is clicked
     };
     function ReducerFunction(draft, action) {
         switch (action.type) {
@@ -37,8 +39,15 @@ function Login() {
             //in 1st useEffect hook that is used in the 2nd useEffect hook
               draft.token =action.tokenValue;
               break;
-            default: //new
-              break; // Handle unexpected actions //now
+            case 'openTheSnack':
+                draft.openSnack =true;
+                break
+            case 'disabledButton': //this is to disable the login button for 1.5 sec for the popup
+                draft.disabledBtn = true;    
+                break
+            case 'allowTheButton': //this is to enable the button again once the popup is gone
+                draft.disabledBtn = false;    
+                break
         }
     }
 
@@ -49,6 +58,7 @@ function Login() {
       e.preventDefault();
       console.log('yessssssssssssssss');
       dispatch({type: 'changeSendRequest'});
+      dispatch({type: 'disabledButton'})
     }
 
     // the below useEffect hook is used for the user to login and 
@@ -85,6 +95,7 @@ function Login() {
               
                 } catch (error) {
                   console.log(error.response);
+                  dispatch({type: 'allowTheButton'})
               }
           }
           SignIn();
@@ -122,8 +133,8 @@ function Login() {
                   usernameInfo: response.data.username, 
                   emailInfo: response.data.email, 
                   IdInfo: response.data.id})
-
-                navigate('/')
+                dispatch({type: 'openTheSnack'}) //this is to show the popup when user successfully logs in
+                
             } catch (error) {
                 console.log(error.response);
             }
@@ -135,6 +146,16 @@ function Login() {
     }
 // }, [state.token]);
 }, [state.token, GlobalDispatch]); //new
+
+//this is used to show the popup for 1.5 sec before being navigating
+//to the homepage 
+useEffect(()=>{
+    if (state.openSnack){
+        setTimeout(()=>{
+            navigate("/");
+        },1500);
+    }
+},[state.openSnack])
 
 
     return (
@@ -188,6 +209,7 @@ function Login() {
                                 backgroundColor: "orange",
                             },
                         }}
+                        disabled={state.disabledBtn}
                     >
                         SIGN IN
                     </Button>
@@ -213,6 +235,16 @@ function Login() {
                     </span>
                 </Typography>
             </Grid2>
+
+            {/* this is the popup when user logs in  */}
+            <Snackbar
+            open={state.openSnack}
+            message="You have successfully logged in"
+            anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: "center"
+            }}
+            />
         </div>
     );
 }
