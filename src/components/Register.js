@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Grid2, Typography, Button, TextField,Snackbar } from '@mui/material';
+import { Grid2, Typography, Button, TextField,Snackbar, tableFooterClasses, Alert } from '@mui/material';
 import Axios from "axios";
 import { useImmerReducer } from 'use-immer';
 
@@ -19,20 +19,77 @@ function Register() {
         sendRequest: 0,//this is to update whether the form is submitted or not
         openSnack:false, //this is the popup that occurs when the user registers
         disabledBtn: false, //this is to disable the register button once it is clicked
+        
+        //these are initialstates to show errors if the input username is not following the username rules
+        usernameErrors:{
+            hasErrors: false,
+            errorMessage: "",
+        },
+
+        //these are initialstates to show alerts if the input email is not following the email rules
+        emailErrors: {
+			hasErrors: false,
+			errorMessage: "",
+		},
+
+        //these are initialstates to show alerts if the input password is not following the password rules
+		passwordErrors: {
+			hasErrors: false,
+			errorMessage: "",
+		},
+        //these are initialstates to show alerts if the input confirm password is not following the confirm password rules
+        password2HelperText: "",
+
+        //these are initialstates to show alerts if the username already exists
+        //from console error in 1st useEffect hook
+        serverMessageUsername:"",
+
+        //these are initialstates to show alerts if the mail already exists
+        //from console error in 1st useEffect hook
+        serverMessageEmail:"",
+
+        //below all are the predefined password conditions in django settings
+        serverMessageSimilarPassword: "",
+		serverMessageCommonPassword: "",
+		serverMessageNumericPassword: "",
+
     };
     function ReducerFunction(draft, action) {
         switch (action.type) {
             case 'catchUsernameChange':
                 draft.usernameValue = action.usernameChosen;
+                //this is to remove the alerts if the user types in the right username
+                draft.usernameErrors.hasErrors = false;
+				draft.usernameErrors.errorMessage = "";
+                //this is to remove the alert when the user adds a new and unique username
+                draft.serverMessageUsername= "";
                 break;
             case 'catchEmailChange':
                 draft.emailValue = action.emailChosen;
+                //this is to remove the alerts if the user types in the right username
+                draft.emailErrors.hasErrors = false;
+				draft.emailErrors.errorMessage = "";
+                //this is to remove the alert when the user adds a new and unique Email
+                draft.serverMessageEmail= "";
                 break;
             case 'catchPasswordChange':
                 draft.passwordValue = action.passwordChosen;
+                //this is to remove the alerts when user follows all the rules for password
+                draft.passwordErrors.hasErrors = false;
+				draft.passwordErrors.errorMessage = "";
+                //below all are the predefined password conditions in django settings
+                draft.serverMessageSimilarPassword = "";
+				draft.serverMessageCommonPassword = "";
+				draft.serverMessageNumericPassword = "";
                 break;
             case 'catchPassword2Change':
                 draft.password2Value = action.password2Chosen;
+                //showing alert till the time the confirm password does not match the actual password
+                if (action.password2Chosen !== draft.passwordValue) {
+					draft.password2HelperText = "The passwords must match";
+				} else if (action.password2Chosen === draft.passwordValue) {
+					draft.password2HelperText = "";
+				}
                 break;
             case 'changeSendRequest':
                 draft.sendRequest = draft.sendRequest +1;
@@ -47,6 +104,61 @@ function Register() {
             case 'allowTheButton': //this is to enable the button again once the popup is gone
                 draft.disabledBtn = false;    
                 break
+            case 'catchUsernameErrors'://these are to show alert(make the field red and show the alert message 
+            // below each field) if the username is not fullfilling the username rules
+				if (action.usernameChosen.length === 0) { //if the username field is empty 
+					draft.usernameErrors.hasErrors = true;
+					draft.usernameErrors.errorMessage = "This field must not be empty";
+				} else if (action.usernameChosen.length < 5) { //if the username length is smaller than 5 characters.
+					draft.usernameErrors.hasErrors = true;
+					draft.usernameErrors.errorMessage =
+						"The username must have at least five characters";
+				} else if (!/^([a-zA-Z0-9]+)$/.test(action.usernameChosen)) { //the username should not have speacial characters
+					draft.usernameErrors.hasErrors = true;
+					draft.usernameErrors.errorMessage =
+						"This field must not have special characters";
+				}
+				break;
+            case "catchEmailErrors": //all the rules for checking the email
+                if ( //This rule is a validation for checking the format of an email address
+                    !/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+                        action.emailChosen
+                    )
+                ) {
+                    draft.emailErrors.hasErrors = true;
+                    draft.emailErrors.errorMessage = "Please enter a valid email!";
+                }
+                break;
+
+            case "catchPasswordErrors": //all the rules for checking the password
+                if (action.passwordChosen.length < 8) { //password length should not be smaller than 8 chars
+                    draft.passwordErrors.hasErrors = true;
+                    draft.passwordErrors.errorMessage =
+                        "The password must at least have 8 characters!";
+                }
+                break;
+            case "usernameExists": //this is to handle the error if the user inputs the username that already exists
+                draft.serverMessageUsername = "This usename already exists";
+                break;
+            case "emailExists": //this is to handle the error if the email already exists
+                draft.serverMessageEmail = "This Email already exists";
+                break;
+
+            //below all are the predefined password conditions in django settings
+            case "similarPassword":
+				draft.serverMessageSimilarPassword =
+					"The password is too similar to the username!";
+				break;
+
+			case "commonPassword":
+				draft.serverMessageCommonPassword = "The password is too common!";
+				break;
+
+			case "numericPassword":
+				draft.serverMessageNumericPassword =
+					"The password must not only contain numbers!";
+				break;
+            
         }
     }
 
@@ -65,8 +177,17 @@ function Register() {
     function FormSubmit(e) {
         e.preventDefault();
         console.log('yessssssssssssssss');
-        dispatch({type: 'changeSendRequest'});
-        dispatch({type: 'disabledButton'});
+        //we need to submit the form only if there is no error in any of the fields
+        if (
+			!state.usernameErrors.hasErrors &&
+			!state.emailErrors.hasErrors &&
+			!state.passwordErrors.hasErrors &&
+			state.password2HelperText === ""
+		) {
+            dispatch({type: 'changeSendRequest'});
+            dispatch({type: 'disabledButton'});
+        }
+        
     }
 
     // The below useEffect hook sends the registration data (username, email, password, re_password)
@@ -93,10 +214,30 @@ function Register() {
                     console.log(response);
                     // navigate('/')
                     dispatch({type: 'openTheSnack'}) //this is to show the popup when user registers
-
+    
                 } catch (error) {
                     dispatch({type: 'allowTheButton'})
                     console.log(error.response);
+    
+                    if (error.response.data.username) { //this is to handle the error if the username already exists
+                        dispatch({type: 'usernameExists'});
+                    } else if (error.response.data.email) { //this is to handle the error if the email already exists
+                        dispatch({type: 'emailExists'});
+                    }else if ( //these all are the predefined password conditions in django settings
+						error.response.data.password[0] ===
+						"The password is too similar to the username."
+					) {
+						dispatch({ type: "similarPassword" });
+					} else if (
+						error.response.data.password[0] === "This password is too common."
+					) {
+						dispatch({ type: "commonPassword" });
+					} else if (
+						error.response.data.password[0] ===
+						"This password is entirely numeric."
+					) {
+						dispatch({ type: "numericPassword" });
+					}
                 }
             }
             SignUp();
@@ -133,6 +274,39 @@ function Register() {
                     <Typography variant="h4">CREATE AN ACCOUNT</Typography>
                 </Grid2>
 
+                {/* this is to show the error on top if the username already exists from 1st useeffect */}
+                {state.serverMessageUsername ? (
+                    <Alert severity='error'>{state.serverMessageUsername}</Alert>
+                ):(
+                    ""
+                )}
+
+                {/* this is to show the error on top if the Email already exists 1st useeffect */}
+                {state.serverMessageEmail ? (
+                    <Alert severity='error'>{state.serverMessageEmail}</Alert>
+                ):(
+                    ""
+                )}
+
+                {/* this is to show the error on top for all are the predefined password conditions in django settings */}
+                {state.serverMessageSimilarPassword ? (
+					<Alert severity="error">{state.serverMessageSimilarPassword}</Alert>
+				) : (
+					""
+				)}
+
+				{state.serverMessageCommonPassword ? (
+					<Alert severity="error">{state.serverMessageCommonPassword}</Alert>
+				) : (
+					""
+				)}
+
+				{state.serverMessageNumericPassword ? (
+					<Alert severity="error">{state.serverMessageNumericPassword}</Alert>
+				) : (
+					""
+				)}
+
                 <Grid2 container style={{ marginTop: "1rem" }}>
                     <TextField 
                     id="username" 
@@ -140,7 +314,20 @@ function Register() {
                     variant="outlined"
                     fullWidth
                     value = {state.usernameValue}
-                    onChange = {(e)=>dispatch({type: 'catchUsernameChange', usernameChosen: e.target.value})}  />
+                    onChange = 
+                    {(e)=>dispatch({
+                        type: 'catchUsernameChange', 
+                        usernameChosen: e.target.value})}
+                    //this will show alert and a alert message below the field if the username does not follow the rules
+                    onBlur={(e) =>
+                        dispatch({ 
+                            type: "catchUsernameErrors",
+                            usernameChosen: e.target.value,
+                        })
+                    }
+                    error={state.usernameErrors.hasErrors ? true : false}
+                    helperText={state.usernameErrors.errorMessage}
+                    />
                 </Grid2>
 
                 <Grid2 container style={{ marginTop: "1rem" }}>
@@ -150,7 +337,19 @@ function Register() {
                     variant="outlined" 
                     fullWidth
                     value = {state.emailValue}
-                    onChange = {(e)=>dispatch({type: 'catchEmailChange', emailChosen: e.target.value})} />
+                    onChange = 
+                    {(e)=>dispatch({
+                        type: 'catchEmailChange', 
+                        emailChosen: e.target.value})}
+                    onBlur={(e) => //this will run if the email does not follow the rules
+                        dispatch({
+                            type: "catchEmailErrors",
+                            emailChosen: e.target.value,
+                        })
+                    }
+                    error={state.emailErrors.hasErrors ? true : false}
+                    helperText={state.emailErrors.errorMessage}
+                    />
                 </Grid2>
 
                 <Grid2 container style={{ marginTop: "1rem" }}>
@@ -161,7 +360,18 @@ function Register() {
                         fullWidth
                         type="password"
                         value = {state.passwordValue}
-                        onChange = {(e)=>dispatch({type: 'catchPasswordChange', passwordChosen: e.target.value})}  />
+                        onChange = {(e)=>dispatch({
+                            type: 'catchPasswordChange', 
+                            passwordChosen: e.target.value})}  
+                        onBlur={(e) =>
+                            dispatch({
+                                type: "catchPasswordErrors",
+                                passwordChosen: e.target.value,
+                            })
+                        }
+                        error={state.passwordErrors.hasErrors ? true : false}
+                        helperText={state.passwordErrors.errorMessage}
+                        />
                 </Grid2>
 
                 <Grid2 container style={{ marginTop: "1rem" }}>
@@ -172,7 +382,12 @@ function Register() {
                         fullWidth
                         type="password"
                         value = {state.password2Value}
-                        onChange = {(e)=>dispatch({type: 'catchPassword2Change', password2Chosen: e.target.value})}  />
+                        onChange = 
+                        {(e)=>dispatch({
+                            type: 'catchPassword2Change', 
+                            password2Chosen: e.target.value})}  
+                        helperText={state.password2HelperText}
+                        />
 
                 </Grid2>
 

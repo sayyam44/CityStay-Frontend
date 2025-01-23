@@ -1,6 +1,6 @@
 import React, { useEffect,useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Grid2, Typography, Button, TextField,Snackbar } from '@mui/material';
+import { Grid2, Typography, Button, TextField,Snackbar, Alert } from '@mui/material';
 import { useImmerReducer } from 'use-immer';
 import Axios from "axios";
 
@@ -21,16 +21,19 @@ function Login() {
       passwordValue: '',
       sendRequest: 0, //this is to update whether the form is submitted or not
       token: '', //this is to authenticate the user on the basis of its token being generated at the time of login
-      openSnack:false, //this is the popup that occurs when the user logs in
+      openSnack:false, //this is the popup that occurs when the user successfully logs in
       disabledBtn: false, //this is to disable the login button once it is clicked
+      serverError:false, //this is to show the error message if the user gives in wrong credentials
     };
     function ReducerFunction(draft, action) {
         switch (action.type) {
             case 'catchUsernameChange':
                 draft.usernameValue = action.usernameChosen;
+                draft.serverError = false; //if the user changes the username from an incorrect username then it should not be red anymore
                 break;
             case 'catchPasswordChange':
                 draft.passwordValue = action.passwordChosen;
+                draft.serverError = false;//if the user changes the password from an incorrect password then it should not be red anymore
                 break;
             case 'changeSendRequest':
                 draft.sendRequest = draft.sendRequest +1;
@@ -48,6 +51,9 @@ function Login() {
             case 'allowTheButton': //this is to enable the button again once the popup is gone
                 draft.disabledBtn = false;    
                 break
+            case 'catchServerError': //this is to show the error message if the user gives in wrong credentials
+                draft.serverError=true
+                break
         }
     }
 
@@ -64,47 +70,37 @@ function Login() {
     // the below useEffect hook is used for the user to login and 
     //generate the token for this user on frontend
     useEffect(() => {
-      if (state.sendRequest) { // this means the below code should only run when the register form is submitted
-          // The below cancelToken can cancel the request even before the request is finished yet
-          // to prevent data leaks.
-          const source = Axios.CancelToken.source();
-          async function SignIn() {
-              try {
-                  const response = await Axios.post(
-                      'http://127.0.0.1:8000/api-auth-djoser/token/login/', // Fixed the URL here
-                      {
-                          username: state.usernameValue,
-                          password: state.passwordValue,
-                          //the username and password from the form
-                          //is passed here and hence a token is generated
-                          //in the frontend for this user at response.data.auth_token
-                      },
-                      {
-                          cancelToken: source.token
-                      }
-                  );
-                  console.log(response);
-                  //now response.data.auth_token holds the token 
-                  //of the current user 
-                  dispatch({type: 'catchToken', tokenValue: response.data.auth_token,});
-                  //navigate('/')
+        // if (state.sendRequest) changes
+        if (state.sendRequest > 0 && state.token === "") {  // Avoid re-triggering once logged in
+            const source = Axios.CancelToken.source();
+            async function SignIn() {
+                try {
+                    const response = await Axios.post(
+                        'http://127.0.0.1:8000/api-auth-djoser/token/login/',
+                        {
+                            username: state.usernameValue,
+                            password: state.passwordValue,
+                        },
+                        {
+                            cancelToken: source.token,
+                        }
+                    );
+                    dispatch({ type: 'catchToken', tokenValue: response.data.auth_token });
+                    GlobalDispatch({ type: 'catchToken', tokenValue: response.data.auth_token });
 
-                  //here we are sending the token to the parent component
-                  //i.e. app.js using the context file and using dispatch method
-                  GlobalDispatch({type: 'catchToken', tokenValue: response.data.auth_token,});
-              
                 } catch (error) {
-                  console.log(error.response);
-                  dispatch({type: 'allowTheButton'})
-              }
-          }
-          SignIn();
-          return () => {
-              source.cancel();
-          };
-      }
-  // }, [state.sendRequest]);
-  }, [state.sendRequest, state.usernameValue, state.passwordValue, dispatch, GlobalDispatch]); //new
+                    dispatch({ type: 'allowTheButton' });
+                    dispatch({ type: 'catchServerError' });
+                }
+            }
+            SignIn();
+            return () => {
+                source.cancel();
+            };
+        }
+    }, [state.sendRequest, state.token, dispatch, GlobalDispatch]);
+
+
 
   //the below useEffect hook is used for authenticate the user and to 
   //get the user's data on the basis of the token that is generated 
@@ -174,6 +170,13 @@ useEffect(()=>{
                     <Typography variant="h4">SIGN IN</Typography>
                 </Grid2>
 
+                {/* in order to show alert message when the credentials are wrong */}
+                {state.serverError ? (
+                <Alert severity="success">Incorrect Username or Password</Alert>
+                ):(
+                    ""
+                ) }
+
                 <Grid2 container style={{ marginTop: "1rem" }}>
                     <TextField 
                     id="username" 
@@ -181,7 +184,11 @@ useEffect(()=>{
                     variant="outlined" 
                     fullWidth 
                     value = {state.usernameValue}
-                    onChange = {(e)=>dispatch({type: 'catchUsernameChange', usernameChosen: e.target.value})}  />
+                    onChange = {(e)=>dispatch({type: 'catchUsernameChange', usernameChosen: e.target.value})} 
+                    error = {state.serverError ? true : false} //turing red alert only if there is error in catch (error) above 
+                    
+                     />
+                    
                 </Grid2>
 
                 <Grid2 container style={{ marginTop: "1rem" }}>
@@ -193,6 +200,7 @@ useEffect(()=>{
                         type="password"
                         value = {state.passwordValue}
                         onChange = {(e)=>dispatch({type: 'catchPasswordChange', passwordChosen: e.target.value})}
+                        error = {state.serverError ? true : false} //turing red alert only if there is error in catch (error) above 
                     />
                 </Grid2>
 

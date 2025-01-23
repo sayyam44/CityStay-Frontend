@@ -5,7 +5,9 @@ import { Grid2,
    Button, 
    TextField, 
    FormControlLabel, 
-   Checkbox, Snackbar } from '@mui/material';
+   Checkbox, 
+   Snackbar , 
+   Alert} from '@mui/material';
 import Axios from "axios";
 import { useImmerReducer } from 'use-immer';
 
@@ -247,21 +249,49 @@ function AddProperty() {
     },
     openSnack:false, //this is the popup that occurs when the user logs in
     disabledBtn: false, //this is to disable the login button once it is clicked
+    
+    //below are to define the initial states for each field of the form and to manage errors related to them
+    titleErrors: {
+			hasErrors: false,
+			errorMessage: "",
+		},
+		listingTypeErrors: {
+			hasErrors: false,
+			errorMessage: "",
+		},
+		propertyStatusErrors: {
+			hasErrors: false,
+			errorMessage: "",
+		},
+		priceErrors: {
+			hasErrors: false,
+			errorMessage: "",
+		},
+		areaErrors: {
+			hasErrors: false,
+			errorMessage: "",
+		},
+		boroughErrors: {
+			hasErrors: false,
+			errorMessage: "",
+		},
 
   };
 
     function ReducerFunction(draft, action) {
         switch (action.type) {
-            case "catchTitleChange":
+      case "catchTitleChange":
 				draft.titleValue = action.titleChosen;
-				// draft.titleErrors.hasErrors = false;
-				// draft.titleErrors.errorMessage = "";
+        //this is to remove the alerts if the user puts in the title
+				draft.titleErrors.hasErrors = false;
+				draft.titleErrors.errorMessage = "";
 				break;
 
 			case "catchListingTypeChange":
 				draft.listingTypeValue = action.listingTypeChosen;
-				// draft.listingTypeErrors.hasErrors = false;
-				// draft.listingTypeErrors.errorMessage = "";
+        //this is to remove the alerts if the user puts in the listingtype
+				draft.listingTypeErrors.hasErrors = false;
+				draft.listingTypeErrors.errorMessage = "";
 				break;
 
 			case "catchDescriptionChange":
@@ -270,14 +300,16 @@ function AddProperty() {
 
 			case "catchAreaChange":
 				draft.areaValue = action.areaChosen;
-				// draft.areaErrors.hasErrors = false;
-				// draft.areaErrors.errorMessage = "";
+        //this is to remove the alerts if the user puts in the area
+				draft.areaErrors.hasErrors = false;
+				draft.areaErrors.errorMessage = "";
 				break;
 
 			case "catchBoroughChange":
 				draft.boroughValue = action.boroughChosen;
-				// draft.boroughErrors.hasErrors = false;
-				// draft.boroughErrors.errorMessage = "";
+        //this is to remove the alerts if the user puts in the borough
+				draft.boroughErrors.hasErrors = false;
+				draft.boroughErrors.errorMessage = "";
 				break;
 
 			case "catchLatitudeChange":
@@ -290,14 +322,16 @@ function AddProperty() {
 
 			case "catchPropertyStatusChange":
 				draft.propertyStatusValue = action.propertyStatusChosen;
-				// draft.propertyStatusErrors.hasErrors = false;
-				// draft.propertyStatusErrors.errorMessage = "";
+        //this is to remove the alerts if the user puts in the propertystatus
+				draft.propertyStatusErrors.hasErrors = false;
+				draft.propertyStatusErrors.errorMessage = "";
 				break;
 
 			case "catchPriceChange":
 				draft.priceValue = action.priceChosen;
-				// draft.priceErrors.hasErrors = false;
-				// draft.priceErrors.errorMessage = "";
+        //this is to remove the alerts if the user puts in the price
+				draft.priceErrors.hasErrors = false;
+				draft.priceErrors.errorMessage = "";
 				break;
 
 			case "catchRentalFrequencyChange":
@@ -402,6 +436,83 @@ function AddProperty() {
       case 'allowTheButton': //this is to enable the button again once the popup is gone
           draft.disabledBtn = false;    
           break
+      
+      //below are all the cases to show alert(make the field red and show the alert message below each field)
+      //  in case of any of the field remains empty in the form before being submitted
+      case "catchTitleErrors":
+        if (action.titleChosen.length === 0) {
+          draft.titleErrors.hasErrors = true;
+          draft.titleErrors.errorMessage = "This field must not be empty";
+        }
+        break;
+
+      case "catchListingTypeErrors":
+        if (action.listingTypeChosen.length === 0) {
+          draft.listingTypeErrors.hasErrors = true;
+          draft.listingTypeErrors.errorMessage = "This field must not be empty";
+        }
+        break;
+
+      case "catchPropertyStatusErrors":
+        if (action.propertyStatusChosen.length === 0) {
+          draft.propertyStatusErrors.hasErrors = true;
+          draft.propertyStatusErrors.errorMessage =
+            "This field must not be empty";
+        }
+        break;
+
+      case "catchPriceErrors":
+        if (action.priceChosen.length === 0) {
+          draft.priceErrors.hasErrors = true;
+          draft.priceErrors.errorMessage = "This field must not be empty";
+        }
+        break;
+
+      case "catchAreaErrors":
+        if (action.areaChosen.length === 0) {
+          draft.areaErrors.hasErrors = true;
+          draft.areaErrors.errorMessage = "This field must not be empty";
+        }
+        break;
+
+      case "catchBoroughErrors":
+        if (action.boroughChosen.length === 0) {
+          draft.boroughErrors.hasErrors = true;
+          draft.boroughErrors.errorMessage = "This field must not be empty";
+        }
+        break;
+      
+      //below are all the cases if the required fields are empty then the form will not submit and will 
+      //automatically scroll up on the screen at the required field that was empty 
+      case "emptyTitle":
+        draft.titleErrors.hasErrors = true;
+        draft.titleErrors.errorMessage = "This field must not be empty";
+        break;
+
+      case "emptyListingType":
+        draft.listingTypeErrors.hasErrors = true;
+        draft.listingTypeErrors.errorMessage = "This field must not be empty";
+        break;
+
+      case "emptyPropertyStatus":
+        draft.propertyStatusErrors.hasErrors = true;
+        draft.propertyStatusErrors.errorMessage ="This field must not be empty";
+        break;
+
+      case "emptyPrice":
+        draft.priceErrors.hasErrors = true;
+        draft.priceErrors.errorMessage = "This field must not be empty";
+        break;
+
+      case "emptyArea":
+        draft.areaErrors.hasErrors = true;
+        draft.areaErrors.errorMessage = "This field must not be empty";
+        break;
+
+      case "emptyBoroug":
+        draft.borougErrors.hasErrors = true;
+        draft.borougErrors.errorMessage = "This field must not be empty";
+        break;
       }
     }
 
@@ -702,8 +813,41 @@ function AddProperty() {
     function FormSubmit(e) {
         e.preventDefault();
         console.log('yessssssssssssssss');
-        dispatch({type: 'changeSendRequest'});
-        dispatch({type: 'disabledButton'})
+
+        //the form will only submit if there is no alert or none of the fields are empty
+        if (
+          !state.titleErrors.hasErrors &&
+          !state.listingTypeErrors.hasErrors &&
+          !state.propertyStatusErrors.hasErrors &&
+          !state.priceErrors.hasErrors &&
+          !state.areaErrors.hasErrors &&
+          !state.boroughErrors.hasErrors &&
+          state.latitudeValue &&
+          state.longitudeValue
+        ) {
+          dispatch({ type: "changeSendRequest" });
+          dispatch({ type: "disableTheButton" });
+        } else if (state.titleValue === "") {  
+          //below are all the cases if the required fields are empty then the form will not submit and will 
+          //show the error message on top of the screen and automatically scroll up on the screen
+          dispatch({ type: "emptyTitle" });
+          window.scrollTo(0, 0);
+        } else if (state.listingTypeValue === "") {
+          dispatch({ type: "emptyListingType" });
+          window.scrollTo(0, 0);
+        } else if (state.propertyStatusValue === "") {
+          dispatch({ type: "emptyPropertyStatus" });
+          window.scrollTo(0, 0);
+        } else if (state.priceValue === "") {
+          dispatch({ type: "emptyPrice" });
+          window.scrollTo(0, 0);
+        } else if (state.areaValue === "") {
+          dispatch({ type: "emptyArea" });
+          window.scrollTo(0, 0);
+        } else if (state.boroughValue === "") {
+          dispatch({ type: "emptyBorough" });
+          window.scrollTo(0, 0);
+        }
     }
 
     //this use effect is used to submit the form data into backend
@@ -885,7 +1029,18 @@ function AddProperty() {
                     variant="outlined"
                     fullWidth
                     value = {state.titleValue}
-                    onChange = {(e)=>dispatch({type: 'catchTitleChange', titleChosen: e.target.value})}  />
+                    onChange = {(e)=>dispatch({type: 'catchTitleChange', titleChosen: e.target.value})}  
+                    
+                    // this is to show alerts related to title field 
+                    onBlur={(e) =>
+                      dispatch({
+                        type: "catchTitleErrors",
+                        titleChosen: e.target.value,
+                      })
+                    }
+                    error={state.titleErrors.hasErrors ? true : false}
+                    helperText={state.titleErrors.errorMessage} 
+                    />
                 </Grid2>
 
               <Grid2 container justifyContent='space-between'>
@@ -898,6 +1053,17 @@ function AddProperty() {
                     value = {state.listingTypeValue}
                     onChange = {(e)=>dispatch({type: 'catchListingTypeChange', 
                     listingTypeChosen: e.target.value})}
+
+                    // this is to show alerts related to listing type field
+                    onBlur={(e) =>
+                      dispatch({
+                        type: "catchListingTypeErrors",
+                        listingTypeChosen: e.target.value,
+                      })
+                    }
+                    error={state.listingTypeErrors.hasErrors ? true : false}
+                    helperText={state.listingTypeErrors.errorMessage}
+
                     select
                     slotProps={{
                       select: {
@@ -923,6 +1089,17 @@ function AddProperty() {
                     value = {state.propertyStatusValue}
                     onChange = {(e)=>dispatch({type: 'catchPropertyStatusChange', 
                     propertyStatusChosen: e.target.value})}
+
+                    // this is to show alerts related to property status field
+                    onBlur={(e) =>
+                      dispatch({
+                        type: "catchPropertyStatusErrors",
+                        propertyStatusChosen: e.target.value,
+                      })
+                    }
+                    error={state.propertyStatusErrors.hasErrors ? true : false}
+                    helperText={state.propertyStatusErrors.errorMessage}
+
                     select
                     slotProps={{
                       select: {
@@ -973,7 +1150,18 @@ function AddProperty() {
                     fullWidth
                     value = {state.priceValue}
                     onChange = {(e)=>dispatch({type: 'catchPriceChange', 
-                    priceChosen: e.target.value})}  />
+                    priceChosen: e.target.value})} 
+
+                    // this is to show alerts related to price field
+                    onBlur={(e) =>
+                      dispatch({
+                        type: "catchPriceErrors",
+                        priceChosen: e.target.value,
+                      })
+                    }
+                    error={state.priceErrors.hasErrors ? true : false}
+                    helperText={state.priceErrors.errorMessage}
+                   />
                 </Grid2>
               </Grid2>
 
@@ -1065,6 +1253,17 @@ function AddProperty() {
                     value = {state.areaValue}
                     onChange = {(e)=>dispatch({type: 'catchAreaChange', 
                     areaChosen: e.target.value})} 
+                    
+                     // this is to show alerts related to area field 
+                    onBlur={(e) =>
+                      dispatch({
+                        type: "catchAreaErrors",
+                        areaChosen: e.target.value,
+                      })
+                    }
+                    error={state.areaErrors.hasErrors ? true : false}
+                    helperText={state.areaErrors.errorMessage}
+
                     select 
                     slotProps={{
                         select: {
@@ -1090,6 +1289,18 @@ function AddProperty() {
                     value = {state.boroughValue}
                     onChange = {(e)=>dispatch({type: 'catchBoroughChange', 
                     boroughChosen: e.target.value})} 
+                    
+                    // this is to show alerts related to borough field 
+                    onBlur={(e) =>
+                      dispatch({
+                        type: "catchBoroughErrors",
+                        boroughChosen: e.target.value,
+                      })
+                    }
+                    error={state.boroughErrors.hasErrors ? true : false}
+                    helperText={state.boroughErrors.errorMessage}
+
+
                     select 
                     slotProps={{
                         select: {
@@ -1116,6 +1327,19 @@ function AddProperty() {
                 </Grid2>
             
 
+                {/* this is to show alert if the user does not move the marker to locate the property */}
+                <Grid2 item sx={{ marginTop: "1rem" }}> 
+                  {state.latitudeValue && state.longitudeValue ? (
+                    <Alert severity="success">
+                      You property is located @ {state.latitudeValue},{" "}
+                      {state.longitudeValue}
+                    </Alert>
+                  ) : (
+                    <Alert severity="warning">
+                      Locate your property on the map before submitting this form
+                    </Alert>
+                  )}
+                </Grid2>
                 {/* ReactLeaflet component for map and its dragable marker  */}
                 <Grid2 container sx={{height: "35rem", marginTop: '1rem'}}>
                     <MapContainer 
