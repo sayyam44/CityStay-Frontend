@@ -91,15 +91,17 @@ function Header() {
 
             <div sx={{marginLeft: 'auto',marginRight: '10rem'}}>
 
-            <Button 
-            sx={{color:"white",
-            backgroundColor: "green",
-            width: "10rem" ,
-            fontSize:"1.1rem",
-            marginRight:"1rem",
-            "&:hover":{backgroundColor:"blue"}}}
-            onClick={()=>navigate("/addproperty")}>
-                Add Property</Button>
+            {GlobalState.userIsLogged ?( //the add property button shows only when the user logs in
+                <Button 
+                sx={{color:"white",
+                backgroundColor: "green",
+                width: "10rem" ,
+                fontSize:"1.1rem",
+                marginRight:"1rem",
+                "&:hover":{backgroundColor:"blue"}}}
+                onClick={()=>navigate("/addproperty")}>
+                    Add Property</Button>
+            ):("")}
             
             {GlobalState.userIsLogged ?( //this case if the user login's then the button should show the username
             <Button 
