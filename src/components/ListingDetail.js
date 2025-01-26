@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useMemo,useContext} from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Grid2, Typography,CircularProgress,Breadcrumbs, Link, Button, TextField, FormControlLabel, Checkbox, IconButton, Card, CardMedia,CardContent, CardActions,Dialog,Snackbar  } from '@mui/material';
+import { Grid2, Typography,CircularProgress,Breadcrumbs, Link, Button, TextField, FormControlLabel, Checkbox, IconButton, Card, CardMedia,CardContent, CardActions,Dialog,Snackbar,Rating,Tooltip   } from '@mui/material';
 import Axios from "axios";
 import { useImmerReducer } from 'use-immer';
 import ContactPhoneIcon from '@mui/icons-material/ContactPhone';
@@ -23,10 +23,13 @@ import hospitalIconPng from './Assets/Mapicons/hospital.png'
 
 //Components
 import ListingUpdate from './ListingUpdate';
+import AddReview from './AddReview';
 
 
 function ListingDetail() {
+    //GlobalState--> Bringing data from parent component i.e. app.js
     const GlobalState = useContext(StateContext);
+    
     // console.log(useParams());
     const params = useParams(); //useParams hook is used to get the
     //id of the particular agency from the url by using params.id 
@@ -190,7 +193,7 @@ function ListingDetail() {
     //this is to show the date in frontend in proper format
     const date = new Date(state.listingInfo.date_posted)
     const formattedDate= `${date.getMonth()+1}/${date.getDate()}/${date.getFullYear()}`
-
+    
     async function DeleteHandler(){
         const confirmDelete =window.confirm('Are you sure you want to delete this Listing?');
         if (confirmDelete){
@@ -518,7 +521,7 @@ function ListingDetail() {
 			</Grid2>
 
 
-            {/* map */}
+            {/* map and pois */}
             <Grid2 
             container spacing={2} style={{marginTop: "1rem"}}>
             
@@ -636,7 +639,114 @@ function ListingDetail() {
                         })}
                     </MapContainer>
                 </Grid2>
+
+                {/* Reviews Section */}
+                <Grid2 xs={12} style={{ marginTop: "1rem" }}>
+                    <Typography variant="h5" gutterBottom>
+                    Reviews
+                    </Typography>
+                    {state.listingInfo.reviews.map((review) => (
+                    <Card key={review.id} style={{ marginBottom: "1rem" }}>
+                        <CardContent>
+                        <Typography variant="h6" color="primary">
+                            {review.review_username}
+                        </Typography>
+                        <Typography variant="body1">{review.review}</Typography>
+                        <Rating
+                            name={`rating-${review.id}`}
+                            value={review.rating}
+                            readOnly
+                            style={{ marginTop: "0.5rem" }}
+                        />
+                        </CardContent>
+                    </Card>
+                    ))}
+                </Grid2>
+                
+                
+                {/* Add Review Button */}
+                <div style={{ marginTop: "2rem" }}>
+                {/* Condition for logged-in user, but not the seller */}
+                {GlobalState.userIsLogged && GlobalState.userId !== state.listingInfo.seller ? (
+                    <>
+                    <Button
+                        sx={{
+                            color: "white",
+                            backgroundColor: "green",
+                            width: "10rem",
+                            fontSize: "1.1rem",
+                            marginRight: "1rem",
+                            "&:hover": { backgroundColor: "blue" },
+                        }}
+                        onClick={handleClickOpen}
+                    >
+                        Add Review
+                    </Button>
+                    {/* this is to open a dialog to input the riview  */}
+                    <Dialog 
+                    open={open} 
+                    onClose={handleClose}
+                    maxWidth="md"
+                    fullWidth >
+                        <AddReview listingData={state.listingInfo} />
+                    </Dialog>
+                    </>
+                ) : null}
+                
+
+                {/* Condition for logged-out users */}
+                {!GlobalState.userIsLogged ? (
+                    <Tooltip title="You need to log in to add a review to this property">
+                        <span>
+                            <Button
+                                sx={{
+                                    color: "white",
+                                    backgroundColor: "grey",
+                                    width: "10rem",
+                                    fontSize: "1.1rem",
+                                    marginRight: "1rem",
+                                    "&:hover": { backgroundColor: "white", cursor: "not-allowed" },
+                                    "&.Mui-disabled": {
+                                        color: "white", // Ensures text remains white in disabled state
+                                        backgroundColor: "grey", // Keeps background grey when disabled
+                                    },
+                                }}
+                                disabled
+                            >
+                                Add Review
+                            </Button>
+                        </span>
+                    </Tooltip>
+                ) : null}
+
+                {/* Condition for the seller of the listing */}
+                {GlobalState.userIsLogged && GlobalState.userId === state.listingInfo.seller ? (
+                    <Tooltip title="You cannot add a review to your own property">
+                        <span>
+                            <Button
+                                sx={{
+                                    color: "white",
+                                    backgroundColor: "grey",
+                                    width: "10rem",
+                                    fontSize: "1.1rem",
+                                    marginRight: "1rem",
+                                    "&:hover": { backgroundColor: "white", cursor: "not-allowed" },
+                                    "&.Mui-disabled": {
+                                        color: "white", // Ensures text remains white in disabled state
+                                        backgroundColor: "grey", // Keeps background grey when disabled
+                                    },
+                                }}
+                                disabled
+                            >
+                                Add Review
+                            </Button>
+                        </span>
+                    </Tooltip>
+                ) : null}
+                
+            </div>
             </Grid2>
+
         {/* this is the popup when user logs in  */}
         <Snackbar
         open={state.openSnack}
