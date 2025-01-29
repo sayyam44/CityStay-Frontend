@@ -59,8 +59,8 @@ function AddReview(props) {
                         {
                             review: state.reviewText,
                             rating: state.ratingValue,
-                            listing_id: props.listingData.id,  // Pass the listing_id
-                            user_id: state.userId,  // Pass the user_id
+                            listing: props.listingData.id,  // Pass the listing_id
+                            user: GlobalState.userId,  // Pass the user_id
                         }
                     );
                     console.log('Success:', response.data);

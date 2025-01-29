@@ -193,7 +193,8 @@ function ListingDetail() {
     //this is to show the date in frontend in proper format
     const date = new Date(state.listingInfo.date_posted)
     const formattedDate= `${date.getMonth()+1}/${date.getDate()}/${date.getFullYear()}`
-    
+
+
     async function DeleteHandler(){
         const confirmDelete =window.confirm('Are you sure you want to delete this Listing?');
         if (confirmDelete){
@@ -265,176 +266,134 @@ function ListingDetail() {
 
         {/* image slider from the above created array containing all pictures*/}
         {/* using the above useState hook at setCurrentPicture */}
-        {listingPictures.length > 0 ?(
-        <Grid2 container justifyContent='center'
-        sx={{position: 'relative',
-            marginTop: '1rem'
-        }}>
-        {listingPictures.map((picture,index)=>{
-            return (
-                <div key={index}>
-                    {index === currentPicture ? (
-                        <img 
-                        src={picture} 
-                        style={{width: "45rem",height: "35rem" }}/>
-                    ):(
-                        ""
-                    )}
-                </div>
-            )
-        })}
-
-        {/* Arrows to slide through images  */}
-        <ArrowBackIcon 
-        onClick={PreviousPicture}
-        sx={{position: 'absolute',
-            cursor: 'pointer',
-            fontSize: '3rem',
-            color: 'white',
-            top: '50%',
-            left:'27.5%',
-            "&:hover":{
-                backgroundColor: "black",
-            },
-        }}
-        />
-        <ArrowForwardIcon 
-        onClick={NextPicture}
-        sx={{position: 'absolute',
-            cursor: 'pointer',
-            fontSize: '3rem',
-            color: 'white',
-            top: '50%',
-            right:'27.5%',
-            "&:hover":{
-                backgroundColor: "black",
-            },
-        }}
-        />
-        {/* {currentPicture} */}
-        </Grid2>
-        ): (
-            ""
-        )}
-        {/* More Information of the property */}
-        <Grid2 container sx={{padding: '1rem',
-            border: '1px solid black', 
-            marginTop:"1rem"
-             }} spacing={20} >
-            <Grid2 container xs={7} 
-            direction="column"
-            spacing={1}>
-                <Grid2>
-                    <Typography variant="h5">
-                        {state.listingInfo.title}
-                    </Typography>
-                </Grid2>
-                <Grid2>
-                    <RoomIcon />{" "}
-                    <Typography variant="h6">
-                        {state.listingInfo.borough}
-                    </Typography>
-                </Grid2>
-                <Grid2>
-                    <Typography variant="subtitle1">
-                        {formattedDate}
-                    </Typography>
-                </Grid2>
-            </Grid2>
-            <Grid2 container xs={5} alignItems="center">
-                <Typography variant='h6' 
-                sx={{fontWeight: "bolder", color: "blue"}}>
-                    {state.listingInfo.listing_type} | 
-                    {state.listingInfo.property_staus === 'Sale' ? 
-                    `$${state.listingInfo.price.toString()
-                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}` : 
-                    `$${state.listingInfo.price.toString()
-                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}/${state.listingInfo.rental_frequency}`}
-                </Typography>
-            </Grid2>
-        </Grid2>
-
+        <Grid2 container spacing={2} sx={{ marginTop: "1rem" }}>
+        {/* Left Side: Photos */}
         <Grid2
-				container
-				justifyContent="flex-start"
-                spacing={15} 
-				style={{
-					padding: "1rem",
-					border: "1px solid black",
-					marginTop: "1rem",
-				}}
-			>
-				{state.listingInfo.rooms ? (
-					<Grid2 xs={2} style={{ display: "flex" }}>
-						<Typography variant="h6">
-							{state.listingInfo.rooms} Rooms
-						</Typography>
-					</Grid2>
-				) : (
-					""
-				)}
+            xs={12} sm={6}  // Adjusted for responsive design (50% width on larger screens)
+            sx={{
+                display: "flex",
+                justifyContent: "left",
+                alignItems: "left",
+            }}
+        >
+            {listingPictures.length > 0 && (
+                <div style={{ position: "relative" }}>
+                    {listingPictures.map((picture, index) => (
+                        <div key={index}>
+                            {index === currentPicture && (
+                                <img
+                                    src={picture}
+                                    alt="Property"
+                                    style={{
+                                        width: "100%",
+                                        maxWidth: "40rem",
+                                        height: "30rem",
+                                        border: "4px solid black",
+                                        objectFit: "cover",
+                                    }}
+                                />
+                            )}
+                        </div>
+                    ))}
 
-				{state.listingInfo.furnished ? (
-					<Grid2 xs={2} style={{ display: "flex" }}>
-						<CheckBoxIcon style={{ color: "green", fontSize: "2rem" }} />{" "}
-						<Typography variant="h6">Furnished</Typography>
-					</Grid2>
-				) : (
-					""
-				)}
+                    {/* Arrows for image navigation */}
+                    <ArrowBackIcon
+                        onClick={PreviousPicture}
+                        sx={{
+                            position: "absolute",
+                            cursor: "pointer",
+                            fontSize: "3rem",
+                            color: "white",
+                            top: "45%",
+                            left: "2rem",
+                            backgroundColor: "orange",
+                            "&:hover": { backgroundColor: "black" },
+                        }}
+                    />
+                    <ArrowForwardIcon
+                        onClick={NextPicture}
+                        sx={{
+                            position: "absolute",
+                            cursor: "pointer",
+                            fontSize: "3rem",
+                            color: "white",
+                            top: "45%",
+                            right: "2rem",
+                            backgroundColor: "orange",
+                            "&:hover": { backgroundColor: "black" },
+                        }}
+                    />
+                </div>
+            )}
+        </Grid2>
 
-				{state.listingInfo.pool ? (
-					<Grid2 xs={2} style={{ display: "flex" }}>
-						<CheckBoxIcon style={{ color: "green", fontSize: "2rem" }} />{" "}
-						<Typography variant="h6">Pool</Typography>
-					</Grid2>
-				) : (
-					""
-				)}
+        {/* Right Side: Property Information (Description) */}
+        <Grid2
+            xs={12} sm={6}  // Adjusted for responsive design (50% width on larger screens)
+            sx={{
+                padding: "1rem",
+                border: "1px solid black",
+                justifyContent: "right",
+                alignItems: "right",
+                marginLeft:"50%",
+                marginTop:"-31.5rem",
+                marginBottom:"1.5rem"
+            }}
+        >
+            <Typography
+                variant="h5"
+                sx={{ fontWeight: "bolder", color: "blue" }}
+            >
+                {state.listingInfo.listing_type} |{" "}
+                {state.listingInfo.property_staus === "Sale"
+                    ? `$${state.listingInfo.price.toLocaleString()}`
+                    : `$${state.listingInfo.price.toLocaleString()}/${state.listingInfo.rental_frequency}`}
+            </Typography>
+            <Typography variant="h5">{state.listingInfo.title}</Typography>
 
-				{state.listingInfo.elevator ? (
-					<Grid2 xs={2} style={{ display: "flex" }}>
-						<CheckBoxIcon style={{ color: "green", fontSize: "2rem" }} />{" "}
-						<Typography variant="h6">Elevator</Typography>
-					</Grid2>
-				) : (
-					""
-				)}
+            <Grid2 container alignItems="center" spacing={1}>
+                <RoomIcon />
+                <Typography variant="h6">{state.listingInfo.borough}</Typography>
+            </Grid2>
 
-				{state.listingInfo.cctv ? (
-					<Grid2 xs={2} style={{ display: "flex" }}>
-						<CheckBoxIcon style={{ color: "green", fontSize: "2rem" }} />{" "}
-						<Typography variant="h6">Cctv</Typography>
-					</Grid2>
-				) : (
-					""
-				)}
+            <Typography variant="subtitle1">{formattedDate}</Typography>
 
-				{state.listingInfo.parking ? (
-					<Grid2 xs={2} style={{ display: "flex" }}>
-						<CheckBoxIcon style={{ color: "green", fontSize: "2rem" }} />{" "}
-						<Typography variant="h6">Parking</Typography>
-					</Grid2>
-				) : (
-					""
-				)}
-			</Grid2>
+            {/* Rooms & Amenities */}
+            <Grid2 container spacing={3} sx={{ padding: "1rem", border: "1px solid black" }}>
+                {state.listingInfo.rooms && (
+                    <Grid2>
+                        <Typography variant="h6">{state.listingInfo.rooms} Rooms</Typography>
+                    </Grid2>
+                )}
+                {[
+                    { label: "Furnished", value: state.listingInfo.furnished },
+                    { label: "Pool", value: state.listingInfo.pool },
+                    { label: "Elevator", value: state.listingInfo.elevator },
+                    { label: "CCTV", value: state.listingInfo.cctv },
+                    { label: "Parking", value: state.listingInfo.parking },
+                ].map(
+                    (item, index) =>
+                        item.value && (
+                            <Grid2 key={index} style={{ display: "flex", alignItems: "center" }}>
+                                <CheckBoxIcon style={{ color: "green", fontSize: "2rem" }} />
+                                <Typography variant="h6">{item.label}</Typography>
+                            </Grid2>
+                        )
+                )}
+            </Grid2>
+
+            {/* Description */}
+            {state.listingInfo.description && (
+                <Grid2 sx={{ padding: "1rem", border: "1px solid black", marginTop: "1rem" }}>
+                    <Typography variant="h5">Description</Typography>
+                    <Typography variant="h6">{state.listingInfo.description}</Typography>
+                </Grid2>
+            )}
+        </Grid2>
+    </Grid2>
+
+
         
-        {/* Description */}
-			{state.listingInfo.description ? (
-				<Grid2
-					style={{
-						padding: "1rem",
-						border: "1px solid black",
-						marginTop: "1rem",
-					}}
-				>
-					<Typography variant="h5">Description</Typography>
-					<Typography variant="h6">{state.listingInfo.description}</Typography>
-				</Grid2>
-			) : (
-				""
-			)}
         
         {/* Seller Info */}
 			<Grid2
@@ -642,26 +601,39 @@ function ListingDetail() {
 
                 {/* Reviews Section */}
                 <Grid2 xs={12} style={{ marginTop: "1rem" }}>
-                    <Typography variant="h5" gutterBottom>
+                <Typography variant="h5" gutterBottom>
                     Reviews
-                    </Typography>
-                    {state.listingInfo.reviews.map((review) => (
-                    <Card key={review.id} style={{ marginBottom: "1rem" }}>
-                        <CardContent>
-                        <Typography variant="h6" color="primary">
-                            {review.review_username}
-                        </Typography>
-                        <Typography variant="body1">{review.review}</Typography>
-                        <Rating
-                            name={`rating-${review.id}`}
-                            value={review.rating}
-                            readOnly
-                            style={{ marginTop: "0.5rem" }}
-                        />
-                        </CardContent>
-                    </Card>
-                    ))}
-                </Grid2>
+                </Typography>
+                {[...state.listingInfo.reviews]
+                .sort((a, b) => new Date(b.date_posted) - new Date(a.date_posted)) // Sort by date, most recent first
+                .map((review) => {
+                    // to change the format of the date for reviews
+                    const date = new Date(review.date_posted);
+                    const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+
+                    return (
+                        <Card key={review.id} style={{ marginBottom: "1rem" }}>
+                            <CardContent>
+                                <Typography variant="h6" color="primary">
+                                    {review.review_username}
+                                </Typography>
+                                <Typography variant="body1">{review.review}</Typography>
+                                <Rating
+                                    name={`rating-${review.id}`}
+                                    value={review.rating}
+                                    readOnly
+                                    style={{ marginTop: "0.5rem" }}
+                                />
+
+                                {/* Display formatted date */}
+                                <Typography variant="h6" color="primary">
+                                    {formattedDate}
+                                </Typography>
+                            </CardContent>
+                        </Card>
+                    );
+                })}
+            </Grid2>
                 
                 
                 {/* Add Review Button */}
