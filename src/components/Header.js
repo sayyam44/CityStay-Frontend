@@ -1,6 +1,8 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Link,useNavigate } from "react-router-dom";
-import { Button,Typography,Grid2,AppBar,Toolbar,Menu,MenuItem,Snackbar} from '@mui/material';
+import { Button,Typography,Grid2,AppBar,Toolbar,Menu,MenuItem,Snackbar, IconButton, Badge} from '@mui/material';
+import MailIcon from '@mui/icons-material/Mail';
+import Tooltip from '@mui/material/Tooltip';
 import CustomCard from "./CustomCard";
 import Axios from "axios";
 
@@ -88,19 +90,42 @@ function Header() {
                 <Typography variant="h6">Agencies</Typography>
             </Button>
             </div>
+            {/* <Button color="inherit" 
+            style={{marginLeft: "2rem"}}>
+                <Typography variant="h6">Agencies</Typography>
+            </Button>
+            </div> */}
 
             <div sx={{marginLeft: 'auto',marginRight: '10rem'}}>
 
             {GlobalState.userIsLogged ?( //the add property button shows only when the user logs in
-                <Button 
-                sx={{color:"white",
-                backgroundColor: "green",
-                width: "10rem" ,
-                fontSize:"1.1rem",
-                marginRight:"1rem",
-                "&:hover":{backgroundColor:"blue"}}}
-                onClick={()=>navigate("/addproperty")}>
-                    Add Property</Button>
+                <>
+                <Tooltip title="Messages" arrow>
+                    <IconButton
+                        sx={{ marginRight: "1rem" }}
+                        color="inherit"
+                        onClick={() => navigate("/Messages")}
+                    >
+                        <Badge color="error">
+                            <MailIcon />
+                        </Badge>
+                    </IconButton>
+                </Tooltip>
+                <Button
+                    sx={{
+                        color: "white",
+                        backgroundColor: "green",
+                        width: "10rem",
+                        fontSize: "1.1rem",
+                        marginRight: "1rem",
+                        "&:hover": { backgroundColor: "blue" }
+                    }}
+                    onClick={() => navigate("/addproperty")}
+                >
+                    Add Property
+                </Button>
+                
+                </>
             ):("")}
             
             {GlobalState.userIsLogged ?( //this case if the user login's then the button should show the username
@@ -143,7 +168,8 @@ function Header() {
                 borderRadius: "15px",
                 marginBottom: "0.25rem",
             }}
-            onClick={HandleProfile}>Profile</MenuItem>
+            onClick={HandleProfile}
+            >Profile</MenuItem>
             <MenuItem 
             sx={{
                 color: "black",

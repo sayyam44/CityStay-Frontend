@@ -160,7 +160,8 @@ function ReducerFunction(draft, action) {
               
               onClick={()=>state.mapInstance.flyTo(
                 [listing.latitude,listing.longitude],
-                16)}>
+                16)}
+                >
                 <RoomIcon />
               </IconButton>
             }
@@ -180,6 +181,7 @@ function ReducerFunction(draft, action) {
             //this is to navigate to the particular listing 
             //when click on the card of that lisitng
             onClick={()=>navigate(`/listings/${listing.id}`)}/>
+            
           <CardContent>
             <Typography variant="body2">
             {listing.description.substring(0,200)}...
@@ -286,7 +288,6 @@ function ReducerFunction(draft, action) {
                       <Typography variant="h5">{listing.title}</Typography>
                       <img src={listing.picture1} style={{height: "14rem",width: "18rem", cursor: "pointer"}}
                       onClick={()=>navigate(`/listings/${listing.id}`)} />
-                      
                       <Typography variant="body1">
                         {listing.description.substring(0,150)}...
                       </Typography>

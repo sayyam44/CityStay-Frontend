@@ -604,7 +604,7 @@ function ListingDetail() {
                 <Typography variant="h5" gutterBottom>
                     Reviews
                 </Typography>
-                {[...state.listingInfo.reviews]
+                {[...state.listingInfo.reviews] // Create a copy of the reviews array
                 .sort((a, b) => new Date(b.date_posted) - new Date(a.date_posted)) // Sort by date, most recent first
                 .map((review) => {
                     // to change the format of the date for reviews
