@@ -24,7 +24,7 @@ import hospitalIconPng from './Assets/Mapicons/hospital.png'
 //Components
 import ListingUpdate from './ListingUpdate';
 import AddReview from './AddReview';
-
+import SendMessage from './SendMessage';
 
 function ListingDetail() {
     //GlobalState--> Bringing data from parent component i.e. app.js
@@ -223,7 +223,7 @@ function ListingDetail() {
         }
     },[state.openSnack])
 
-    //this is for showing the update dialog box
+    //this is for showing the update or add review dialog box
     const [open, setOpen] = React.useState(false);
     const handleClickOpen = () => {
         setOpen(true);
@@ -232,6 +232,17 @@ function ListingDetail() {
     const handleClose = () => {
         setOpen(false);
         };
+    
+    //this is for showing the message and add review dialog boxes
+    const [openMessageDialog, setOpenMessageDialog] = useState(false);
+    const [openReviewDialog, setOpenReviewDialog] = useState(false);
+
+    // Functions to handle opening/closing dialogs
+    const handleOpenMessageDialog = () => setOpenMessageDialog(true);
+    const handleCloseMessageDialog = () => setOpenMessageDialog(false);
+
+    const handleOpenReviewDialog = () => setOpenReviewDialog(true);
+    const handleCloseReviewDialog = () => setOpenReviewDialog(false);
 
     if (state.dataIsLoading === true) {
         return (
@@ -421,6 +432,7 @@ function ListingDetail() {
 						}
 					/>
 				</Grid2>
+                {/* To display info about agency  */}
 				<Grid2 
                  container 
                  direction="column" 
@@ -454,7 +466,12 @@ function ListingDetail() {
             that is opened by the user currently */}
             {GlobalState.userId == state.listingInfo.seller ? (
                 <Grid2 container style={{ paddingLeft: '200px' }} gap={10}>
-                <Button variant="contained" color="primary" onClick={handleClickOpen}>Update</Button>
+                <Button 
+                variant="contained" 
+                color="primary" 
+                onClick={handleClickOpen}
+                >Update
+                </Button>
                 <Button 
                 variant="contained" 
                 color="error" 
@@ -476,7 +493,24 @@ function ListingDetail() {
 
                 </Grid2>
             ) : ("")}
-
+            
+            
+            {/* Messaging functionality */}
+            {GlobalState.userId !== state.listingInfo.seller ? (
+                <Grid2 container style={{ paddingLeft: '240px' }} gap={10}>
+                    <Button variant="contained" color="primary" onClick={handleOpenMessageDialog}>
+                        Send Message
+                    </Button>
+                    <Dialog 
+                        open={openMessageDialog} 
+                        onClose={handleCloseMessageDialog}
+                        maxWidth="md"
+                        fullWidth
+                    >
+                        <SendMessage recipientId={state.listingInfo.seller} />
+                    </Dialog>
+                </Grid2>
+            ) : null}
 			</Grid2>
 
 
@@ -641,7 +675,7 @@ function ListingDetail() {
                 {/* Condition for logged-in user, but not the seller */}
                 {GlobalState.userIsLogged && GlobalState.userId !== state.listingInfo.seller ? (
                     <>
-                    <Button
+                    <Button 
                         sx={{
                             color: "white",
                             backgroundColor: "green",
@@ -650,19 +684,19 @@ function ListingDetail() {
                             marginRight: "1rem",
                             "&:hover": { backgroundColor: "blue" },
                         }}
-                        onClick={handleClickOpen}
+                        onClick={handleOpenReviewDialog} // Use separate function
                     >
                         Add Review
                     </Button>
-                    {/* this is to open a dialog to input the riview  */}
                     <Dialog 
-                    open={open} 
-                    onClose={handleClose}
-                    maxWidth="md"
-                    fullWidth >
+                        open={openReviewDialog} 
+                        onClose={handleCloseReviewDialog}
+                        maxWidth="md"
+                        fullWidth
+                    >
                         <AddReview listingData={state.listingInfo} />
                     </Dialog>
-                    </>
+                        </>
                 ) : null}
                 
 
