@@ -14,7 +14,7 @@ import Profile from "./components/Profile";
 import Agencies from "./components/Agencies";
 import AgencyDetail from "./components/AgencyDetail";
 import ListingDetail from "./components/ListingDetail";
-import Message from "./components/Message";
+import MessageList from "./components/MessageList";
 
 // Context for sharing the props from app.js to header.js 
 import DispatchContext from "./Contexts/DispatchContext";
@@ -92,7 +92,7 @@ function App() {
               <Route path="/listings/:id" element={<ListingDetail />} /> 
               <Route path="/Listings" element={<Listings />} />
               <Route path="/Testing" element={<Testing />} />    
-              <Route path="/Messages" element={<Message />} />        
+              <Route path="/Messages" element={<MessageList />} />        
             </Routes>
           </BrowserRouter>
       </DispatchContext.Provider>

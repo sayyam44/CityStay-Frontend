@@ -4,7 +4,7 @@ import { CircularProgress, Grid2, Typography, List, ListItem, ListItemText, Box}
 import Axios from "axios";
 import StateContext from '../Contexts/StateContext';
 
-function Message() {
+function MessageList() {
     const navigate = useNavigate();
     const GlobalState = useContext(StateContext);
     const [messages, setMessages] = useState([]);
@@ -78,4 +78,4 @@ function Message() {
     );
 }
 
-export default Message;
+export default MessageList;

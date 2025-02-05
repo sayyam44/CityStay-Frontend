@@ -17,15 +17,28 @@ function SendMessage(props) {
         sendRequest: 0,
         openSnack: false,
         disabledBtn: false,
+        subjectErrors: {
+			hasErrors: false,
+			errorMessage: "",
+		},
+        messageErrors: {
+			hasErrors: false,
+			errorMessage: "",
+		},
     };
 
     function ReducerFunction(draft, action) {
         switch (action.type) {
             case 'catchSubjectChange':
                 draft.subject = action.subjectChosen;
+                // Reset error when typing
+                draft.subjectErrors.hasErrors = false; 
+                draft.subjectErrors.errorMessage = "";
                 break;
             case 'catchBodyChange':
                 draft.body = action.bodyChosen;
+                draft.messageErrors.hasErrors = false; 
+                draft.messageErrors.errorMessage = "";
                 break;
             case 'changeSendRequest':
                 draft.sendRequest += 1;
@@ -39,6 +52,22 @@ function SendMessage(props) {
             case 'allowTheButton':
                 draft.disabledBtn = false;
                 break;
+
+            //below are all the cases to show alert(make the field red and show the alert message below each field)
+            //  in case of any of the field remains empty in the form before being submitted
+            case "catchSubjectChangeErrors":
+                if (action.subjectChosen.length === 0) {
+                draft.subjectErrors.hasErrors = true;
+                draft.subjectErrors.errorMessage = "This field must not be empty";
+                }
+                break;
+
+            case "catchMessageChangeErrors":
+                if (action.bodyChosen.length === 0) {
+                draft.messageErrors.hasErrors = true;
+                draft.messageErrors.errorMessage = "This field must not be empty";
+                }
+                break;
         }
     }
 
@@ -46,8 +75,29 @@ function SendMessage(props) {
 
     function FormSubmit(e) {
         e.preventDefault();
-        dispatch({ type: 'changeSendRequest' });
-        dispatch({ type: 'disabledButton' });
+        // Check if the subject is empty
+        if (state.subject.trim() === '') {
+            dispatch({ 
+                type: "catchSubjectChangeErrors", 
+                subjectChosen: state.subject 
+            });
+            return; // Stop form submission
+        }
+        // Check if the subject is empty
+        if (state.body.trim() === '') {
+            dispatch({ 
+                type: "catchMessageChangeErrors", 
+                bodyChosen: state.subject 
+            });
+            return; // Stop form submission
+        }
+    
+        if (!state.subjectErrors.hasErrors && !state.messageErrors.hasErrors) {
+            dispatch({ type: "changeSendRequest" });
+            dispatch({ type: 'disabledButton' });
+        }
+        // dispatch({ type: 'changeSendRequest' });
+        // dispatch({ type: 'disabledButton' });
     }
 
     useEffect(() => {
@@ -110,7 +160,19 @@ function SendMessage(props) {
                         variant="outlined"
                         fullWidth
                         value={state.subject}
-                        onChange={(e) => dispatch({ type: 'catchSubjectChange', subjectChosen: e.target.value })}
+                        onChange={(e) => dispatch({ 
+                            type: 'catchSubjectChange', 
+                            subjectChosen: e.target.value })}
+
+                        // this is to show alerts related to subject field 
+                        // onBlue->Triggered when the user moves focus away (clicks somewhere else or presses Tab).
+                        onBlur={(e) =>
+                            dispatch({
+                            type: "catchSubjectChangeErrors",
+                            subjectChosen: e.target.value,
+                            })}
+                        error={state.subjectErrors.hasErrors ? true : false}
+                        helperText={state.subjectErrors.errorMessage}
                     />
                 </Grid2>
 
@@ -121,14 +183,30 @@ function SendMessage(props) {
                         variant="outlined"
                         fullWidth
                         value={state.body}
-                        onChange={(e) => dispatch({ type: 'catchBodyChange', bodyChosen: e.target.value })}
                         multiline
                         rows={4}
+                        onChange={(e) => dispatch
+                            ({ type: 'catchBodyChange', 
+                                bodyChosen: e.target.value })}
+                        // this is to show alerts related to body field 
+                        // onBlue->Triggered when the user moves focus away (clicks somewhere else or presses Tab).
+                        onBlur={(e) =>
+                            dispatch({
+                            type: "catchMessageChangeErrors",
+                            bodyChosen: e.target.value,
+                            })}
+                        error={state.messageErrors.hasErrors ? true : false}
+                        helperText={state.messageErrors.errorMessage} 
+    
                     />
                 </Grid2>
 
                 <Grid2 container justifyContent="center" style={{ marginTop: '2rem' }}>
-                    <Button type="submit" variant="contained" color="primary" disabled={state.disabledBtn}>
+                    <Button 
+                    type="submit" 
+                    variant="contained" 
+                    color="primary" 
+                    disabled={state.disabledBtn}>
                         Send
                     </Button>
                 </Grid2>

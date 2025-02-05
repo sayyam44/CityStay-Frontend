@@ -632,126 +632,153 @@ function ListingDetail() {
                         })}
                     </MapContainer>
                 </Grid2>
+                <Grid2 item xs={12}>
+        
+            
+    </Grid2>
 
-                {/* Reviews Section */}
-                <Grid2 xs={12} style={{ marginTop: "1rem" }}>
-                <Typography variant="h5" gutterBottom>
-                    Reviews
-                </Typography>
-                {[...state.listingInfo.reviews] // Create a copy of the reviews array
-                .sort((a, b) => new Date(b.date_posted) - new Date(a.date_posted)) // Sort by date, most recent first
-                .map((review) => {
-                    // to change the format of the date for reviews
-                    const date = new Date(review.date_posted);
-                    const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+    <Grid2 container justifyContent="center" style={{ marginTop: "2rem" , marginLeft:"35rem" }}>
+        <Grid2 item xs={12}>
+            <Typography 
+                variant="h4" 
+                sx={{ 
+                    fontWeight: "bold", 
+                    textAlign: "center",
+                    width: "100%",
+                    display: "block",
+                }}
+            >
+                Reviews
+            </Typography>
+        </Grid2>
+    </Grid2>
 
-                    return (
-                        <Card key={review.id} style={{ marginBottom: "1rem" }}>
-                            <CardContent>
-                                <Typography variant="h6" color="primary">
-                                    {review.review_username}
-                                </Typography>
-                                <Typography variant="body1">{review.review}</Typography>
-                                <Rating
-                                    name={`rating-${review.id}`}
-                                    value={review.rating}
-                                    readOnly
-                                    style={{ marginTop: "0.5rem" }}
-                                />
+            {/* Reviews Section */}
+        <Grid2 container justifyContent="center" spacing={2} style={{ marginTop: "1rem" }}>
 
-                                {/* Display formatted date */}
-                                <Typography variant="h6" color="primary">
-                                    {formattedDate}
-                                </Typography>
-                            </CardContent>
-                        </Card>
-                    );
-                })}
+                {/* Review Cards */}
+                {[...state.listingInfo.reviews]
+                    .sort((a, b) => new Date(b.date_posted) - new Date(a.date_posted)) // Sort by latest
+                    .map((review) => {
+                        const date = new Date(review.date_posted);
+                        const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+
+                        return (
+                            <Grid2 item xs={12} sm={6} md={4} key={review.id} display="flex" justifyContent="center" marginLeft="0.5rem">
+                                <Card 
+                                    style={{ 
+                                        width: "100%", 
+                                        height: "100%", 
+                                        display: "flex", 
+                                        flexDirection: "column", 
+                                        justifyContent: "space-between" 
+                                    }}
+                                >
+                                    <CardContent>
+                                        <Typography variant="h6" color="primary">
+                                            {review.review_username}
+                                        </Typography>
+                                        <Typography variant="body1">{review.review}</Typography>
+                                        <Rating
+                                            name={`rating-${review.id}`}
+                                            value={review.rating}
+                                            readOnly
+                                            style={{ marginTop: "0.5rem" }}
+                                        />
+                                        <Typography variant="h6" color="primary">
+                                            {formattedDate}
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
+                            </Grid2>
+                        );
+                    })}
             </Grid2>
-                
-                
-                {/* Add Review Button */}
-                <div style={{ marginTop: "2rem" }}>
-                {/* Condition for logged-in user, but not the seller */}
-                {GlobalState.userIsLogged && GlobalState.userId !== state.listingInfo.seller ? (
-                    <>
-                    <Button 
-                        sx={{
-                            color: "white",
-                            backgroundColor: "green",
-                            width: "10rem",
-                            fontSize: "1.1rem",
-                            marginRight: "1rem",
-                            "&:hover": { backgroundColor: "blue" },
-                        }}
-                        onClick={handleOpenReviewDialog} // Use separate function
-                    >
-                        Add Review
-                    </Button>
-                    <Dialog 
-                        open={openReviewDialog} 
-                        onClose={handleCloseReviewDialog}
-                        maxWidth="md"
-                        fullWidth
-                    >
-                        <AddReview listingData={state.listingInfo} />
-                    </Dialog>
-                        </>
-                ) : null}
-                
 
-                {/* Condition for logged-out users */}
-                {!GlobalState.userIsLogged ? (
-                    <Tooltip title="You need to log in to add a review to this property">
-                        <span>
-                            <Button
-                                sx={{
-                                    color: "white",
-                                    backgroundColor: "grey",
-                                    width: "10rem",
-                                    fontSize: "1.1rem",
-                                    marginRight: "1rem",
-                                    "&:hover": { backgroundColor: "white", cursor: "not-allowed" },
-                                    "&.Mui-disabled": {
-                                        color: "white", // Ensures text remains white in disabled state
-                                        backgroundColor: "grey", // Keeps background grey when disabled
-                                    },
-                                }}
-                                disabled
-                            >
-                                Add Review
-                            </Button>
-                        </span>
-                    </Tooltip>
-                ) : null}
+            
+            {/* Add Review Button */}
+            <div style={{ marginTop: "2rem" }}>
+            {/* Condition for logged-in user, but not the seller */}
+            {GlobalState.userIsLogged && GlobalState.userId !== state.listingInfo.seller ? (
+                <>
+                <Button 
+                    sx={{
+                        color: "white",
+                        backgroundColor: "green",
+                        width: "10rem",
+                        fontSize: "1.1rem",
+                        marginRight: "1rem",
+                        "&:hover": { backgroundColor: "blue" },
+                        marginLeft:"35rem"
+                    }}
+                    onClick={handleOpenReviewDialog} // Use separate function
+                >
+                    Add Review
+                </Button>
+                <Dialog 
+                    open={openReviewDialog} 
+                    onClose={handleCloseReviewDialog}
+                    maxWidth="md"
+                    fullWidth
+                >
+                    <AddReview listingData={state.listingInfo} />
+                </Dialog>
+                    </>
+            ) : null}
+            
 
-                {/* Condition for the seller of the listing */}
-                {GlobalState.userIsLogged && GlobalState.userId === state.listingInfo.seller ? (
-                    <Tooltip title="You cannot add a review to your own property">
-                        <span>
-                            <Button
-                                sx={{
-                                    color: "white",
-                                    backgroundColor: "grey",
-                                    width: "10rem",
-                                    fontSize: "1.1rem",
-                                    marginRight: "1rem",
-                                    "&:hover": { backgroundColor: "white", cursor: "not-allowed" },
-                                    "&.Mui-disabled": {
-                                        color: "white", // Ensures text remains white in disabled state
-                                        backgroundColor: "grey", // Keeps background grey when disabled
-                                    },
-                                }}
-                                disabled
-                            >
-                                Add Review
-                            </Button>
-                        </span>
-                    </Tooltip>
-                ) : null}
-                
-            </div>
-            </Grid2>
+            {/* Condition for logged-out users */}
+            {!GlobalState.userIsLogged ? (
+                <Tooltip title="You need to log in to add a review to this property">
+                    <span>
+                        <Button
+                            sx={{
+                                color: "white",
+                                backgroundColor: "grey",
+                                width: "10rem",
+                                fontSize: "1.1rem",
+                                marginRight: "1rem",
+                                "&:hover": { backgroundColor: "white", cursor: "not-allowed" },
+                                "&.Mui-disabled": {
+                                    color: "white", // Ensures text remains white in disabled state
+                                    backgroundColor: "grey", // Keeps background grey when disabled
+                                },
+                            }}
+                            disabled
+                        >
+                            Add Review
+                        </Button>
+                    </span>
+                </Tooltip>
+            ) : null}
+
+            {/* Condition for the seller of the listing */}
+            {GlobalState.userIsLogged && GlobalState.userId === state.listingInfo.seller ? (
+                <Tooltip title="You cannot add a review to your own property">
+                    <span>
+                        <Button
+                            sx={{
+                                color: "white",
+                                backgroundColor: "grey",
+                                width: "10rem",
+                                fontSize: "1.1rem",
+                                marginRight: "1rem",
+                                "&:hover": { backgroundColor: "white", cursor: "not-allowed" },
+                                "&.Mui-disabled": {
+                                    color: "white", // Ensures text remains white in disabled state
+                                    backgroundColor: "grey", // Keeps background grey when disabled
+                                },
+                            }}
+                            disabled
+                        >
+                            Add Review
+                        </Button>
+                    </span>
+                </Tooltip>
+            ) : null}
+            
+        </div>
+        </Grid2>
 
         {/* this is the popup when user logs in  */}
         <Snackbar

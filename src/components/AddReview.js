@@ -17,12 +17,19 @@ function AddReview(props) {
         sendRequest: 0,
         openSnack: false,
         disabledBtn: false,
+        reviewErrors: {
+			hasErrors: false,
+			errorMessage: "",
+		},
     };
 
     function ReducerFunction(draft, action) {
         switch (action.type) {
             case 'catchReviewTextChange':
                 draft.reviewText = action.reviewTextChosen;
+                // Reset error when typing
+                draft.reviewErrors.hasErrors = false; 
+                draft.reviewErrors.errorMessage = "";
                 break;
             case 'catchRatingChange':
                 draft.ratingValue = action.ratingChosen;
@@ -39,6 +46,14 @@ function AddReview(props) {
             case 'allowTheButton':
                 draft.disabledBtn = false;
                 break;
+            //below are all the cases to show alert(make the field red and show the alert message below each field)
+            //  in case of any of the field remains empty in the form before being submitted
+            case "catchReviewErrors":
+                if (action.reviewTextChosen.length === 0) {
+                draft.reviewErrors.hasErrors = true;
+                draft.reviewErrors.errorMessage = "This field must not be empty";
+                }
+                break;
         }
     }
 
@@ -46,8 +61,20 @@ function AddReview(props) {
 
     function FormSubmit(e) {
         e.preventDefault();
-        dispatch({ type: 'changeSendRequest' });
-        dispatch({ type: 'disabledButton' });
+    
+        // Check if the review is empty
+        if (state.reviewText.trim() === '') {
+            dispatch({ 
+                type: "catchReviewErrors", 
+                reviewTextChosen: state.reviewText 
+            });
+            return; // Stop form submission
+        }
+    
+        if (!state.reviewErrors.hasErrors) {
+            dispatch({ type: "changeSendRequest" });
+            dispatch({ type: 'disabledButton' });
+        }
     }
 
     useEffect(() => {
@@ -114,9 +141,18 @@ function AddReview(props) {
                         variant="outlined"
                         fullWidth
                         value={state.reviewText}
-                        onChange={(e) => dispatch({ type: 'catchReviewTextChange', reviewTextChosen: e.target.value })}
                         multiline
                         rows={4}
+                        onChange={(e) => dispatch({ type: 'catchReviewTextChange', reviewTextChosen: e.target.value })}
+                        // this is to show alerts related to your review field 
+                        // onBlue->Triggered when the user moves focus away (clicks somewhere else or presses Tab).
+                        onBlur={(e) =>
+                            dispatch({
+                            type: "catchReviewErrors",
+                            reviewTextChosen: e.target.value,
+                            })}
+                        error={state.reviewErrors.hasErrors ? true : false}
+                        helperText={state.reviewErrors.errorMessage} 
                     />
                 </Grid2>
 
