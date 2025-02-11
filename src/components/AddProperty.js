@@ -1283,7 +1283,7 @@ function AddProperty() {
                 <Grid2 style={{ marginTop: "1rem", width: "47%"  }}>
                     <TextField 
                     id="borough" 
-                    label="Borough*" 
+                    label="Location*" 
                     variant="outlined"
                     fullWidth
                     value = {state.boroughValue}

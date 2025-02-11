@@ -496,7 +496,7 @@ function ListingDetail() {
             
             
             {/* Messaging functionality */}
-            {GlobalState.userId !== state.listingInfo.seller ? (
+            {GlobalState.userId !== state.listingInfo.seller && GlobalState.userIsLogged ? (
                 <Grid2 container style={{ paddingLeft: '240px' }} gap={10}>
                     <Button variant="contained" color="primary" onClick={handleOpenMessageDialog}>
                         Send Message

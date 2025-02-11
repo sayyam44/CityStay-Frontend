@@ -13,7 +13,7 @@ import { Grid2,
   CardContent,
   CircularProgress,
   IconButton,
-  CardActions, } from '@mui/material';
+  CardActions,TextField,InputAdornment,Pagination } from '@mui/material';
 
 import { Icon } from "leaflet";
 import houseIconPng from "./Assets/Mapicons/house.png"
@@ -23,6 +23,8 @@ import officeIconPng from "./Assets/Mapicons/office.png"
 import img1 from './Assets/img1.jpg'
 import myListings from './Assets/Data/Dummydata';
 import RoomIcon from '@mui/icons-material/Room';
+import SearchIcon from '@mui/icons-material/Search';
+
 
 function Listings() {
   // fetch('http://127.0.0.1:8000/api/listings/')
@@ -98,10 +100,20 @@ function ReducerFunction(draft, action) {
   //this useState hook is to hold allListings data 
   const [allListings,setAllListings] = useState([]);
 
+  //to get the filtered listings om the basis of the input in search tab by user
+  const [filteredListings, setFilteredListings] = useState([]); // Holds filtered results
+  const [searchQuery, setSearchQuery] = useState(""); // Holds search input
+
   // the below hook is created to get over the issue we got in 
   //console when we were reloading the page, we were unable to access 
   // the data for location using console.log(allListings[0].location)
   const [dataIsLoading, setDataIsLoading] = useState(true)
+
+  // Pagination state
+  // All the logic for pagination below is dependent on the 
+  // currentPage element defined here.
+  const [currentPage, setCurrentPage] = useState(1);
+  const listingsPerPage = 5; // Show 3 listings per page
 
   useEffect(() => {
     // The below canceltoken can cancel the request even before the 
@@ -111,8 +123,9 @@ function ReducerFunction(draft, action) {
       try{
         //response holds all the lising data
       const response = await Axios.get('http://127.0.0.1:8000/api/listings/',{cancelToken: source.token});
-      // console.log(response.data);
+      console.log(response.data);
       setAllListings(response.data);
+      setFilteredListings(response.data); // Set filtered list initially
       setDataIsLoading(false);
     } catch(error){
       console.log(error.response);
@@ -126,6 +139,38 @@ function ReducerFunction(draft, action) {
   if (dataIsLoading === false) {
     console.log(allListings[0].location);
   }
+
+  // Function to filter listings based on search
+  useEffect(() => {
+    if (searchQuery.trim() === "") {
+      setFilteredListings(allListings);
+    } else {
+      const lowerCaseQuery = searchQuery.toLowerCase();
+      const filtered = allListings.filter((listing) =>
+        listing.seller_username.toLowerCase().includes(lowerCaseQuery) ||
+        listing.title.toLowerCase().includes(lowerCaseQuery) ||
+        // listing.description.toLowerCase().includes(lowerCaseQuery) ||
+        listing.listing_type.toLowerCase().includes(lowerCaseQuery) ||
+        listing.area.toLowerCase().includes(lowerCaseQuery) ||  
+        listing.borough.toLowerCase().includes(lowerCaseQuery) ||
+        listing.property_status.toLowerCase().includes(lowerCaseQuery) ||
+        listing.rental_frequency.toLowerCase().includes(lowerCaseQuery) ||
+        listing.seller_agency_name.toLowerCase().includes(lowerCaseQuery) ||
+        listing.price.toString().includes(lowerCaseQuery) 
+      );
+      setFilteredListings(filtered);
+    }
+    //initially the current page is 1
+    setCurrentPage(1); // Reset to first page on new search
+  }, [searchQuery, allListings]);
+
+  // Pagination logic
+  //here the logic to show the content on current page is dependent on 
+  //the currentPage component
+  const indexOfLastListing = currentPage * listingsPerPage;
+  const indexOfFirstListing = indexOfLastListing - listingsPerPage;
+  const currentListings = filteredListings.slice(indexOfFirstListing, indexOfLastListing);
+  const totalPages = Math.ceil(filteredListings.length / listingsPerPage);
 
   //this is to show the loading circle
   if (dataIsLoading === true) {
@@ -145,8 +190,44 @@ function ReducerFunction(draft, action) {
     <Grid2 container>
       {/* The below grid is the left side grid for listings */}
       <Grid2 size={4}>
-        {/* here we are getting each listing from the above useState hook for alllistings */}
-        {allListings.map((listing)=>{ //for getting the value of each listing
+
+        {/* Search Bar */}
+        <TextField
+          placeholder="Search for listings..."
+          variant="outlined"
+          fullWidth
+          sx={{
+            padding: "0.5rem",
+            marginBottom: "-0.3rem",
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "1.5rem", // Rounded edges
+              height: "2.5rem", // Reduce height
+              paddingRight: "0.5rem",
+            },
+          }}
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon color="action" />
+                </InputAdornment>
+              ),
+            },
+          }}
+        />
+
+
+        {/* No Listings Message */}
+        {currentListings.length === 0 && (
+          <Grid2 item xs={12} style={{ textAlign: "center", marginTop: "1rem" }}>
+            <Typography variant="h6" color="textSecondary">
+              No listings found for "{searchQuery}"
+            </Typography>
+          </Grid2>
+        )}
+
+        {/* here we are getting each listing from the above useState hook for current listings */}
+        {currentListings.map((listing)=>{ //for getting the value of each listing
           return (
           <Card key={listing.id} style={{margin: '0.5rem',border: "1px solid black",position: 'relative'}}>
           <CardHeader
@@ -180,7 +261,8 @@ function ReducerFunction(draft, action) {
             }}
             //this is to navigate to the particular listing 
             //when click on the card of that lisitng
-            onClick={()=>navigate(`/listings/${listing.id}`)}/>
+            onClick={()=>navigate(`/listings/${listing.id}`)}
+            />
             
           <CardContent>
             <Typography variant="body2">
@@ -244,7 +326,33 @@ function ReducerFunction(draft, action) {
           //   </IconButton>
           // </CardActions>
         );
+      
       })}
+      {/* Pagination Controls */}
+      <Grid2 container justifyContent="center" alignItems="center" style={{ marginTop: "1rem", marginBottom: "0.5rem" }}>
+      <Pagination
+        count={totalPages}
+        page={currentPage}
+        onChange={(_, page) => setCurrentPage(page)}
+        siblingCount={1}
+        boundaryCount={1}
+        variant="text"
+        shape="rounded"
+        size="small"
+        sx={{
+          "& .MuiPaginationItem-root": {
+            margin: "0 6px", // Adds spacing between numbers
+          },
+          "& .MuiPaginationItem-root.Mui-selected": {
+            backgroundColor: "lightblue", // Light blue background for selected page
+            color: "black", // Ensures the text is readable
+          },
+          "& .MuiPaginationItem-root.Mui-selected:hover": {
+            backgroundColor: "#add8e6", // Slightly darker blue on hover
+          },
+        }}
+      />
+    </Grid2>
     </Grid2>
 
       {/* The below grid is the Right side grid for map */}
@@ -265,7 +373,7 @@ function ReducerFunction(draft, action) {
 
               <Polyline positions={polyOne} />
 
-              {allListings.map((listing)=>{
+              {filteredListings.map((listing)=>{
                 function IconDisplay(){
                   if (listing.listing_type === 'House'){
                     return houseIcon;
@@ -287,7 +395,8 @@ function ReducerFunction(draft, action) {
                     <Popup>
                       <Typography variant="h5">{listing.title}</Typography>
                       <img src={listing.picture1} style={{height: "14rem",width: "18rem", cursor: "pointer"}}
-                      onClick={()=>navigate(`/listings/${listing.id}`)} />
+                      onClick={()=>navigate(`/listings/${listing.id}`)} 
+                      />
                       <Typography variant="body1">
                         {listing.description.substring(0,150)}...
                       </Typography>
