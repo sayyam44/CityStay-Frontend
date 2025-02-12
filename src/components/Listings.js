@@ -13,7 +13,9 @@ import { Grid2,
   CardContent,
   CircularProgress,
   IconButton,
-  CardActions,TextField,InputAdornment,Pagination } from '@mui/material';
+  CardActions,TextField,InputAdornment,Pagination,
+  Dialog, DialogActions, DialogContent, 
+  DialogContentText, DialogTitle,MenuItem, } from '@mui/material';
 
 import { Icon } from "leaflet";
 import houseIconPng from "./Assets/Mapicons/house.png"
@@ -24,7 +26,9 @@ import img1 from './Assets/img1.jpg'
 import myListings from './Assets/Data/Dummydata';
 import RoomIcon from '@mui/icons-material/Room';
 import SearchIcon from '@mui/icons-material/Search';
+import { latLng } from 'leaflet';
 
+import L from "leaflet";
 
 function Listings() {
   // fetch('http://127.0.0.1:8000/api/listings/')
@@ -115,6 +119,36 @@ function ReducerFunction(draft, action) {
   const [currentPage, setCurrentPage] = useState(1);
   const listingsPerPage = 5; // Show 3 listings per page
 
+  // this is for allowing permission and holding the current location of the user
+  const [locationPermission, setLocationPermission] = useState(false);
+  const [userLocation, setUserLocation] = useState(null);
+  const [selectedDistance, setSelectedDistance] = useState("20");
+  const [openDialog, setOpenDialog] = useState(true)
+
+  //to run the filterListings function always
+  useEffect(() => {
+    filterListings();
+  }, [selectedDistance, userLocation, allListings, searchQuery]);
+
+  // to get the necessary values to calculate distance of the user from listings 
+  const handleAllowLocation = () => {
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            setUserLocation({ lat: position.coords.latitude, lon: position.coords.longitude });
+            setLocationPermission(true);
+            setOpenDialog(false);
+        },
+        () => {
+            alert("Location access denied");
+            setOpenDialog(false);
+            setLocationPermission(false);
+            setUserLocation(null); // Ensure it's explicitly null
+            setOpenDialog(false);
+            filterListings(); // Call filter function even if location is denied
+        }
+    );
+};
+
   useEffect(() => {
     // The below canceltoken can cancel the request even before the 
     // request is not finished yet to prevent data leaks.
@@ -140,29 +174,75 @@ function ReducerFunction(draft, action) {
     console.log(allListings[0].location);
   }
 
-  // Function to filter listings based on search
-  useEffect(() => {
-    if (searchQuery.trim() === "") {
-      setFilteredListings(allListings);
-    } else {
-      const lowerCaseQuery = searchQuery.toLowerCase();
-      const filtered = allListings.filter((listing) =>
-        listing.seller_username.toLowerCase().includes(lowerCaseQuery) ||
-        listing.title.toLowerCase().includes(lowerCaseQuery) ||
-        // listing.description.toLowerCase().includes(lowerCaseQuery) ||
-        listing.listing_type.toLowerCase().includes(lowerCaseQuery) ||
-        listing.area.toLowerCase().includes(lowerCaseQuery) ||  
-        listing.borough.toLowerCase().includes(lowerCaseQuery) ||
-        listing.property_status.toLowerCase().includes(lowerCaseQuery) ||
-        listing.rental_frequency.toLowerCase().includes(lowerCaseQuery) ||
-        listing.seller_agency_name.toLowerCase().includes(lowerCaseQuery) ||
-        listing.price.toString().includes(lowerCaseQuery) 
-      );
+  // initially the filtered listings holds all the listings 
+  //then if the user have allowed the location permisiion then filtering happens on the basis of the location
+  //then if the user searches for some listing then the filtering also happens on that basis
+  const filterListings = () => {
+      let filtered = allListings; //INITIALLY FILTERED LISTINGS HOLDS ALL THE LISTINGS
+      if (userLocation && selectedDistance) {
+        filtered = filtered.filter((listing) => {
+            const distance = latLng(userLocation.lat, userLocation.lon).distanceTo(
+                latLng(listing.latitude, listing.longitude)
+            ) / 1000; // Convert meters to km
+            //this filters the listings on the basis of the slected distance from the dropdown
+            return distance <= parseInt(selectedDistance);
+        });
+      }
+      if (searchQuery.trim() !== "") {
+        const lowerCaseQuery = searchQuery.toLowerCase();
+        filtered = filtered.filter((listing) =>
+            listing.seller_username.toLowerCase().includes(lowerCaseQuery) ||
+            listing.title.toLowerCase().includes(lowerCaseQuery) ||
+            listing.listing_type.toLowerCase().includes(lowerCaseQuery) ||
+            listing.area.toLowerCase().includes(lowerCaseQuery) ||
+            listing.borough.toLowerCase().includes(lowerCaseQuery) ||
+            listing.property_status.toLowerCase().includes(lowerCaseQuery) ||
+            listing.rental_frequency.toLowerCase().includes(lowerCaseQuery) ||
+            listing.seller_agency_name.toLowerCase().includes(lowerCaseQuery) ||
+            listing.price.toString().includes(lowerCaseQuery)
+        );
+      }
+
       setFilteredListings(filtered);
-    }
-    //initially the current page is 1
-    setCurrentPage(1); // Reset to first page on new search
-  }, [searchQuery, allListings]);
+      setCurrentPage(1); // Reset to first page on new search
+  };
+
+  // NEW
+//   const calculateDistance = (lat1, lon1, lat2, lon2) => {
+//     const R = 6371; // Radius of the Earth in km
+//     const dLat = (lat2 - lat1) * (Math.PI / 180);
+//     const dLon = (lon2 - lon1) * (Math.PI / 180);
+//     const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+//               Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
+//               Math.sin(dLon / 2) * Math.sin(dLon / 2);
+//     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+//     return R * c;
+// };
+
+  //REMOVED NEW
+  // Function to filter listings based on search
+  // useEffect(() => {
+  //   if (searchQuery.trim() === "") {
+  //     setFilteredListings(allListings);
+  //   } else {
+  //     const lowerCaseQuery = searchQuery.toLowerCase();
+  //     const filtered = allListings.filter((listing) =>
+  //       listing.seller_username.toLowerCase().includes(lowerCaseQuery) ||
+  //       listing.title.toLowerCase().includes(lowerCaseQuery) ||
+  //       // listing.description.toLowerCase().includes(lowerCaseQuery) ||
+  //       listing.listing_type.toLowerCase().includes(lowerCaseQuery) ||
+  //       listing.area.toLowerCase().includes(lowerCaseQuery) ||  
+  //       listing.borough.toLowerCase().includes(lowerCaseQuery) ||
+  //       listing.property_status.toLowerCase().includes(lowerCaseQuery) ||
+  //       listing.rental_frequency.toLowerCase().includes(lowerCaseQuery) ||
+  //       listing.seller_agency_name.toLowerCase().includes(lowerCaseQuery) ||
+  //       listing.price.toString().includes(lowerCaseQuery) 
+  //     );
+  //     setFilteredListings(filtered);
+  //   }
+  //   //initially the current page is 1
+  //   setCurrentPage(1); // Reset to first page on new search
+  // }, [searchQuery, allListings]);
 
   // Pagination logic
   //here the logic to show the content on current page is dependent on 
@@ -187,22 +267,42 @@ function ReducerFunction(draft, action) {
 }
 
   return (
+  
     <Grid2 container>
+
+      {/* new */}
+      {/* Location Permission Dialog */}
+      <Dialog open={openDialog}>
+        <DialogTitle>Allow Location Access</DialogTitle>
+        <DialogContent>
+            <DialogContentText>
+                This website wants to access your location to show nearby listings.
+            </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+            <Button onClick={() => setOpenDialog(false)} color="secondary">Deny</Button>
+            <Button onClick={handleAllowLocation} color="primary">Allow</Button>
+        </DialogActions>
+      </Dialog>
+
       {/* The below grid is the left side grid for listings */}
       <Grid2 size={4}>
 
         {/* Search Bar */}
         <TextField
-          placeholder="Search for listings..."
+          label="Search for listings..."
           variant="outlined"
-          fullWidth
+          // fullWidth
           sx={{
-            padding: "0.5rem",
             marginBottom: "-0.3rem",
+            marginTop: "0.7rem",
+            marginLeft: "0.5rem",
+            marginBottom: "0.1rem",
             "& .MuiOutlinedInput-root": {
               borderRadius: "1.5rem", // Rounded edges
               height: "2.5rem", // Reduce height
               paddingRight: "0.5rem",
+              width:"14rem",
             },
           }}
           slotProps={{
@@ -214,8 +314,37 @@ function ReducerFunction(draft, action) {
               ),
             },
           }}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
         />
 
+        {/* new */}
+        {/* Distance Filter Dropdown */}
+        {locationPermission && (
+          <TextField
+              select
+              placeholder="Distance (km)"
+              value={selectedDistance}
+              onChange={(e) => setSelectedDistance(e.target.value)}
+              label="Distance (km)" // Acts as a placeholder
+              sx={{
+                marginTop: "0.7rem",
+                marginBottom: "-0.3rem",
+                marginLeft: "0.5rem",
+                marginBottom: "0.1rem",
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "1.5rem", // Rounded edges
+                  height: "2.5rem", // Reduce height
+                  width:"12rem",
+                  paddingRight: "0.5rem",
+                },
+              }}
+          >
+              {[...Array(10).keys()].map((km) => (
+                  <MenuItem key={km + 1} value={km + 1}>{km + 1} km</MenuItem>
+              ))}
+          </TextField>
+      )}
 
         {/* No Listings Message */}
         {currentListings.length === 0 && (
