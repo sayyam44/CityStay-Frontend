@@ -513,6 +513,21 @@ function AddProperty() {
         draft.borougErrors.hasErrors = true;
         draft.borougErrors.errorMessage = "This field must not be empty";
         break;
+      
+      //this is to show alert message when the user uploads no pic or more than 5 pics
+      case "setAlert":
+        draft.alertMessage = action.alertmessage;
+        break;
+      
+      //this is to clear the list if the user uploads more thna 5 pics.
+      case "clearUploadedPictures":
+        draft.uploadedPictures = [];
+        draft.picture1Value = null;
+        draft.picture2Value = null;
+        draft.picture3Value = null;
+        draft.picture4Value = null;
+        draft.picture5Value = null;
+        break;
       }
     }
 
@@ -814,8 +829,20 @@ function AddProperty() {
         e.preventDefault();
         console.log('yessssssssssssssss');
 
+        // Check if the number of uploaded pictures is valid
+        if (state.uploadedPictures.length === 0) {
+          dispatch({ type: "setAlert", alertmessage: "At least 1 photo is required!" });
+          window.scrollTo(0, 0);
+          return;
+        } else if (state.uploadedPictures.length > 5) {
+          dispatch({ type: "setAlert", alertmessage: "Maximum of 5 photos can be uploaded!" });
+          dispatch({ type: "clearUploadedPictures" });
+          window.scrollTo(0, 0);
+          return;
+        }
+  
         //the form will only submit if there is no alert or none of the fields are empty
-        if (
+        else if (
           !state.titleErrors.hasErrors &&
           !state.listingTypeErrors.hasErrors &&
           !state.propertyStatusErrors.hasErrors &&
@@ -971,30 +998,80 @@ function AddProperty() {
             PLEASE COMPLETE YOUR PROFILE TO ADD A PROPERTY!
         </Button>
         );
-      } else if (!GlobalState.userIsLogged) {
-        return (
-          <Button
-            variant="outlined"
-            fullWidth
-            onClick={()=>navigate('/login')}
-            // type="submit"
-            sx={{
-                color: "white",
-                backgroundColor: "green",
-                fontSize: "1rem",
-                marginLeft: "1rem",
-                marginRight: "1rem",
-                marginTop: "-2rem",
-                "&:hover": {
-                    backgroundColor: "orange",
-                },
-            }}
-            >
-            PLEASE SIGN IN TO ADD A PROPERTY!
-        </Button>
-        );
-      }
+    //   } else if (!GlobalState.userIsLogged) {
+    //     return (
+    //       <Button
+    //         variant="outlined"
+    //         fullWidth
+    //         onClick={()=>navigate('/login')}
+    //         // type="submit"
+    //         sx={{
+    //             color: "white",
+    //             backgroundColor: "green",
+    //             fontSize: "1rem",
+    //             marginLeft: "1rem",
+    //             marginRight: "1rem",
+    //             marginTop: "-2rem",
+    //             "&:hover": {
+    //                 backgroundColor: "orange",
+    //             },
+    //         }}
+    //         >
+    //         PLEASE SIGN IN TO ADD A PROPERTY!
+    //     </Button>
+    //     );
+    //   }else if (
+    //     GlobalState.userIsLogged &&
+    //     state.uploadedPictures.length === 0
+    //   ) {
+    //     return (
+    //       <Button
+    //         variant="outlined"
+    //         fullWidth
+    //         onClick={()=>navigate('/profile')}
+    //         // type="submit"
+    //         sx={{
+    //             color: "white",
+    //             backgroundColor: "green",
+    //             fontSize: "1rem",
+    //             marginLeft: "1rem",
+    //             marginRight: "1rem",
+    //             marginTop: "-2rem",
+    //             "&:hover": {
+    //                 backgroundColor: "orange",
+    //             },
+    //         }}
+    //         >
+    //         At least 1 photo is required !
+    //     </Button>
+    //     );
+    // }else if (
+    //   GlobalState.userIsLogged &&
+    //   state.uploadedPictures.length > 5
+    // ) {
+    //   return (
+    //     <Button
+    //       variant="outlined"
+    //       fullWidth
+    //       onClick={()=>navigate('/profile')}
+    //       // type="submit"
+    //       sx={{
+    //           color: "white",
+    //           backgroundColor: "green",
+    //           fontSize: "1rem",
+    //           marginLeft: "1rem",
+    //           marginRight: "1rem",
+    //           marginTop: "-2rem",
+    //           "&:hover": {
+    //               backgroundColor: "orange",
+    //           },
+    //       }}
+    //       >
+    //       Maximum of 5 photos can be uploaded !
+    //   </Button>
+    //   );
     }
+  }
   
     //this is used to show the popup for 1.5 sec before being navigating
     //to the homepage 
@@ -1017,428 +1094,437 @@ function AddProperty() {
                 padding: "3rem"
             }}
         >
-            <form onSubmit={FormSubmit}>
-                <Grid2 container justifyContent="center">
-                    <Typography variant="h4">SUBMIT A PROPERTY</Typography>
-                </Grid2>
-
-                <Grid2 container style={{ marginTop: "1rem" }}>
-                    <TextField 
-                    id="title" 
-                    label="Title*" 
-                    variant="outlined"
-                    fullWidth
-                    value = {state.titleValue}
-                    onChange = {(e)=>dispatch({type: 'catchTitleChange', titleChosen: e.target.value})}  
-                    
-                    // this is to show alerts related to title field 
-                    onBlur={(e) =>
-                      dispatch({
-                        type: "catchTitleErrors",
-                        titleChosen: e.target.value,
-                      })
-                    }
-                    error={state.titleErrors.hasErrors ? true : false}
-                    helperText={state.titleErrors.errorMessage} 
-                    />
-                </Grid2>
-
-              <Grid2 container justifyContent='space-between'>
-                <Grid2 xs={5} style={{ marginTop: "1rem", width: "47%" }}>
-                    <TextField 
-                    id="listingType" 
-                    label="Listing Type*" 
-                    variant="outlined"
-                    fullWidth
-                    value = {state.listingTypeValue}
-                    onChange = {(e)=>dispatch({type: 'catchListingTypeChange', 
-                    listingTypeChosen: e.target.value})}
-
-                    // this is to show alerts related to listing type field
-                    onBlur={(e) =>
-                      dispatch({
-                        type: "catchListingTypeErrors",
-                        listingTypeChosen: e.target.value,
-                      })
-                    }
-                    error={state.listingTypeErrors.hasErrors ? true : false}
-                    helperText={state.listingTypeErrors.errorMessage}
-
-                    select
-                    slotProps={{
-                      select: {
-                        native: true,
-                      },
-                    }}
-                    >
-                      {listingTypeOptions.map((option) => (
-                        <option key={option.value} value={option.value}>
-                        {option.label}
-                        </option>
-                    ))}
-                    </TextField>
-                </Grid2>
-
-
-                <Grid2 xs={5} style={{ marginTop: "1rem" , width: "47%" }}>
-                    <TextField 
-                    id="propertyStatus" 
-                    label="Property Status*" 
-                    variant="outlined"
-                    fullWidth
-                    value = {state.propertyStatusValue}
-                    onChange = {(e)=>dispatch({type: 'catchPropertyStatusChange', 
-                    propertyStatusChosen: e.target.value})}
-
-                    // this is to show alerts related to property status field
-                    onBlur={(e) =>
-                      dispatch({
-                        type: "catchPropertyStatusErrors",
-                        propertyStatusChosen: e.target.value,
-                      })
-                    }
-                    error={state.propertyStatusErrors.hasErrors ? true : false}
-                    helperText={state.propertyStatusErrors.errorMessage}
-
-                    select
-                    slotProps={{
-                      select: {
-                        native: true,
-                      },
-                    }}
-                    >
-                      {propertyStatusOptions.map((option) => (
-                        <option key={option.value} value={option.value}>
-                        {option.label}
-                        </option>
-                      ))}
-                       </TextField> 
-                </Grid2>
+        <form onSubmit={FormSubmit}>
+          {/* this is to give an alert if the photos are less than 1 or more than 5 */}
+            {state.alertMessage && (
+              <Grid2 xs={12} sx={{ textAlign: "center" }}>
+                <Alert severity="error" sx={{ fontWeight: "bold" }}>
+                  {state.alertMessage}
+                </Alert>
               </Grid2>
-              
-              <Grid2 container justifyContent='space-between' >
-                <Grid2 container style={{ marginTop: "1rem" , width: "47%" }}>
-                    <TextField 
-                    id="rentalFrequency" 
-                    label="Rental Frequency" 
-                    variant="outlined"
-                    disabled={state.propertyStatusValue === "Sale" ? true : false}
-                    fullWidth
-                    value = {state.rentalFrequencyValue}
-                    onChange = {(e)=>dispatch({type: 'catchRentalFrequencyChange', 
-                    rentalFrequencyChosen: e.target.value})}
-                    select
-                    slotProps={{
-                      select: {
-                        native: true,
-                      },
-                    }}
-                    > {rentalFrequencyOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                      {option.label}
-                      </option>
-                    ))}
-                    </TextField>
+            )}
+
+            <Grid2 container justifyContent="center">
+                <Typography variant="h4">SUBMIT A PROPERTY</Typography>
+            </Grid2>
+
+            <Grid2 container style={{ marginTop: "1rem" }}>
+                <TextField 
+                id="title" 
+                label="Title*" 
+                variant="outlined"
+                fullWidth
+                value = {state.titleValue}
+                onChange = {(e)=>dispatch({type: 'catchTitleChange', titleChosen: e.target.value})}  
+                
+                // this is to show alerts related to title field 
+                onBlur={(e) =>
+                  dispatch({
+                    type: "catchTitleErrors",
+                    titleChosen: e.target.value,
+                  })
+                }
+                error={state.titleErrors.hasErrors ? true : false}
+                helperText={state.titleErrors.errorMessage} 
+                />
+            </Grid2>
+
+          <Grid2 container justifyContent='space-between'>
+            <Grid2 xs={5} style={{ marginTop: "1rem", width: "47%" }}>
+                <TextField 
+                id="listingType" 
+                label="Listing Type*" 
+                variant="outlined"
+                fullWidth
+                value = {state.listingTypeValue}
+                onChange = {(e)=>dispatch({type: 'catchListingTypeChange', 
+                listingTypeChosen: e.target.value})}
+
+                // this is to show alerts related to listing type field
+                onBlur={(e) =>
+                  dispatch({
+                    type: "catchListingTypeErrors",
+                    listingTypeChosen: e.target.value,
+                  })
+                }
+                error={state.listingTypeErrors.hasErrors ? true : false}
+                helperText={state.listingTypeErrors.errorMessage}
+
+                select
+                slotProps={{
+                  select: {
+                    native: true,
+                  },
+                }}
+                >
+                  {listingTypeOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                    {option.label}
+                    </option>
+                ))}
+                </TextField>
+            </Grid2>
+
+
+            <Grid2 xs={5} style={{ marginTop: "1rem" , width: "47%" }}>
+                <TextField 
+                id="propertyStatus" 
+                label="Property Status*" 
+                variant="outlined"
+                fullWidth
+                value = {state.propertyStatusValue}
+                onChange = {(e)=>dispatch({type: 'catchPropertyStatusChange', 
+                propertyStatusChosen: e.target.value})}
+
+                // this is to show alerts related to property status field
+                onBlur={(e) =>
+                  dispatch({
+                    type: "catchPropertyStatusErrors",
+                    propertyStatusChosen: e.target.value,
+                  })
+                }
+                error={state.propertyStatusErrors.hasErrors ? true : false}
+                helperText={state.propertyStatusErrors.errorMessage}
+
+                select
+                slotProps={{
+                  select: {
+                    native: true,
+                  },
+                }}
+                >
+                  {propertyStatusOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                    {option.label}
+                    </option>
+                  ))}
+                    </TextField> 
+            </Grid2>
+          </Grid2>
+          
+          <Grid2 container justifyContent='space-between' >
+            <Grid2 container style={{ marginTop: "1rem" , width: "47%" }}>
+                <TextField 
+                id="rentalFrequency" 
+                label="Rental Frequency" 
+                variant="outlined"
+                disabled={state.propertyStatusValue === "Sale" ? true : false}
+                fullWidth
+                value = {state.rentalFrequencyValue}
+                onChange = {(e)=>dispatch({type: 'catchRentalFrequencyChange', 
+                rentalFrequencyChosen: e.target.value})}
+                select
+                slotProps={{
+                  select: {
+                    native: true,
+                  },
+                }}
+                > {rentalFrequencyOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                  {option.label}
+                  </option>
+                ))}
+                </TextField>
+            </Grid2>
+
+            <Grid2 container style={{ marginTop: "1rem" , width: "47%"}}>
+                <TextField 
+                id="price" 
+                type="number"
+                label={PriceDisplay()} //this is to change the label as per the frequency chosen by the user
+                variant="outlined"
+                fullWidth
+                value = {state.priceValue}
+                onChange = {(e)=>dispatch({type: 'catchPriceChange', 
+                priceChosen: e.target.value})} 
+
+                // this is to show alerts related to price field
+                onBlur={(e) =>
+                  dispatch({
+                    type: "catchPriceErrors",
+                    priceChosen: e.target.value,
+                  })
+                }
+                error={state.priceErrors.hasErrors ? true : false}
+                helperText={state.priceErrors.errorMessage}
+                />
+            </Grid2>
+          </Grid2>
+
+
+            <Grid2 container style={{ marginTop: "1rem" }}>
+                <TextField 
+                id="description" 
+                label="Description" 
+                variant="outlined"
+                multiline
+                rows={6}
+                fullWidth
+                value = {state.descriptionValue}
+                onChange = {(e)=>dispatch({type: 'catchDescriptionChange', 
+                descriptionChosen: e.target.value})}  />
+            </Grid2>
+
+            {state.listingTypeValue === 'Office' ? '' : (
+              <Grid2 xs={3} container style={{ marginTop: "1rem" }}>
+                <TextField 
+                id="rooms" 
+                type="number"
+                label="Rooms" 
+                variant="outlined"
+                fullWidth
+                value = {state.roomsValue}
+                onChange = {(e)=>dispatch({type: 'catchRoomsChange', 
+                roomsChosen: e.target.value})}  />
+            </Grid2>
+            )}
+
+            {/* checkboxes */}
+            <Grid2 container justifyContent="space-between"> 
+                <Grid2 xs={2} style={{ marginTop: "1rem" }}>
+                <FormControlLabel 
+                control={<Checkbox 
+                    checked={state.furnishedValue}
+                    onChange = {(e)=>dispatch({type: 'catchFurnishedChange', 
+                        furnishedChosen: e.target.checked})}/>} 
+                label="Furnished" />
                 </Grid2>
 
-                <Grid2 container style={{ marginTop: "1rem" , width: "47%"}}>
-                    <TextField 
-                    id="price" 
-                    type="number"
-                    label={PriceDisplay()} //this is to change the label as per the frequency chosen by the user
-                    variant="outlined"
-                    fullWidth
-                    value = {state.priceValue}
-                    onChange = {(e)=>dispatch({type: 'catchPriceChange', 
-                    priceChosen: e.target.value})} 
-
-                    // this is to show alerts related to price field
-                    onBlur={(e) =>
-                      dispatch({
-                        type: "catchPriceErrors",
-                        priceChosen: e.target.value,
-                      })
-                    }
-                    error={state.priceErrors.hasErrors ? true : false}
-                    helperText={state.priceErrors.errorMessage}
-                   />
-                </Grid2>
-              </Grid2>
-
-
-                <Grid2 container style={{ marginTop: "1rem" }}>
-                    <TextField 
-                    id="description" 
-                    label="Description" 
-                    variant="outlined"
-                    multiline
-                    rows={6}
-                    fullWidth
-                    value = {state.descriptionValue}
-                    onChange = {(e)=>dispatch({type: 'catchDescriptionChange', 
-                    descriptionChosen: e.target.value})}  />
+                <Grid2 xs={2} style={{ marginTop: "1rem" }}>
+                <FormControlLabel 
+                control={<Checkbox 
+                    checked={state.poolValue}
+                    onChange = {(e)=>dispatch({type: 'catchPoolChange', 
+                        poolChosen: e.target.checked})}/>} 
+                label="Pool" />
                 </Grid2>
 
-                {state.listingTypeValue === 'Office' ? '' : (
-                  <Grid2 xs={3} container style={{ marginTop: "1rem" }}>
-                    <TextField 
-                    id="rooms" 
-                    type="number"
-                    label="Rooms" 
-                    variant="outlined"
-                    fullWidth
-                    value = {state.roomsValue}
-                    onChange = {(e)=>dispatch({type: 'catchRoomsChange', 
-                    roomsChosen: e.target.value})}  />
+                <Grid2 xs={2} style={{ marginTop: "1rem" }}>
+                <FormControlLabel 
+                control={<Checkbox 
+                    checked={state.elevatorValue}
+                    onChange = {(e)=>dispatch({type: 'catchElevatorChange', 
+                        elevatorChosen: e.target.checked})}/>} 
+                label="Elevator" />
                 </Grid2>
-                )}
 
-                {/* checkboxes */}
-                <Grid2 container justifyContent="space-between"> 
-                    <Grid2 xs={2} style={{ marginTop: "1rem" }}>
-                    <FormControlLabel 
-                    control={<Checkbox 
-                        checked={state.furnishedValue}
-                        onChange = {(e)=>dispatch({type: 'catchFurnishedChange', 
-                            furnishedChosen: e.target.checked})}/>} 
-                    label="Furnished" />
-                    </Grid2>
-
-                    <Grid2 xs={2} style={{ marginTop: "1rem" }}>
-                    <FormControlLabel 
-                    control={<Checkbox 
-                        checked={state.poolValue}
-                        onChange = {(e)=>dispatch({type: 'catchPoolChange', 
-                            poolChosen: e.target.checked})}/>} 
-                    label="Pool" />
-                    </Grid2>
-
-                    <Grid2 xs={2} style={{ marginTop: "1rem" }}>
-                    <FormControlLabel 
-                    control={<Checkbox 
-                        checked={state.elevatorValue}
-                        onChange = {(e)=>dispatch({type: 'catchElevatorChange', 
-                            elevatorChosen: e.target.checked})}/>} 
-                    label="Elevator" />
-                    </Grid2>
-
-                    <Grid2 xs={2} style={{ marginTop: "1rem" }}>
-                    <FormControlLabel 
-                    control={<Checkbox 
-                        checked={state.cctvValue}
-                        onChange = {(e)=>dispatch({type: 'catchCctvChange', 
-                            cctvChosen: e.target.checked})}/>} 
-                    label="Cctv" />
-                    </Grid2>
-                    
-                    
-                    <Grid2 xs={2} style={{ marginTop: "1rem" }}>
-                    <FormControlLabel 
-                    control={<Checkbox 
-                        checked={state.parkingValue}
-                        onChange = {(e)=>dispatch({type: 'catchParkingChange', 
-                            parkingChosen: e.target.checked})}/>} 
-                    label="Parking" />
-                    </Grid2>
+                <Grid2 xs={2} style={{ marginTop: "1rem" }}>
+                <FormControlLabel 
+                control={<Checkbox 
+                    checked={state.cctvValue}
+                    onChange = {(e)=>dispatch({type: 'catchCctvChange', 
+                        cctvChosen: e.target.checked})}/>} 
+                label="Cctv" />
                 </Grid2>
                 
-
-                <Grid2 container justifyContent="space-between">
-                <Grid2 style={{ marginTop: "1rem" , width: "47%"  }}>
-                    <TextField 
-                    id="area" 
-                    label="Area*" 
-                    variant="outlined"
-                    fullWidth
-                    value = {state.areaValue}
-                    onChange = {(e)=>dispatch({type: 'catchAreaChange', 
-                    areaChosen: e.target.value})} 
-                    
-                     // this is to show alerts related to area field 
-                    onBlur={(e) =>
-                      dispatch({
-                        type: "catchAreaErrors",
-                        areaChosen: e.target.value,
-                      })
-                    }
-                    error={state.areaErrors.hasErrors ? true : false}
-                    helperText={state.areaErrors.errorMessage}
-
-                    select 
-                    slotProps={{
-                        select: {
-                          native: true,
-                        },
-                      }}
-                    >
-                    {areaOptions.map((option) => (
-                        <option key={option.value} value={option.value}>
-                        {option.label}
-                        </option>
-                    ))}
-                    
-                    </TextField>
+                
+                <Grid2 xs={2} style={{ marginTop: "1rem" }}>
+                <FormControlLabel 
+                control={<Checkbox 
+                    checked={state.parkingValue}
+                    onChange = {(e)=>dispatch({type: 'catchParkingChange', 
+                        parkingChosen: e.target.checked})}/>} 
+                label="Parking" />
                 </Grid2>
-
-                <Grid2 style={{ marginTop: "1rem", width: "47%"  }}>
-                    <TextField 
-                    id="borough" 
-                    label="Location*" 
-                    variant="outlined"
-                    fullWidth
-                    value = {state.boroughValue}
-                    onChange = {(e)=>dispatch({type: 'catchBoroughChange', 
-                    boroughChosen: e.target.value})} 
-                    
-                    // this is to show alerts related to borough field 
-                    onBlur={(e) =>
-                      dispatch({
-                        type: "catchBoroughErrors",
-                        boroughChosen: e.target.value,
-                      })
-                    }
-                    error={state.boroughErrors.hasErrors ? true : false}
-                    helperText={state.boroughErrors.errorMessage}
-
-
-                    select 
-                    slotProps={{
-                        select: {
-                          native: true,
-                        },
-                      }}
-                    >
-
-                    {state.areaValue === "Inner St.John's" ? InnerSJOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                    {option.label}
-                    </option>
-                    )): ''}
-
-                    {state.areaValue === "Outer St.John's" ? OuterSJOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                    {option.label}
-                    </option>
-                    )): ''}
-                    
-
-                    </TextField>
-                </Grid2>
-                </Grid2>
+            </Grid2>
             
 
-                {/* this is to show alert if the user does not move the marker to locate the property */}
-                <Grid2 item sx={{ marginTop: "1rem" }}> 
-                  {state.latitudeValue && state.longitudeValue ? (
-                    <Alert severity="success">
-                      You property is located @ {state.latitudeValue},{" "}
-                      {state.longitudeValue}
-                    </Alert>
-                  ) : (
-                    <Alert severity="warning">
-                      Locate your property on the map before submitting this form
-                    </Alert>
-                  )}
-                </Grid2>
-                {/* ReactLeaflet component for map and its dragable marker  */}
-                <Grid2 container sx={{height: "35rem", marginTop: '1rem'}}>
-                    <MapContainer 
-                    center={[47.56431808943282,-52.730079775120906]} 
-                    zoom={11} 
-                    scrollWheelZoom={true}>
-                        <TileLayer
-                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        />
-                        {/* <Marker position={[51.505, -0.09]}>
-                            <Popup>
-                            A pretty CSS3 popup. <br /> Easily customizable.
-                            </Popup>
-                        </Marker> */}
+            <Grid2 container justifyContent="space-between">
+            <Grid2 style={{ marginTop: "1rem" , width: "47%"  }}>
+                <TextField 
+                id="area" 
+                label="Area*" 
+                variant="outlined"
+                fullWidth
+                value = {state.areaValue}
+                onChange = {(e)=>dispatch({type: 'catchAreaChange', 
+                areaChosen: e.target.value})} 
+                
+                  // this is to show alerts related to area field 
+                onBlur={(e) =>
+                  dispatch({
+                    type: "catchAreaErrors",
+                    areaChosen: e.target.value,
+                  })
+                }
+                error={state.areaErrors.hasErrors ? true : false}
+                helperText={state.areaErrors.errorMessage}
 
-                      {/* below is to execute the case for zooming into the selected area from dropdown*/}
-                      <TheMapComponent />
-                      {/* this is to specify the functionality of the draggable marker on map */}
-                      <Marker 
-                        draggable
-                        eventHandlers={eventHandlers}
-                        position={state.markerPosition}//initial marker position
-                        ref={markerRef}>
+                select 
+                slotProps={{
+                    select: {
+                      native: true,
+                    },
+                  }}
+                >
+                {areaOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                    {option.label}
+                    </option>
+                ))}
+                
+                </TextField>
+            </Grid2>
+
+            <Grid2 style={{ marginTop: "1rem", width: "47%"  }}>
+                <TextField 
+                id="borough" 
+                label="Location*" 
+                variant="outlined"
+                fullWidth
+                value = {state.boroughValue}
+                onChange = {(e)=>dispatch({type: 'catchBoroughChange', 
+                boroughChosen: e.target.value})} 
+                
+                // this is to show alerts related to borough field 
+                onBlur={(e) =>
+                  dispatch({
+                    type: "catchBoroughErrors",
+                    boroughChosen: e.target.value,
+                  })
+                }
+                error={state.boroughErrors.hasErrors ? true : false}
+                helperText={state.boroughErrors.errorMessage}
+
+
+                select 
+                slotProps={{
+                    select: {
+                      native: true,
+                    },
+                  }}
+                >
+
+                {state.areaValue === "Inner St.John's" ? InnerSJOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                {option.label}
+                </option>
+                )): ''}
+
+                {state.areaValue === "Outer St.John's" ? OuterSJOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                {option.label}
+                </option>
+                )): ''}
+                
+
+                </TextField>
+            </Grid2>
+            </Grid2>
         
-                      </Marker>
 
-                    </MapContainer>
-                    </Grid2>
-                    
-                    <Grid2 container style={{ marginTop: "1rem" }} xs={6}>
-                      <Button
-                          variant="contained"
-                          component="label"
-                          fullWidth
-                          sx={{
-                              color: "white",
-                              backgroundColor: "blue",
-                              fontSize: "1rem",
-                              marginLeft: "1rem",
-                              marginRight: "1rem",
-                              border: '1px solid black',
-                          }}
-                      >
-                          UPLOAD PICTURES (MAX 5)
+            {/* this is to show alert if the user does not move the marker to locate the property */}
+            <Grid2 item sx={{ marginTop: "1rem" }}> 
+              {state.latitudeValue && state.longitudeValue ? (
+                <Alert severity="success">
+                  You property is located @ {state.latitudeValue},{" "}
+                  {state.longitudeValue}
+                </Alert>
+              ) : (
+                <Alert severity="warning">
+                  Locate your property on the map before submitting this form
+                </Alert>
+              )}
+            </Grid2>
+            {/* ReactLeaflet component for map and its dragable marker  */}
+            <Grid2 container sx={{height: "35rem", marginTop: '1rem'}}>
+                <MapContainer 
+                center={[47.56431808943282,-52.730079775120906]} 
+                zoom={11} 
+                scrollWheelZoom={true}>
+                    <TileLayer
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    />
+                    {/* <Marker position={[51.505, -0.09]}>
+                        <Popup>
+                        A pretty CSS3 popup. <br /> Easily customizable.
+                        </Popup>
+                    </Marker> */}
 
-                          {/* to upload the images in particular format */}
-                          <input 
-                          type="file" 
-                          multiple accept="image/png , image/gif, image/jpeg"
-                          hidden
-                          //to store the pictures uploaded by the user
-                          //into the uploadedPictures initial state
-                          //When the user is uploading picture from frontend
-                          //it runs the catchUploadedPictures case and then 
-                          //it adds those pics into the initialstate of uploadedPictures
-                          //and I have defined a useEffect hook above that if any 
-                          //picture adds into this array it adds into the initial states of 
-                          //pictures i.e. picture1value,picture2value and so on.
-                          onChange={(e)=> dispatch({
-                            type: "catchUploadedPictures",
-                            picturesChosen: e.target.files,
-                          })
-                        } 
-                        />
-                      </Button>
-                    </Grid2>
-                    
-                    {/* This is to show the dialog box for what all pictures are uploaded by the user */}
-                    <Grid2 container>
-                      <ul>
-                        {state.picture1Value ? <li>{state.picture1Value.name}</li>:""}
-                        {state.picture2Value ? <li>{state.picture2Value.name}</li>:""}
-                        {state.picture3Value ? <li>{state.picture3Value.name}</li>:""}
-                        {state.picture4Value ? <li>{state.picture4Value.name}</li>:""}
-                        {state.picture5Value ? <li>{state.picture5Value.name}</li>:""}
-                      </ul>
-                    </Grid2>
+                  {/* below is to execute the case for zooming into the selected area from dropdown*/}
+                  <TheMapComponent />
+                  {/* this is to specify the functionality of the draggable marker on map */}
+                  <Marker 
+                    draggable
+                    eventHandlers={eventHandlers}
+                    position={state.markerPosition}//initial marker position
+                    ref={markerRef}>
+    
+                  </Marker>
 
-                    <Grid2 container style={{ marginTop: "1rem" }} xs={8}>
-                        {/* <Button
-                            variant="contained"
-                            fullWidth
-                            type="submit"
-                            sx={{
-                                color: "white",
-                                backgroundColor: "green",
-                                fontSize: "1.1rem",
-                                marginLeft: "1rem",
-                                marginRight: "3rem",
-                                "&:hover": {
-                                    backgroundColor: "orange",
-                                },
-                            }}
-                        >
-                            SUBMIT
-                        </Button> */}
-                        {SubmitButtonDisplay()}
-                    </Grid2>
+                </MapContainer>
+                </Grid2>
+                
+                <Grid2 container style={{ marginTop: "1rem" }} xs={6}>
+                  <Button
+                      variant="contained"
+                      component="label"
+                      fullWidth
+                      sx={{
+                          color: "white",
+                          backgroundColor: "blue",
+                          fontSize: "1rem",
+                          marginLeft: "1rem",
+                          marginRight: "1rem",
+                          border: '1px solid black',
+                      }}
+                  >
+                      UPLOAD PICTURES (MAX 5)
+
+                      {/* to upload the images in particular format */}
+                      <input 
+                      type="file" 
+                      multiple accept="image/png , image/gif, image/jpeg"
+                      hidden
+                      //to store the pictures uploaded by the user
+                      //into the uploadedPictures initial state
+                      //When the user is uploading picture from frontend
+                      //it runs the catchUploadedPictures case and then 
+                      //it adds those pics into the initialstate of uploadedPictures
+                      //and I have defined a useEffect hook above that if any 
+                      //picture adds into this array it adds into the initial states of 
+                      //pictures i.e. picture1value,picture2value and so on.
+                      onChange={(e)=> dispatch({
+                        type: "catchUploadedPictures",
+                        picturesChosen: e.target.files,
+                      })
+                    } 
+                    />
+                  </Button>
+                </Grid2>
+                
+                {/* This is to show the dialog box for what all pictures are uploaded by the user */}
+                <Grid2 container>
+                  <ul>
+                    {state.picture1Value ? <li>{state.picture1Value.name}</li>:""}
+                    {state.picture2Value ? <li>{state.picture2Value.name}</li>:""}
+                    {state.picture3Value ? <li>{state.picture3Value.name}</li>:""}
+                    {state.picture4Value ? <li>{state.picture4Value.name}</li>:""}
+                    {state.picture5Value ? <li>{state.picture5Value.name}</li>:""}
+                  </ul>
+                </Grid2>
+
+                <Grid2 container style={{ marginTop: "1rem" }} xs={8}>
+                    {/* <Button
+                        variant="contained"
+                        fullWidth
+                        type="submit"
+                        sx={{
+                            color: "white",
+                            backgroundColor: "green",
+                            fontSize: "1.1rem",
+                            marginLeft: "1rem",
+                            marginRight: "3rem",
+                            "&:hover": {
+                                backgroundColor: "orange",
+                            },
+                        }}
+                    >
+                        SUBMIT
+                    </Button> */}
+                    {SubmitButtonDisplay()}
+                </Grid2>
             </form>
             {/* this is the popup when user logs in  */}
             <Snackbar
