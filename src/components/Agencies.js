@@ -128,6 +128,10 @@ function Agencies() {
                     <CardContent sx={{ flexGrow: 1 }}>
                       <Typography gutterBottom variant="h5" component="div">
                         {agency.agency_name}
+                      
+                      </Typography>
+                      <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                      {'Owner - '}{agency.seller_username}
                       </Typography>
                       <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                         {agency.bio.substring(0, 50)}...

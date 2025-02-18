@@ -132,6 +132,8 @@ function ReducerFunction(draft, action) {
 
   // to get the necessary values to calculate distance of the user from listings 
   const handleAllowLocation = () => {
+    // navigator.geolocation.getCurrentPosition is a built-in 
+    // JavaScript Geolocation API provided by modern browsers.
     navigator.geolocation.getCurrentPosition(
         (position) => {
             setUserLocation({ lat: position.coords.latitude, lon: position.coords.longitude });
