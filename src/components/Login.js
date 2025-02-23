@@ -123,6 +123,9 @@ function Login() {
                 );
                 console.log(response);
 
+                // Reset location access in localStorage after login
+                localStorage.setItem("locationAccess", null);
+
                 //here we are just sending the data to the app.js i.e. the parent component 
                 GlobalDispatch({
                   type: "userSignsIn", 

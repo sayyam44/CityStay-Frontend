@@ -50,6 +50,10 @@ function Header() {
                     headers: {Authorization: 'Token '.concat(GlobalState.userToken)}
                 });
                 console.log(response);
+
+                // Set locationAccess to false in localStorage
+                localStorage.clear();       
+                
                 //dispatch case for this in app.js is logout
                 GlobalDispatch({type: "logout" });
                 setOpenSnack(true);
@@ -86,7 +90,8 @@ function Header() {
             </Button>
             <Button color="inherit" 
             style={{marginLeft: "2rem"}} 
-            onClick={()=>navigate("/agencies")}>
+            onClick={()=>navigate("/agencies")}
+            >
                 <Typography variant="h6">Agencies</Typography>
             </Button>
             </div>

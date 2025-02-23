@@ -130,25 +130,41 @@ function ReducerFunction(draft, action) {
     filterListings();
   }, [selectedDistance, userLocation, allListings, searchQuery]);
 
+
+  //this is used to check that if the local storage locationAccess value is allowed
+  //then the dialog box will not appear 
+  //The location access dialog box will appear in 3 cases-
+  //when session starts
+  //when the user logs in - in login.js
+  //when the user logs out - in header.js ->handlelogout function 
+  useEffect(() => {
+    const locationAccess = localStorage.getItem("locationAccess");
+    if (locationAccess=="allow") {
+      setOpenDialog(false);
+      setLocationPermission(locationAccess === "allow");
+    }
+  }, []);  
+
   // to get the necessary values to calculate distance of the user from listings 
   const handleAllowLocation = () => {
     // navigator.geolocation.getCurrentPosition is a built-in 
     // JavaScript Geolocation API provided by modern browsers.
     navigator.geolocation.getCurrentPosition(
-        (position) => {
-            setUserLocation({ lat: position.coords.latitude, lon: position.coords.longitude });
-            setLocationPermission(true);
-            setOpenDialog(false);
-        },
-        () => {
-            alert("Location access denied");
-            setOpenDialog(false);
-            setLocationPermission(false);
-            setUserLocation(null); // Ensure it's explicitly null
-            setOpenDialog(false);
-            filterListings(); // Call filter function even if location is denied
-        }
-    );
+    (position) => {
+      setUserLocation({ lat: position.coords.latitude, lon: position.coords.longitude });
+      setLocationPermission(true);
+      localStorage.setItem("locationAccess", "allow"); // Store choice
+      setOpenDialog(false);
+    },
+    () => {
+      alert("Location access denied");
+      setLocationPermission(false);
+      setUserLocation(null);
+      localStorage.setItem("locationAccess", "deny"); // Store choice
+      setOpenDialog(false);
+      filterListings();
+    }
+  );
 };
 
   useEffect(() => {
@@ -271,7 +287,6 @@ function ReducerFunction(draft, action) {
   return (
   
     <Grid2 container>
-
       {/* new */}
       {/* Location Permission Dialog */}
       <Dialog open={openDialog}>
@@ -282,8 +297,18 @@ function ReducerFunction(draft, action) {
             </DialogContentText>
         </DialogContent>
         <DialogActions>
-            <Button onClick={() => setOpenDialog(false)} color="secondary">Deny</Button>
-            <Button onClick={handleAllowLocation} color="primary">Allow</Button>
+        <Button 
+        onClick={() => {
+          setOpenDialog(false);
+          localStorage.setItem("locationAccess", "deny"); // Store denial
+        }} 
+        color="secondary">
+          Deny
+        </Button>
+        <Button 
+        onClick={handleAllowLocation} 
+        color="primary">
+          Allow</Button>
         </DialogActions>
       </Dialog>
 
