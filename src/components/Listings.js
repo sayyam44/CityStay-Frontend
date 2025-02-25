@@ -30,6 +30,8 @@ import { latLng } from 'leaflet';
 
 import L from "leaflet";
 
+import MicIcon from "@mui/icons-material/Mic";
+
 function Listings() {
   // fetch('http://127.0.0.1:8000/api/listings/')
   // .then(response=>response.json())
@@ -106,7 +108,48 @@ function ReducerFunction(draft, action) {
 
   //to get the filtered listings om the basis of the input in search tab by user
   const [filteredListings, setFilteredListings] = useState([]); // Holds filtered results
+  
+  // searchQuery: Stores the text entered manually or converted from speech.
   const [searchQuery, setSearchQuery] = useState(""); // Holds search input
+  
+  // isListening: Tracks whether speech recognition is active.
+  const [isListening, setIsListening] = useState(false);
+
+  // Initialize Speech Recognition
+  // window.SpeechRecognition is used for speech-to-text conversion.
+  // The JavaScript API used for speech recognition and converting 
+  // speech to text in the code is the Web Speech API, specifically 
+  // the SpeechRecognition interface.
+  const recognition = new window.webkitSpeechRecognition();
+  recognition.lang = "en-US";
+  recognition.interimResults = false;
+
+  // When the user speaks, recognition.onresult fires.
+  // event.results[0][0].transcript extracts the recognized text.
+  // setSearchQuery(transcript) updates the search input with the recognized text.
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    // Remove full stop at the end, if present
+    const cleanedTranscript = transcript.replace(/\.$/, '');
+    setSearchQuery(cleanedTranscript);
+  };
+
+  // Handle recognition errors
+  recognition.onerror = (event) => {
+    console.error("Speech recognition error", event.error);
+  };
+
+  // Toggle speech recognition on and off on the basis of the 
+  // access given or not given to the microphone
+  const toggleListening = () => {
+    if (isListening) {
+      recognition.stop();
+    } else {
+      recognition.start();
+    }
+    setIsListening(!isListening);
+  };
+
 
   // the below hook is created to get over the issue we got in 
   //console when we were reloading the page, we were unable to access 
@@ -316,7 +359,7 @@ function ReducerFunction(draft, action) {
       <Grid2 size={4}>
 
         {/* Search Bar */}
-        <TextField
+        {/* <TextField
           label="Search for listings..."
           variant="outlined"
           // fullWidth
@@ -343,7 +386,45 @@ function ReducerFunction(draft, action) {
           }}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-        />
+        /> */}
+    
+        {/* Search Bar with voice recognition */}
+        <TextField
+            label="Search for listings..."
+            variant="outlined"
+            sx={{
+              marginBottom: "-0.3rem",
+              marginTop: "0.7rem",
+              marginLeft: "0.5rem",
+              marginBottom: "0.1rem",
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "1.5rem", // Rounded edges
+                height: "2.5rem", // Reduce height
+                paddingRight: "0.5rem", // Space for the mic button on the right
+                width: "14rem",
+              },
+            }}
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon color="action" />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    {/* Clicking the microphone button toggles speech recognition on and off. */}
+                    <IconButton onClick={toggleListening}>
+                      <MicIcon color={isListening ? "primary" : "action"} />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              },
+            }}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+
 
         {/* new */}
         {/* Distance Filter Dropdown */}
