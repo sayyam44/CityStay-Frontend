@@ -15,8 +15,9 @@ import { Grid2,
   IconButton,
   CardActions,TextField,InputAdornment,Pagination,
   Dialog, DialogActions, DialogContent, 
-  DialogContentText, DialogTitle,MenuItem, } from '@mui/material';
+  DialogContentText, DialogTitle,MenuItem,Box } from '@mui/material';
 
+import Grid from "@mui/material/Grid";
 import { Icon } from "leaflet";
 import houseIconPng from "./Assets/Mapicons/house.png"
 import apartmentIconPng from "./Assets/Mapicons/apartment.png"
@@ -329,80 +330,45 @@ function ReducerFunction(draft, action) {
 
   return (
   
-    <Grid2 container>
-      {/* new */}
-      {/* Location Permission Dialog */}
-      <Dialog open={openDialog}>
-        <DialogTitle>Allow Location Access</DialogTitle>
-        <DialogContent>
-            <DialogContentText>
-                This website wants to access your location to show nearby listings.
-            </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-        <Button 
-        onClick={() => {
-          setOpenDialog(false);
-          localStorage.setItem("locationAccess", "deny"); // Store denial
-        }} 
-        color="secondary">
+    <Grid2 container spacing={2} sx={{ padding: 2 }}>
+    {/* Location Permission Dialog */}
+    <Dialog open={openDialog}>
+      <DialogTitle>Allow Location Access</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          This website wants to access your location to show nearby listings.
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button
+          onClick={() => {
+            setOpenDialog(false);
+            localStorage.setItem("locationAccess", "deny"); // Store denial
+          }}
+          color="secondary"
+        >
           Deny
         </Button>
-        <Button 
-        onClick={handleAllowLocation} 
-        color="primary">
-          Allow</Button>
-        </DialogActions>
-      </Dialog>
+        <Button onClick={handleAllowLocation} color="primary">
+          Allow
+        </Button>
+      </DialogActions>
+    </Dialog>
 
-      {/* The below grid is the left side grid for listings */}
-      <Grid2 size={4}>
-
-        {/* Search Bar */}
-        {/* <TextField
-          label="Search for listings..."
-          variant="outlined"
-          // fullWidth
-          sx={{
-            marginBottom: "-0.3rem",
-            marginTop: "0.7rem",
-            marginLeft: "0.5rem",
-            marginBottom: "0.1rem",
-            "& .MuiOutlinedInput-root": {
-              borderRadius: "1.5rem", // Rounded edges
-              height: "2.5rem", // Reduce height
-              paddingRight: "0.5rem",
-              width:"14rem",
-            },
-          }}
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon color="action" />
-                </InputAdornment>
-              ),
-            },
-          }}
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        /> */}
-    
-        {/* Search Bar with voice recognition */}
-        <TextField
+    {/* Left Side - Listings */}
+    <Grid2 item xs={12} size={4}>
+      
+    <Grid2 container sx={{ display: "flex", justifyContent: "space-between", gap: 2}}>
+        {/* Search Field (Left Side) */}
+        <Grid2 item sx={{ flex: 1 }}>
+          <TextField
             label="Search for listings..."
             variant="outlined"
+            fullWidth
             sx={{
-              marginBottom: "-0.3rem",
-              marginTop: "0.7rem",
-              marginLeft: "0.5rem",
-              marginBottom: "0.1rem",
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "1.5rem", // Rounded edges
-                height: "2.5rem", // Reduce height
-                paddingRight: "0.5rem", // Space for the mic button on the right
-                width: "14rem",
-              },
+              borderRadius: "3rem",
+              height: "2.5rem", // Reduce height
+              "& .MuiInputBase-root": { height: "2.5rem" }, // Apply height to input field
             }}
             slotProps={{
               input: {
@@ -414,8 +380,9 @@ function ReducerFunction(draft, action) {
                 endAdornment: (
                   <InputAdornment position="end">
                     {/* Clicking the microphone button toggles speech recognition on and off. */}
-                    <IconButton onClick={toggleListening}>
-                      <MicIcon color={isListening ? "primary" : "action"} />
+                    <IconButton onClick={toggleListening} sx={{ p:0.5, width: "2rem", height: "2rem" }}>
+                      <MicIcon color={isListening ? "primary" : "action"}
+                      sx={{ fontSize: "1.5rem" }} />
                     </IconButton>
                   </InputAdornment>
                 ),
@@ -424,62 +391,49 @@ function ReducerFunction(draft, action) {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
+        </Grid2>
 
-
-        {/* new */}
-        {/* Distance Filter Dropdown */}
+        {/* Distance Selector (Right Side) */}
         {locationPermission && (
-          <TextField
+          <Grid2 item sx={{ flex: 1 }}>
+            <TextField
               select
-              placeholder="Distance (km)"
+              fullWidth
               value={selectedDistance}
               onChange={(e) => setSelectedDistance(e.target.value)}
-              label="Distance (km)" // Acts as a placeholder
+              label="Distance (km)"
               sx={{
-                marginTop: "0.7rem",
-                marginBottom: "-0.3rem",
-                marginLeft: "0.5rem",
-                marginBottom: "0.1rem",
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "1.5rem", // Rounded edges
-                  height: "2.5rem", // Reduce height
-                  width:"12rem",
-                  paddingRight: "0.5rem",
-                },
+                borderRadius: "3rem",
+                height: "2.5rem", // Reduce height
+                "& .MuiInputBase-root": { height: "2.5rem" }, // Apply height to input field
               }}
-          >
+            >
               {[...Array(10).keys()].map((km) => (
-                  <MenuItem key={km + 1} value={km + 1}>{km + 1} km</MenuItem>
+                <MenuItem key={km + 1} value={km + 1}>
+                  {km + 1} km
+                </MenuItem>
               ))}
-          </TextField>
-      )}
-
-        {/* No Listings Message */}
-        {currentListings.length === 0 && (
-          <Grid2 item xs={12} style={{ textAlign: "center", marginTop: "1rem" }}>
-            <Typography variant="h6" color="textSecondary">
-              No listings found for "{searchQuery}"
-            </Typography>
+            </TextField>
           </Grid2>
         )}
+      </Grid2>
 
-        {/* here we are getting each listing from the above useState hook for current listings */}
-        {currentListings.map((listing)=>{ //for getting the value of each listing
-          return (
-          <Card key={listing.id} style={{margin: '0.5rem',border: "1px solid black",position: 'relative'}}>
+
+
+      {currentListings.length === 0 && (
+        <Typography variant="h6" color="textSecondary" textAlign="center" mt={2}>
+          No listings found for "{searchQuery}"
+        </Typography>
+      )}
+
+      {/* here we are getting each listing from the above useState hook for current listings */}
+      {currentListings.map((listing) => ( //for getting the value of each listing
+        <Card key={listing.id} sx={{ marginBottom: 2, position: "relative" }}>
           <CardHeader
-            //this is to zoom into the location on the map when listing's
+          //this is to zoom into the location on the map when listing's
             //top right corner marker is clicked 
             action={
-              <IconButton 
-              aria-label="settings" 
-              //here mapInstance holds all the data of the listing
-              //whos top write marker button is clicked
-              
-              onClick={()=>state.mapInstance.flyTo(
-                [listing.latitude,listing.longitude],
-                16)}
-                >
+              <IconButton onClick={() => state.mapInstance.flyTo([listing.latitude, listing.longitude], 16)}>
                 <RoomIcon />
               </IconButton>
             }
@@ -489,84 +443,36 @@ function ReducerFunction(draft, action) {
             component="img"
             image={listing.picture1}
             alt={listing.title}
-            style={{
-              paddingRight: "4rem",
-              paddingLeft: "1rem",
-              height: "20rem",
-              width: "30rem",
-              cursor: "pointer",
-            }}
-            //this is to navigate to the particular listing 
-            //when click on the card of that lisitng
-            onClick={()=>navigate(`/listings/${listing.id}`)}
-            />
-            
+            sx={{ height: "200px", objectFit: "cover", cursor: "pointer" }}
+            onClick={() => navigate(`/listings/${listing.id}`)}
+          />
           <CardContent>
-            <Typography variant="body2">
-            {listing.description.substring(0,200)}...
-            </Typography>
+            <Typography variant="body2">{listing.description.substring(0, 200)}...</Typography>
           </CardContent>
-          
-          {listing.property_status === "Sale" ? (
-								<Typography
-									style={{
-										position: "absolute",
-										backgroundColor: 'rgba(0, 128, 0, 0.5)',
-										zIndex: "1000",
-										color: "white",
-										top: "100px",
-										left: "20px",
-										padding: "5px",
-									}}
-								>
-									{listing.listing_type}: $
-									{listing.price
-										.toString()
-										.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-								</Typography>
-							) : (
-								<Typography
-									style={{
-										position: "absolute",
-										backgroundColor: 'rgba(0, 128, 0, 0.5)',
-										zIndex: "1000",
-										color: "white",
-										top: "100px",
-										left: "20px",
-										padding: "5px",
-									}}
-								>
-									{listing.listing_type}: $
-									{listing.price
-										.toString()
-										.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
-									/ {listing.rental_frequency}
-								</Typography>
-							)}
-            <CardActions disableSpacing>
-              <IconButton aria-label="add to favorites">
-              {/* this is to get the username for each listing on cards from the logic at serializer.py file in backend */}
-                {listing.seller_username} {' -by- '}
-                {listing.seller_agency_name} 
-              </IconButton>
-            </CardActions>
-            </Card>
-          // <CardActions disableSpacing>
-          //   <IconButton aria-label="add to favorites">
-          //     <span style={{ color: "black" }}>
-          //       {listing.seller_username}
-          //     </span>{" "}
-          //     -{" "}
-          //     <span style={{ color: "gray" }}>
-          //       {listing.seller_agency_name}
-          //     </span>
-          //   </IconButton>
-          // </CardActions>
-        );
-      
-      })}
-      {/* Pagination Controls */}
-      <Grid2 container justifyContent="center" alignItems="center" style={{ marginTop: "1rem", marginBottom: "0.5rem" }}>
+          <Typography
+            sx={{ position: "absolute", backgroundColor: "rgba(53, 22, 168, 0.5)", color: "white", top: 100, left: 20, padding: 1 }}
+          >
+            {listing.listing_type}: ${listing.price.toLocaleString()}{" "}
+            {listing.property_status !== "Sale" && `/ ${listing.rental_frequency}`}
+            <br /> Location - {listing.borough}
+          </Typography>
+          <Box display="flex" justifyContent="space-between" alignItems="center" p={1}>
+            <Typography variant="h6" fontWeight="bold" color="primary">
+              Owner: {listing.seller_username}
+            </Typography>
+            <Typography
+              variant="h6"
+              fontWeight="bold"
+              color="primary"
+              sx={{ cursor: "pointer" }}
+              onClick={() => navigate(`/agencies/${listing.seller}`)}
+            >
+              Agency: {listing.seller_agency_name}
+            </Typography>
+          </Box>
+        </Card>
+      ))}
+
       <Pagination
         count={totalPages}
         page={currentPage}
@@ -576,94 +482,74 @@ function ReducerFunction(draft, action) {
         variant="text"
         shape="rounded"
         size="small"
-        sx={{
-          "& .MuiPaginationItem-root": {
-            margin: "0 6px", // Adds spacing between numbers
-          },
-          "& .MuiPaginationItem-root.Mui-selected": {
-            backgroundColor: "lightblue", // Light blue background for selected page
-            color: "black", // Ensures the text is readable
-          },
-          "& .MuiPaginationItem-root.Mui-selected:hover": {
-            backgroundColor: "#add8e6", // Slightly darker blue on hover
-          },
-        }}
+        sx={{ display: "flex", justifyContent: "center", mt: 2 }}
       />
     </Grid2>
-    </Grid2>
 
-      {/* The below grid is the Right side grid for map */}
-      <Grid2 size={8} style={{marginTop: "0.5rem"}}>
-        <AppBar position="sticky">
-          <div style={{ height: "100vh" }}>
-            <MapContainer 
-            center={[47.56431808943282,-52.730079775120906]} 
-            zoom={12} 
-            scrollWheelZoom={true}>
-              <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
+    {/* Right Side - Map (Placed first to be rendered above the listings) */}
+    <Grid2 item xs={12} size={8} >
+      <AppBar position="sticky" >
+        <div style={{ height: "100vh" }} justifyContent="flex-end">
+          <MapContainer
+            center={[47.56431808943282, -52.730079775120906]}
+            zoom={12}
+            scrollWheelZoom={true}
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
 
-              {/* below is to execute the case for zooming into the selected listing's top right corner map marker*/}
-              <TheMapComponent />
+            {/* Execute zoom for selected listing */}
+            <TheMapComponent />
 
-              <Polyline positions={polyOne} />
+            <Polyline positions={polyOne} />
 
-              {filteredListings.map((listing)=>{
-                function IconDisplay(){
-                  if (listing.listing_type === 'House'){
-                    return houseIcon;
-                  }
-                  else if (listing.listing_type === 'Apartment'){
-                    return apartmentIcon;
-                  }
-                  else if (listing.listing_type === 'Office'){
-                    return officeIcon;
-                  }
+            {filteredListings.map((listing) => {
+              function IconDisplay() {
+                if (listing.listing_type === "House") {
+                  return houseIcon;
+                } else if (listing.listing_type === "Apartment") {
+                  return apartmentIcon;
+                } else if (listing.listing_type === "Office") {
+                  return officeIcon;
                 }
-                return (
-                  <Marker 
+              }
+              return (
+                <Marker
                   key={listing.id}
                   icon={IconDisplay()}
-                  position={[
-                  listing.latitude,
-                  listing.longitude]}>
-                    <Popup>
-                      <Typography variant="h5">{listing.title}</Typography>
-                      <img src={listing.picture1} style={{height: "14rem",width: "18rem", cursor: "pointer"}}
-                      onClick={()=>navigate(`/listings/${listing.id}`)} 
-                      />
-                      <Typography variant="body1">
-                        {listing.description.substring(0,150)}...
-                      </Typography>
-                      <Button 
-                      variant="contained" 
+                  position={[listing.latitude, listing.longitude]}
+                >
+                  <Popup>
+                    <Typography variant="h5">{listing.title}</Typography>
+                    <img
+                      src={listing.picture1}
+                      style={{ height: "14rem", width: "18rem", cursor: "pointer" }}
+                      onClick={() => navigate(`/listings/${listing.id}`)}
+                    />
+                    <Typography variant="body1">
+                      {listing.description.substring(0, 150)}...
+                    </Typography>
+                    <Button
+                      variant="contained"
                       fullWidth
-                      onClick={()=>navigate(`/listings/${listing.id}`)}
-                      >Details</Button>
-                    </Popup>
-                  </Marker>
-                )
-              })}
-
-              {/* <Marker 
-              icon={houseIcon}
-              position={[latitude,longitude]}>
-              <Popup>
-                <Typography variant="h5">A title</Typography>
-                <img src={img1} style={{height: "14rem",width: "18rem"}} />
-                <Typography variant="body1">
-                  This is my house.
-                </Typography>
-                <Button variant="contained" fullWidth>Link</Button>
-              </Popup>
-              </Marker> */}
-            </MapContainer>
-          </div>
-        </AppBar>
-      </Grid2>
+                      onClick={() => navigate(`/listings/${listing.id}`)}
+                    >
+                      Details
+                    </Button>
+                  </Popup>
+                </Marker>
+              );
+            })}
+          </MapContainer>
+        </div>
+      </AppBar>
     </Grid2>
+
+    
+  </Grid2>
+    
   );
 }
 

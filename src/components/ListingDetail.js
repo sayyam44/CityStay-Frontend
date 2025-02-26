@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useMemo,useContext} from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Grid2, Typography,CircularProgress,Breadcrumbs, Link, Button, TextField, FormControlLabel, Checkbox, IconButton, Card, CardMedia,CardContent, CardActions,Dialog,Snackbar,Rating,Tooltip   } from '@mui/material';
+import { Grid2, Typography,Box,CircularProgress,Breadcrumbs, Link, Button, TextField, FormControlLabel, Checkbox, IconButton, Card, CardMedia,CardContent, CardActions,Dialog,Snackbar,Rating,Tooltip   } from '@mui/material';
 import Axios from "axios";
 import { useImmerReducer } from 'use-immer';
 import ContactPhoneIcon from '@mui/icons-material/ContactPhone';
@@ -258,537 +258,479 @@ function ListingDetail() {
     }
 
   return (
-    <div style={{ marginLeft: "2rem", marginRight: "1rem", marginBottom: "1rem" }}>
-        <Grid2 sx={{marginTop: "1rem"}}>
-            {/* Breadcrumbs helps in putting link on the frontend */}
-            <Breadcrumbs aria-label="breadcrumb">
-            <Link 
-            underline="hover" 
-            color="inherit" 
-            onClick={()=> navigate("/Listings")}
-            sx={{cursor: "pointer"}}>
-                Listings
-            </Link>
-            <Typography sx={{ color: 'text.primary' }}>
-                {state.listingInfo.title}
-            </Typography>
-            </Breadcrumbs>
-        </Grid2>
+    <div style={{ margin: "1rem" }}>
+        {/* Breadcrumbs on Top Left */}
+        <Grid2 xs={12} sx={{ display: "flex", justifyContent: "flex-start" }}>
+                <Breadcrumbs aria-label="breadcrumb">
+                        <Link
+                            underline="hover"
+                            color="inherit"
+                            onClick={() => navigate("/Listings")}
+                            sx={{ cursor: "pointer" }}
+                        >
+                            Listings
+                        </Link>
+                        <Typography sx={{ color: "text.primary" }}>{state.listingInfo.title}</Typography>
+                    </Breadcrumbs>
+                </Grid2>
 
-        {/* image slider from the above created array containing all pictures*/}
-        {/* using the above useState hook at setCurrentPicture */}
-        <Grid2 container spacing={2} sx={{ marginTop: "1rem" }}>
-        {/* Left Side: Photos */}
-        <Grid2
-            xs={12} sm={6}  // Adjusted for responsive design (50% width on larger screens)
-            sx={{
-                display: "flex",
-                justifyContent: "left",
-                alignItems: "left",
-            }}
-        >
-            {listingPictures.length > 0 && (
-                <div style={{ position: "relative" }}>
-                    {listingPictures.map((picture, index) => (
-                        <div key={index}>
-                            {index === currentPicture && (
-                                <img
-                                    src={picture}
-                                    alt="Property"
-                                    style={{
-                                        width: "100%",
-                                        maxWidth: "40rem",
-                                        height: "30rem",
-                                        border: "4px solid black",
-                                        objectFit: "cover",
-                                    }}
-                                />
-                            )}
-                        </div>
-                    ))}
 
-                    {/* Arrows for image navigation */}
-                    <ArrowBackIcon
-                        onClick={PreviousPicture}
-                        sx={{
-                            position: "absolute",
-                            cursor: "pointer",
-                            fontSize: "3rem",
-                            color: "white",
-                            top: "45%",
-                            left: "2rem",
-                            backgroundColor: "orange",
-                            "&:hover": { backgroundColor: "black" },
-                        }}
-                    />
-                    <ArrowForwardIcon
-                        onClick={NextPicture}
-                        sx={{
-                            position: "absolute",
-                            cursor: "pointer",
-                            fontSize: "3rem",
-                            color: "white",
-                            top: "45%",
-                            right: "2rem",
-                            backgroundColor: "orange",
-                            "&:hover": { backgroundColor: "black" },
-                        }}
-                    />
-                </div>
-            )}
-        </Grid2>
-
-        {/* Right Side: Property Information (Description) */}
-        <Grid2
-            xs={12} sm={6}  // Adjusted for responsive design (50% width on larger screens)
-            sx={{
-                padding: "1rem",
-                border: "1px solid black",
-                justifyContent: "right",
-                alignItems: "right",
-                marginLeft:"50%",
-                marginTop:"-31.5rem",
-                marginBottom:"1.5rem"
-            }}
-        >
-            <Typography
-                variant="h5"
-                sx={{ fontWeight: "bolder", color: "blue" }}
-            >
-                {state.listingInfo.listing_type} |{" "}
-                {state.listingInfo.property_staus === "Sale"
-                    ? `$${state.listingInfo.price.toLocaleString()}`
-                    : `$${state.listingInfo.price.toLocaleString()}/${state.listingInfo.rental_frequency}`}
-            </Typography>
-            <Typography variant="h5">{state.listingInfo.title}</Typography>
-
-            <Grid2 container alignItems="center" spacing={1}>
-                <RoomIcon />
-                <Typography variant="h6">{state.listingInfo.borough}</Typography>
+            <Grid2 container spacing={2} sx={{ marginTop: "0rem" }}>
+            
+            {/* Left: Image Slider below Breadcrumbs */}
+            <Grid2 xs={12} md={6} sx={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "1rem" }}>
+                {listingPictures.length > 0 && (
+                    <div style={{ position: "relative", width: "100%", maxWidth: "40rem" }}>
+                        <img
+                            src={listingPictures[currentPicture]}
+                            alt="Property"
+                            style={{ width: "100%", height: "30rem", border: "4px solid black", objectFit: "cover" }}
+                        />
+                        <ArrowBackIcon
+                            onClick={PreviousPicture}
+                            sx={{
+                                position: "absolute",
+                                cursor: "pointer",
+                                fontSize: "3rem",
+                                color: "white",
+                                top: "50%",
+                                left: "1rem",
+                                transform: "translateY(-50%)",
+                                backgroundColor: "orange",
+                                borderRadius: "50%",
+                                padding: "0.5rem",
+                                "&:hover": { backgroundColor: "black" },
+                            }}
+                        />
+                        <ArrowForwardIcon
+                            onClick={NextPicture}
+                            sx={{
+                                position: "absolute",
+                                cursor: "pointer",
+                                fontSize: "3rem",
+                                color: "white",
+                                top: "50%",
+                                right: "1rem",
+                                transform: "translateY(-50%)",
+                                backgroundColor: "orange",
+                                borderRadius: "50%",
+                                padding: "0.5rem",
+                                "&:hover": { backgroundColor: "black" },
+                            }}
+                        />
+                    </div>
+                )}
             </Grid2>
 
-            <Typography variant="subtitle1">{formattedDate}</Typography>
+            {/* Right: Property Info */}
+            <Grid2 xs={12} md={6} sx={{ padding: "1rem", border: "1px solid black", marginTop: "1rem",minWidth: "40rem",maxWidth: "40rem",height:"30rem" }}>
+                <Typography variant="h5" sx={{ fontWeight: "bolder", color: "blue" }}>
+                    {state.listingInfo.listing_type} | {state.listingInfo.property_staus === "Sale"
+                        ? `$${state.listingInfo.price.toLocaleString()}`
+                        : `$${state.listingInfo.price.toLocaleString()}/${state.listingInfo.rental_frequency}`}
+                </Typography>
+                <Typography variant="h5">{state.listingInfo.title}</Typography>
+                <Grid2 container alignItems="center" spacing={1}>
+                    <RoomIcon />
+                    <Typography variant="h6">{state.listingInfo.borough}</Typography>
+                </Grid2>
+                <Typography variant="subtitle1">{state.listingInfo.formattedDate}</Typography>
 
-            {/* Rooms & Amenities */}
-            <Grid2 container spacing={3} sx={{ padding: "1rem", border: "1px solid black" }}>
-                {state.listingInfo.rooms && (
-                    <Grid2>
-                        <Typography variant="h6">{state.listingInfo.rooms} Rooms</Typography>
+                {/* Rooms & Amenities */}
+                <Grid2 container spacing={2} sx={{ padding: "1rem", border: "1px solid black" }}>
+                    {state.listingInfo.rooms && (
+                        <Grid2>
+                            <Typography variant="h6">{state.listingInfo.rooms} Rooms</Typography>
+                        </Grid2>
+                    )}
+                    {[{ label: "Furnished", value: state.listingInfo.furnished },
+                        { label: "Pool", value: state.listingInfo.pool },
+                        { label: "Elevator", value: state.listingInfo.elevator },
+                        { label: "CCTV", value: state.listingInfo.cctv },
+                        { label: "Parking", value: state.listingInfo.parking }]
+                        .filter(item => item.value)
+                        .map((item, index) => (
+                        <Grid2 key={index} sx={{ display: "flex", alignItems: "center" }}>
+                            <CheckBoxIcon sx={{ color: "green", fontSize: "2rem" }} />
+                            <Typography variant="h6">{item.label}</Typography>
+                        </Grid2>
+                    ))}
+                </Grid2>
+
+                {/* Description */}
+                {state.listingInfo.description && (
+                    <Grid2 sx={{ padding: "1rem", border: "1px solid black", marginTop: "1rem" }}>
+                        <Typography variant="h5">Description</Typography>
+                        <Typography variant="h6">{state.listingInfo.description}</Typography>
                     </Grid2>
                 )}
-                {[
-                    { label: "Furnished", value: state.listingInfo.furnished },
-                    { label: "Pool", value: state.listingInfo.pool },
-                    { label: "Elevator", value: state.listingInfo.elevator },
-                    { label: "CCTV", value: state.listingInfo.cctv },
-                    { label: "Parking", value: state.listingInfo.parking },
-                ].map(
-                    (item, index) =>
-                        item.value && (
-                            <Grid2 key={index} style={{ display: "flex", alignItems: "center" }}>
-                                <CheckBoxIcon style={{ color: "green", fontSize: "2rem" }} />
-                                <Typography variant="h6">{item.label}</Typography>
-                            </Grid2>
-                        )
-                )}
             </Grid2>
-
-            {/* Description */}
-            {state.listingInfo.description && (
-                <Grid2 sx={{ padding: "1rem", border: "1px solid black", marginTop: "1rem" }}>
-                    <Typography variant="h5">Description</Typography>
-                    <Typography variant="h6">{state.listingInfo.description}</Typography>
-                </Grid2>
-            )}
         </Grid2>
-    </Grid2>
-
-
-        
         
         {/* Seller Info */}
-			<Grid2
-				container
-				style={{
-					width: "50%",
-					marginLeft: "auto",
-					marginRight: "auto",
-					border: "5px solid black",
-					marginTop: "1rem",
-					padding: "5px",
-				}}
-                
-			>
-				<Grid2 xs={6}>
-					<img
-						style={{ height: "10rem", width: "15rem", cursor: "pointer" }}
-						src={
-							state.sellerProfileInfo.profile_picture !== null
-								? state.sellerProfileInfo.profile_picture
-								: defaultProfilePicture
-						}
-						onClick={() =>
-							navigate(`/agencies/${state.sellerProfileInfo.seller}`)
-						}
-					/>
-				</Grid2>
-                {/* To display info about agency  */}
-				<Grid2 
-                 container 
-                 direction="column" 
-                 justifyContent="center" 
-                 xs={6}
-                 marginLeft="4rem">
-					<Grid2>
-						<Typography
-							variant="h5"
-							style={{ textAlign: "center", marginTop: "1rem" }}
-						>
-							<span style={{ color: "blue", fontWeight: "bolder" }}>
-								{state.sellerProfileInfo.agency_name}
-							</span>
-						</Typography>
-					</Grid2>
-					<Grid2>
-						<Typography
-							variant="h5"
-							style={{ textAlign: "center", marginTop: "1rem" }}
-						>
-							<IconButton>
-                            <ContactPhoneIcon /> {state.sellerProfileInfo.phone_number}
-							</IconButton>
-						</Typography>
-					</Grid2>
-				</Grid2>
-
-            {/* updating and deleting functionality*/}
-            {/* GlobalState.userId means to check the user id of the listing
-            that is opened by the user currently */}
-            {GlobalState.userId == state.listingInfo.seller ? (
-                <Grid2 container style={{ paddingLeft: '200px' }} gap={10}>
-                <Button 
-                variant="contained" 
-                color="primary" 
-                onClick={handleClickOpen}
-                >Update
-                </Button>
-                <Button 
-                variant="contained" 
-                color="error" 
-                onClick={DeleteHandler} 
-                disabled={state.disabledBtn}>
-                    Delete</Button>
-                <Dialog
-                    open={open}
-                    onClose={handleClose}
-                    fullScreen 
-                    
+                <Grid2
+                container
+                style={{
+                    width: "80%", // Smaller width for the box
+                    maxWidth: "600px", // Limit maximum width for larger screens
+                    marginLeft: "auto",
+                    marginRight: "auto",
+                    border: "5px solid black",
+                    marginTop: "1rem",
+                    padding: "20px", // Increased padding for better spacing
+                    borderRadius: "10px", // Rounded corners
+                    display: "flex",
+                    flexDirection: "column", // Stack content vertically
+                    alignItems: "center", // Center content horizontally
+                    justifyContent: "center", // Center content vertically
+                }}
                 >
-                    {/* using props to access the data of the current listing */}
-                    <ListingUpdate 
-                    listingData ={state.listingInfo} 
-                    closeDialog={handleClose}
-                    /> 
-                </Dialog>
-
+                {/* Seller Profile Picture */}
+                <Grid2
+                    style={{
+                    textAlign: "center",
+                    marginBottom: "1rem", // Space below the image
+                    }}
+                >
+                    <img
+                    style={{
+                        height: "10rem",
+                        width: "100%", // Responsive width
+                        maxWidth: "15rem", // Limit maximum width
+                        cursor: "pointer",
+                        borderRadius: "10px", // Rounded corners for the image
+                    }}
+                    src={
+                        state.sellerProfileInfo.profile_picture !== null
+                        ? state.sellerProfileInfo.profile_picture
+                        : defaultProfilePicture
+                    }
+                    onClick={() => navigate(`/agencies/${state.sellerProfileInfo.seller}`)}
+                    />
                 </Grid2>
-            ) : ("")}
-            
-            
-            {/* Messaging functionality */}
-            {GlobalState.userId !== state.listingInfo.seller && GlobalState.userIsLogged ? (
-                <Grid2 container style={{ paddingLeft: '240px' }} gap={10}>
-                    <Button variant="contained" color="primary" onClick={handleOpenMessageDialog}>
+
+                {/* Seller Agency Info */}
+                <Grid2
+                    container
+                    direction="column"
+                    alignItems="center"
+                    justifyContent="center"
+                    style={{ textAlign: "center" }}
+                >
+                    {/* Agency Name */}
+                    <Grid2>
+                    <Typography variant="h5">
+                        <span style={{ color: "blue", fontWeight: "bolder" }}>
+                        {state.sellerProfileInfo.agency_name}
+                        </span>
+                    </Typography>
+                    </Grid2>
+
+                    {/* Phone Number */}
+                    <Grid2>
+                    <Typography variant="h5">
+                        <IconButton>
+                        <ContactPhoneIcon /> {state.sellerProfileInfo.phone_number}
+                        </IconButton>
+                    </Typography>
+                    </Grid2>
+
+                    {/* Update and Delete Buttons (Visible to Seller) */}
+                    {GlobalState.userId == state.listingInfo.seller ? (
+                    <Grid2
+                        container
+                        direction="column"
+                        alignItems="center"
+                        style={{ marginTop: "1rem", gap: "10px" }}
+                    >
+                        <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleClickOpen}
+                        >
+                        Update
+                        </Button>
+                        <Button
+                        variant="contained"
+                        color="error"
+                        onClick={DeleteHandler}
+                        disabled={state.disabledBtn}
+                        >
+                        Delete
+                        </Button>
+                        <Dialog open={open} onClose={handleClose} fullScreen>
+                        <ListingUpdate listingData={state.listingInfo} closeDialog={handleClose} />
+                        </Dialog>
+                    </Grid2>
+                    ) : null}
+
+                    {/* Messaging Button (Visible to Logged-in Users Except Seller) */}
+                    {GlobalState.userId !== state.listingInfo.seller && GlobalState.userIsLogged ? (
+                    <Grid2
+                        container
+                        direction="column"
+                        alignItems="center"
+                        style={{ marginTop: "1rem", gap: "10px" }}
+                    >
+                        <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleOpenMessageDialog}
+                        >
                         Send Message
-                    </Button>
-                    <Dialog 
-                        open={openMessageDialog} 
+                        </Button>
+                        <Dialog
+                        open={openMessageDialog}
                         onClose={handleCloseMessageDialog}
                         maxWidth="md"
                         fullWidth
-                    >
+                        >
                         <SendMessage recipientId={state.listingInfo.seller} />
-                    </Dialog>
+                        </Dialog>
+                    </Grid2>
+                    ) : null}
                 </Grid2>
-            ) : null}
-			</Grid2>
+            </Grid2>
 
+    {/* Map and POIs */}
+    <Grid2 container spacing={2} sx={{ padding: 2 }}>
+        {/* POIs List (Left Column) */}
+        <Grid2 item xs={12} size={3} sx={{ maxHeight: "70vh", overflowY: "auto" }}>
+        <Typography 
+            variant="h5" 
+            align="center"
+            sx={{ fontWeight: "bold", color: "blue", fontSize: "1.5rem" }}
+        >
+            Nearby Places (2 km)
+        </Typography>
 
-            {/* map and pois */}
-            <Grid2 
-            container spacing={2} style={{marginTop: "1rem"}}>
-            
-                <Grid2  xs={12} sm={3}  > 
-                    {/* mapping through each poi within 2km of the current listing */}
-                {state.listingInfo.listing_pois_within_2km.map((poi)=>{
-                    //this is to convert the degree to radian to use it in below function
-                    function DegreeToRadian(coordinate){
-                        return coordinate*Math.PI/180
-                    }
-                    // This is to find the distance between 2 points on map using their latitude and longitude
-                    function CalculateDistance() {
-                        //converting the corrdinates of current property to radians
-                        const latitude1=DegreeToRadian(state.listingInfo.latitude)
-                        const longitude1=DegreeToRadian(state.listingInfo.longitude)
+            {/* Mapping through each POI within 2km of the current listing */}
+            {state.listingInfo.listing_pois_within_2km.map((poi) => {
+            // Convert degrees to radians
+            function DegreeToRadian(coordinate) {
+                return (coordinate * Math.PI) / 180;
+            }
 
-                        //converting the corrdinates of pois to radians
-                        const latitude2=DegreeToRadian(poi.location.coordinates[0])
-                        const longitude2=DegreeToRadian(poi.location.coordinates[1])
+            // Calculate distance between two points on the map
+            function CalculateDistance() {
+                // Convert coordinates of the current property to radians
+                const latitude1 = DegreeToRadian(state.listingInfo.latitude);
+                const longitude1 = DegreeToRadian(state.listingInfo.longitude);
 
-                        //FORMULA
-                        const latDiff = latitude2 - latitude1;
-                        const lonDiff = longitude2 - longitude1;
-                        const R = 6371000 / 1000;
+                // Convert coordinates of the POI to radians
+                const latitude2 = DegreeToRadian(poi.location.coordinates[0]);
+                const longitude2 = DegreeToRadian(poi.location.coordinates[1]);
 
-                        const a =
-                            Math.sin(latDiff / 2) * Math.sin(latDiff / 2) +
-                            Math.cos(latitude1) *
-                                Math.cos(latitude2) *
-                                Math.sin(lonDiff / 2) *
-                                Math.sin(lonDiff / 2);
-                        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                // Haversine formula
+                const latDiff = latitude2 - latitude1;
+                const lonDiff = longitude2 - longitude1;
+                const R = 6371; // Earth's radius in kilometers
 
-                        const d = R * c;
+                const a =
+                Math.sin(latDiff / 2) * Math.sin(latDiff / 2) +
+                Math.cos(latitude1) *
+                    Math.cos(latitude2) *
+                    Math.sin(lonDiff / 2) *
+                    Math.sin(lonDiff / 2);
+                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-                        const dist =
-                            Math.acos(
-                                Math.sin(latitude1) * Math.sin(latitude2) +
-                                    Math.cos(latitude1) *
-                                        Math.cos(latitude2) *
-                                        Math.cos(lonDiff)
-                            ) * R;
-                        return dist.toFixed(2);
-                    }
+                const d = R * c; // Distance in kilometers
+                return d.toFixed(2);
+            }
 
-                        return (
-                            <div key={poi.id} style={{marginBottom: '0.5rem', border: '1px solid black'}}>
-                            <Typography variant='h6'>
-                                {poi.name}
-                            </Typography >
-                            <Typography variant='subtitle1'>
-                                {poi.type} | <span style={{fontWeight:'bolder', color: 'blue'}}> {CalculateDistance()} Kilometers </span>
-                            </Typography>
-                            </div>
-                        );
-                    })}
-                </Grid2>
-                <Grid2 xs={12} sm={9} style={{ height: '70vh' , width: '120vh'}}>
-                    <MapContainer 
-                    center={[state.listingInfo.latitude,
-                        state.listingInfo.longitude]} 
-                    zoom={13} 
-                    scrollWheelZoom={true}
-                    >
-                        <TileLayer
-                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        />
-                        <Marker 
-                        position={
-                        [state.listingInfo.latitude,
-                        state.listingInfo.longitude]}>
-                            <Popup>
-                                {state.listingInfo.title}
-                            </Popup>
-                        </Marker>
-
-                        {/* this is to show all the pois on the map */}
-                        {state.listingInfo.listing_pois_within_2km.map((poi)=>{
-                            
-                            //this defines the different types of icons(markers)
-                            //used in the map created above in const
-                            function PoiIcon(){
-                                if (poi.type === "Stadium"){
-                                    return stadiumIcon
-                                }
-                                else if (poi.type === "University"){
-                                    return universityIcon
-                                }
-                                else if (poi.type === "Hospital"){
-                                    return hospitalIcon
-                                }
-                                else if (poi.type === "Mall"){
-                                    return mallIcon
-                                }
-                                else if (poi.type === "College"){
-                                    return collegeIcon
-                                }
-                            }
-                            return (
-                                <Marker 
-                                key={poi.id}
-                                position={[
-                                    poi.location.coordinates[0],
-                                    poi.location.coordinates[1],
-                                ]}
-                                // calling the above function to show different types of markers
-                                icon={PoiIcon()} 
-                                >
-                                    <Popup>
-                                    {poi.name}
-                                    </Popup>
-                                </Marker>
-                            );
-                        })}
-                    </MapContainer>
-                </Grid2>
-                <Grid2 item xs={12}>
-        
-            
-    </Grid2>
-
-    <Grid2 container justifyContent="center" style={{ marginTop: "2rem" , marginLeft:"35rem" }}>
-        <Grid2 item xs={12}>
-            <Typography 
-                variant="h4" 
-                sx={{ 
-                    fontWeight: "bold", 
-                    textAlign: "center",
-                    width: "100%",
-                    display: "block",
+            return (
+                <div
+                key={poi.id}
+                style={{
+                    marginBottom: "0.5rem",
+                    border: "1px solid black",
+                    padding: "0.5rem",
+                    borderRadius: "8px", // Optional: Rounded corners
                 }}
+                >
+                <Typography variant="h6">{poi.name}</Typography>
+                <Typography variant="subtitle1">
+                    {poi.type} |{" "}
+                    <span style={{ fontWeight: "bolder", color: "blue" }}>
+                    {CalculateDistance()} Kilometers
+                    </span>
+                </Typography>
+                </div>
+            );
+            })}
+        </Grid2>
+
+        {/* Map (Right Column) */}
+        <Grid2 item xs={12} size={9} >
+        <div style={{ height: "70vh" }} justifyContent="flex-end">
+            <MapContainer
+            center={[state.listingInfo.latitude, state.listingInfo.longitude]}
+            zoom={13}
+            scrollWheelZoom={true}
             >
-                Reviews
-            </Typography>
+            <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            {/* Marker for the current listing */}
+            <Marker position={[state.listingInfo.latitude, state.listingInfo.longitude]}>
+                <Popup>{state.listingInfo.title}</Popup>
+            </Marker>
+
+            {/* Markers for POIs */}
+            {state.listingInfo.listing_pois_within_2km.map((poi) => {
+                // Define different types of icons (markers)
+                function PoiIcon() {
+                if (poi.type === "Stadium") return stadiumIcon;
+                else if (poi.type === "University") return universityIcon;
+                else if (poi.type === "Hospital") return hospitalIcon;
+                else if (poi.type === "Mall") return mallIcon;
+                else if (poi.type === "College") return collegeIcon;
+                }
+
+                return (
+                <Marker
+                    key={poi.id}
+                    position={[poi.location.coordinates[0], poi.location.coordinates[1]]}
+                    icon={PoiIcon()}
+                >
+                    <Popup>{poi.name}</Popup>
+                </Marker>
+                );
+            })}
+            </MapContainer>
+            </div>
         </Grid2>
     </Grid2>
 
-            {/* Reviews Section */}
-        <Grid2 container justifyContent="center" spacing={2} style={{ marginTop: "1rem" }}>
 
-                {/* Review Cards */}
-                {[...state.listingInfo.reviews]
-                    .sort((a, b) => new Date(b.date_posted) - new Date(a.date_posted)) // Sort by latest
-                    .map((review) => {
-                        const date = new Date(review.date_posted);
-                        const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+    {/* reviews */}
+        {/* Reviews Heading */}
+<Grid2 container justifyContent="center" sx={{ mt: 4 }}>
+    <Grid2 item xs={12}>
+        <Typography 
+            variant="h4" 
+            sx={{ 
+                fontWeight: "bold", 
+                textAlign: "center",
+                width: "100%",
+                display: "block",
+            }}
+        >
+            Reviews
+        </Typography>
+    </Grid2>
+</Grid2>
 
-                        return (
-                            <Grid2 item xs={12} sm={6} md={4} key={review.id} display="flex" justifyContent="center" marginLeft="0.5rem">
-                                <Card 
-                                    style={{ 
-                                        width: "100%", 
-                                        height: "100%", 
-                                        display: "flex", 
-                                        flexDirection: "column", 
-                                        justifyContent: "space-between" 
-                                    }}
-                                >
-                                    <CardContent>
-                                        <Typography variant="h6" color="primary">
-                                            {review.review_username}
-                                        </Typography>
-                                        <Typography variant="body1">{review.review}</Typography>
-                                        <Rating
-                                            name={`rating-${review.id}`}
-                                            value={review.rating}
-                                            readOnly
-                                            style={{ marginTop: "0.5rem" }}
-                                        />
-                                        <Typography variant="h6" color="primary">
-                                            {formattedDate}
-                                        </Typography>
-                                    </CardContent>
-                                </Card>
-                            </Grid2>
-                        );
-                    })}
-            </Grid2>
+{/* Reviews Section */}
+<Grid2 container justifyContent="center" spacing={2} sx={{ mt: 2, px: 2 }}>
+    {[...state.listingInfo.reviews]
+        .sort((a, b) => new Date(b.date_posted) - new Date(a.date_posted))
+        .map((review) => {
+            const date = new Date(review.date_posted);
+            const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
 
-            
-            {/* Add Review Button */}
-            <div style={{ marginTop: "2rem" }}>
-            {/* Condition for logged-in user, but not the seller */}
-            {GlobalState.userIsLogged && GlobalState.userId !== state.listingInfo.seller ? (
-                <>
-                <Button 
+            return (
+                <Grid2 item xs={12} sm={6} md={4} lg={3} key={review.id} display="flex" justifyContent="center">
+                    <Card sx={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                        <CardContent>
+                            <Typography variant="h6" color="primary">
+                                {review.review_username}
+                            </Typography>
+                            <Typography variant="body1">{review.review}</Typography>
+                            <Rating name={`rating-${review.id}`} value={review.rating} readOnly sx={{ mt: 1 }} />
+                            <Typography variant="h6" color="primary">
+                                {formattedDate}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                </Grid2>
+            );
+        })}
+</Grid2>
+
+{/* Add Review Button */}
+<Box sx={{ mt: 4, textAlign: "center" }}>
+    {GlobalState.userIsLogged && GlobalState.userId !== state.listingInfo.seller ? (
+        <>
+            <Button 
+                sx={{
+                    color: "white",
+                    backgroundColor: "green",
+                    width: { xs: "100%", sm: "10rem" }, // Responsive width
+                    fontSize: "1.1rem",
+                    mx: "auto",
+                    "&:hover": { backgroundColor: "blue" },
+                }}
+                onClick={handleOpenReviewDialog}
+            >
+                Add Review
+            </Button>
+            <Dialog open={openReviewDialog} onClose={handleCloseReviewDialog} maxWidth="md" fullWidth>
+                <AddReview listingData={state.listingInfo} />
+            </Dialog>
+        </>
+    ) : null}
+
+    {!GlobalState.userIsLogged ? (
+        <Tooltip title="You need to log in to add a review to this property">
+            <span>
+                <Button
                     sx={{
                         color: "white",
-                        backgroundColor: "green",
-                        width: "10rem",
+                        backgroundColor: "grey",
+                        width: { xs: "100%", sm: "10rem" },
                         fontSize: "1.1rem",
-                        marginRight: "1rem",
-                        "&:hover": { backgroundColor: "blue" },
-                        marginLeft:"35rem"
+                        mx: "auto",
+                        "&:hover": { backgroundColor: "white", cursor: "not-allowed" },
+                        "&.Mui-disabled": {
+                            color: "white",
+                            backgroundColor: "grey",
+                        },
                     }}
-                    onClick={handleOpenReviewDialog} // Use separate function
+                    disabled
                 >
                     Add Review
                 </Button>
-                <Dialog 
-                    open={openReviewDialog} 
-                    onClose={handleCloseReviewDialog}
-                    maxWidth="md"
-                    fullWidth
+            </span>
+        </Tooltip>
+    ) : null}
+
+    {GlobalState.userIsLogged && GlobalState.userId === state.listingInfo.seller ? (
+        <Tooltip title="You cannot add a review to your own property">
+            <span>
+                <Button
+                    sx={{
+                        color: "white",
+                        backgroundColor: "grey",
+                        width: { xs: "100%", sm: "10rem" },
+                        fontSize: "1.1rem",
+                        mx: "auto",
+                        "&:hover": { backgroundColor: "white", cursor: "not-allowed" },
+                        "&.Mui-disabled": {
+                            color: "white",
+                            backgroundColor: "grey",
+                        },
+                    }}
+                    disabled
                 >
-                    <AddReview listingData={state.listingInfo} />
-                </Dialog>
-                    </>
-            ) : null}
-            
+                    Add Review
+                </Button>
+            </span>
+        </Tooltip>
+    ) : null}
+</Box>
 
-            {/* Condition for logged-out users */}
-            {!GlobalState.userIsLogged ? (
-                <Tooltip title="You need to log in to add a review to this property">
-                    <span>
-                        <Button
-                            sx={{
-                                color: "white",
-                                backgroundColor: "grey",
-                                width: "10rem",
-                                fontSize: "1.1rem",
-                                marginRight: "1rem",
-                                "&:hover": { backgroundColor: "white", cursor: "not-allowed" },
-                                "&.Mui-disabled": {
-                                    color: "white", // Ensures text remains white in disabled state
-                                    backgroundColor: "grey", // Keeps background grey when disabled
-                                },
-                            }}
-                            disabled
-                        >
-                            Add Review
-                        </Button>
-                    </span>
-                </Tooltip>
-            ) : null}
+{/* Snackbar Notification */}
+<Snackbar
+    open={state.openSnack}
+    message="You have successfully deleted the property"
+    anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: "center"
+    }}
+/>
 
-            {/* Condition for the seller of the listing */}
-            {GlobalState.userIsLogged && GlobalState.userId === state.listingInfo.seller ? (
-                <Tooltip title="You cannot add a review to your own property">
-                    <span>
-                        <Button
-                            sx={{
-                                color: "white",
-                                backgroundColor: "grey",
-                                width: "10rem",
-                                fontSize: "1.1rem",
-                                marginRight: "1rem",
-                                "&:hover": { backgroundColor: "white", cursor: "not-allowed" },
-                                "&.Mui-disabled": {
-                                    color: "white", // Ensures text remains white in disabled state
-                                    backgroundColor: "grey", // Keeps background grey when disabled
-                                },
-                            }}
-                            disabled
-                        >
-                            Add Review
-                        </Button>
-                    </span>
-                </Tooltip>
-            ) : null}
-            
-        </div>
-        </Grid2>
-
-        {/* this is the popup when user logs in  */}
-        <Snackbar
-        open={state.openSnack}
-        message="You have successfully deleted the property"
-        anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: "center"
-        }}
-        />
     </div>
   )
 }
