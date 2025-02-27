@@ -106,81 +106,82 @@ function AgencyDetail() {
         );
     }
     
-  return (
-    <div>
-    <Grid2 container style={{
-        width: '50%', 
-        marginLeft: 'auto', 
-        marginRight: 'auto',
-        border: "5px solid black",
-        marginTop: '1rem',
-        padding: '5px'}}>
-        <Grid2 xs={6}>
-            <img 
-            style={{height:"10rem",width: "15rem"}} 
-            src={state.userProfile.profilePic !== null ?
-                state.userProfile.profilePic 
-                : defaultProfilePicture
-            }/>
-        </Grid2>
-
-        <Grid2 
+    return (
+        <div>
+        <Grid2
         container
-        direction='column'
-        justifyContent="center"
-        xs={6}
-        marginLeft='18rem'
-        marginTop='-8rem'
-        marginBottom= '4rem'> 
-            <Grid2>
-                <Typography 
-                    variant="h5"
-                    style={{textAlign: 'center',marginTop: '1rem'}}>
-                        <span style={{color: 'green',fontWeight:'bolder'}}>
-                        {state.userProfile.agencyName}</span>
-
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    {'Owner - '}{state.userProfile.seller_username}
-                </Typography>
-                </Typography>                
-            </Grid2>
-            <Grid2>
-                <Typography 
-                    variant="h5"
-                    style={{textAlign: 'center',marginTop: '1rem'}}>
-                        <IconButton sx={{ gap: 2 }}>
-                        <ContactPhoneIcon />
-                        {state.userProfile.phoneNumber}
-                        </IconButton>
-                        <span style={{color: 'green',fontWeight:'bolder'}}>
-                        </span>
-                </Typography>
-            </Grid2>
-
-            <Grid2 sx={{marginTop:"1rem", padding:"5px"}}>
-                {state.userProfile.bio}
-            </Grid2>
-            {GlobalState.userId !== params.id && GlobalState.userIsLogged ? (
-                <Grid2 container justifyContent="center" alignItems="center">
-                <Button 
-                variant="contained" 
-                color="primary" 
-                onClick={handleOpenMessageDialog} 
-                style={{ marginTop: '1rem' }}>
-                    Send Message
-                </Button>
-                <Dialog 
-                        open={openMessageDialog} 
-                        onClose={handleCloseMessageDialog}
-                        maxWidth="md"
-                        fullWidth
-                    >
-                        <SendMessage recipientId={params.id} />
-                </Dialog>
-                </Grid2>
-            ) : null}
+        sx={{
+            width: { xs: "90%", sm: "70%", md: "50%" },
+            margin: "1rem auto",
+            border: "5px solid black",
+            padding: "5px",
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
+            alignItems: "center",
+        }}
+        >
+        {/* Profile Picture */}
+        <Grid2 xs={12} sm={6} display="flex" justifyContent="center">
+            <img
+            style={{ height: "10rem", width: "15rem" }}
+            src={
+                state.userProfile.profilePic !== null
+                ? state.userProfile.profilePic
+                : defaultProfilePicture
+            }
+            />
         </Grid2>
-    </Grid2>
+
+        {/* Profile Details */}
+        <Grid2
+            container
+            direction="column"
+            xs={12}
+            sm={6}
+            sx={{
+            textAlign: "center",
+            marginTop: { xs: "1rem", sm: 0 },
+            marginLeft: { xs: 0, lg: "2rem" },
+            }}
+        >
+            <Typography variant="h5" sx={{ fontWeight: "bold", color: "green" }}>
+            {state.userProfile.agencyName}
+            </Typography>
+
+            <Typography variant="body2" sx={{ color: "text.secondary" }}>
+            {"Owner - "} {state.userProfile.seller_username}
+            </Typography>
+
+            <Typography
+            variant="h6"
+            sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, mt: 1 }}
+            >
+            <ContactPhoneIcon />
+            {state.userProfile.phoneNumber}
+            </Typography>
+
+            <Typography sx={{ marginTop: "1rem", padding: "5px" }}>
+            {state.userProfile.bio}
+            </Typography>
+
+            {GlobalState.userId !== params.id && GlobalState.userIsLogged && (
+            <Grid2 container justifyContent="center" alignItems="center">
+                <Button
+                variant="contained"
+                color="primary"
+                onClick={handleOpenMessageDialog}
+                sx={{ marginTop: "1rem" }}
+                >
+                Send Message
+                </Button>
+                <Dialog open={openMessageDialog} onClose={handleCloseMessageDialog} maxWidth="md" fullWidth>
+                <SendMessage recipientId={params.id} />
+                </Dialog>
+            </Grid2>
+            )}
+            </Grid2>
+        </Grid2>
+
 
 
 

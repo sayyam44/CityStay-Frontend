@@ -74,13 +74,14 @@ function ListingUpdate(props) {
         titleValue: props.listingData.title,
 		listingTypeValue: props.listingData.listing_type,
 		descriptionValue: props.listingData.description,
+    addressValue: props.listingData.address,
 		propertyStatusValue: props.listingData.property_status,
 		priceValue: props.listingData.price,
 		rentalFrequencyValue: props.listingData.rental_frequency,
 		roomsValue: props.listingData.rooms,
 		furnishedValue: props.listingData.furnished,
-		poolValue: props.listingData.pool,
-		elevatorValue: props.listingData.elevator,
+		utilitiesValue: props.listingData.utilities,
+		petfriendlyValue: props.listingData.petfriendly,
 		cctvValue: props.listingData.cctv,
 		parkingValue: props.listingData.parking,
 		sendRequest: 0,
@@ -117,6 +118,10 @@ function ListingUpdate(props) {
 				// draft.titleErrors.hasErrors = false;
 				// draft.titleErrors.errorMessage = "";
 				break;
+      
+      case "catchAddressChange":
+        draft.addressValue = action.addressChosen;
+        break;
 
 			case "catchListingTypeChange":
 				draft.listingTypeValue = action.listingTypeChosen;
@@ -153,12 +158,12 @@ function ListingUpdate(props) {
 				draft.furnishedValue = action.furnishedChosen;
 				break;
 
-			case "catchPoolChange":
-				draft.poolValue = action.poolChosen;
+			case "catchutilitiesChange":
+				draft.utilitiesValue = action.utilitiesChosen;
 				break;
 
-			case "catchElevatorChange":
-				draft.elevatorValue = action.elevatorChosen;
+			case "catchpetfriendlyChange":
+				draft.petfriendlyValue = action.petfriendlyChosen;
 				break;
 
 			case "catchCctvChange":
@@ -206,6 +211,7 @@ function ListingUpdate(props) {
           //want to show the number of rooms firld anymore
           if (state.listingTypeValue === 'Office'){
             formData.append("title", state.titleValue);
+            formData.append("address", state.addressValue);
             formData.append("description", state.descriptionValue);
             formData.append("listing_type", state.listingTypeValue);
             formData.append("property_status", state.propertyStatusValue);
@@ -213,8 +219,8 @@ function ListingUpdate(props) {
             formData.append("rental_frequency", state.rentalFrequencyValue);
             formData.append("rooms", 0);
             formData.append("furnished", state.furnishedValue);
-            formData.append("pool", state.poolValue);
-            formData.append("elevator", state.elevatorValue);
+            formData.append("utilities", state.utilitiesValue);
+            formData.append("petfriendly", state.petfriendlyValue);
             formData.append("cctv", state.cctvValue);
             formData.append("parking", state.parkingValue);
             // GlobalState.userId gives the currently logged in user using th useContext hook
@@ -222,6 +228,7 @@ function ListingUpdate(props) {
           }
           else{
             formData.append("title", state.titleValue);
+          formData.append("address", state.addressValue);
           formData.append("description", state.descriptionValue);
           formData.append("listing_type", state.listingTypeValue);
           formData.append("property_status", state.propertyStatusValue);
@@ -229,8 +236,8 @@ function ListingUpdate(props) {
           formData.append("rental_frequency", state.rentalFrequencyValue);
           formData.append("rooms", state.roomsValue);
           formData.append("furnished", state.furnishedValue);
-          formData.append("pool", state.poolValue);
-          formData.append("elevator", state.elevatorValue);
+          formData.append("utilities", state.utilitiesValue);
+          formData.append("petfriendly", state.petfriendlyValue);
           formData.append("cctv", state.cctvValue);
           formData.append("parking", state.parkingValue);
           // GlobalState.userId gives the currently logged in user using th useContext hook
@@ -438,19 +445,19 @@ function ListingUpdate(props) {
                     <Grid2 xs={2} style={{ marginTop: "1rem" }}>
                     <FormControlLabel 
                     control={<Checkbox 
-                        checked={state.poolValue}
-                        onChange = {(e)=>dispatch({type: 'catchPoolChange', 
-                            poolChosen: e.target.checked})}/>} 
-                    label="Pool" />
+                        checked={state.utilitiesValue}
+                        onChange = {(e)=>dispatch({type: 'catchutilitiesChange', 
+                            utilitiesChosen: e.target.checked})}/>} 
+                    label="utilities" />
                     </Grid2>
 
                     <Grid2 xs={2} style={{ marginTop: "1rem" }}>
                     <FormControlLabel 
                     control={<Checkbox 
-                        checked={state.elevatorValue}
-                        onChange = {(e)=>dispatch({type: 'catchElevatorChange', 
-                            elevatorChosen: e.target.checked})}/>} 
-                    label="Elevator" />
+                        checked={state.petfriendlyValue}
+                        onChange = {(e)=>dispatch({type: 'catchpetfriendlyChange', 
+                            petfriendlyChosen: e.target.checked})}/>} 
+                    label="petfriendly" />
                     </Grid2>
 
                     <Grid2 xs={2} style={{ marginTop: "1rem" }}>
@@ -472,6 +479,16 @@ function ListingUpdate(props) {
                     label="Parking" />
                     </Grid2>
                 </Grid2>
+
+                <Grid2 container style={{ marginTop: "1rem" }}>
+                    <TextField 
+                    id="address" 
+                    label="Address*" 
+                    variant="outlined"
+                    fullWidth
+                    value = {state.addressValue}
+                    onChange = {(e)=>dispatch({type: 'catchAddressChange', addressChosen: e.target.value})}  />
+                </Grid2>
                 
                 <Grid2 container style={{ marginTop: "3rem" }} xs={8}>
                     <Button
@@ -479,15 +496,13 @@ function ListingUpdate(props) {
                         fullWidth
                         type="submit"
                         sx={{
-                            color: "white",
-                            backgroundColor: "green",
-                            fontSize: "1rem",
-                            marginLeft: "1rem",
-                            marginRight: "1rem",
-                            marginTop: "-2rem",
-                            "&:hover": {
-                                backgroundColor: "orange",
-                            },
+                          color: "white",
+                          backgroundColor: "green",
+                          fontSize: "1rem",
+                          marginBottom: "1rem", // Space between buttons
+                          "&:hover": {
+                            backgroundColor: "orange",
+                          },
                         }}
                         disabled={state.disabledBtn}
                         >
@@ -495,19 +510,23 @@ function ListingUpdate(props) {
                     </Button>
                 </Grid2>
             </form>
-            <Button 
-            marginTop= "1rem"
-            variant="contained" 
-            onClick={props.closeDialog}>CANCEL</Button>
-            {/* this is the popup when user logs in  */}
-            <Snackbar
-            open={state.openSnack}
-            message="You have successfully updated this listing"
-            anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: "center"
-            }}
-            />
+
+            <Grid2 container xs={8}>
+              <Button
+                variant="contained"
+                fullWidth
+                onClick={props.closeDialog}
+                sx={{
+                  fontSize: "1rem",
+                  backgroundColor: "red",
+                  "&:hover": {
+                    backgroundColor: "orange",
+                  },
+                }}
+              >
+                CANCEL
+              </Button>
+            </Grid2>
         </div>
     );
 }

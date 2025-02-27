@@ -332,7 +332,7 @@ function ListingDetail() {
                 <Typography variant="h5">{state.listingInfo.title}</Typography>
                 <Grid2 container alignItems="center" spacing={1}>
                     <RoomIcon />
-                    <Typography variant="h6">{state.listingInfo.borough}</Typography>
+                    <Typography variant="h6">{state.listingInfo.address} - {(state.listingInfo.borough)}</Typography>
                 </Grid2>
                 <Typography variant="subtitle1">{state.listingInfo.formattedDate}</Typography>
 
@@ -344,8 +344,8 @@ function ListingDetail() {
                         </Grid2>
                     )}
                     {[{ label: "Furnished", value: state.listingInfo.furnished },
-                        { label: "Pool", value: state.listingInfo.pool },
-                        { label: "Elevator", value: state.listingInfo.elevator },
+                        { label: "Utilities", value: state.listingInfo.utilities },
+                        { label: "Pet Friendly", value: state.listingInfo.petfriendly },
                         { label: "CCTV", value: state.listingInfo.cctv },
                         { label: "Parking", value: state.listingInfo.parking }]
                         .filter(item => item.value)
@@ -496,12 +496,21 @@ function ListingDetail() {
     <Grid2 container spacing={2} sx={{ padding: 2 }}>
         {/* POIs List (Left Column) */}
         <Grid2 item xs={12} size={3} sx={{ maxHeight: "70vh", overflowY: "auto" }}>
-        <Typography 
-            variant="h5" 
+        <Typography
+            variant="h5"
             align="center"
-            sx={{ fontWeight: "bold", color: "blue", fontSize: "1.5rem" }}
+            sx={{
+                fontWeight: "bold",
+                color: "blue",
+                fontSize: "1.5rem",
+                position: "sticky", // Makes it stick at the top
+                top: 0, // Ensures it sticks at the top
+                backgroundColor: "white", // Optional: ensures the background remains visible if the page has a background color
+                zIndex: 1, // Keeps the text above other elements if necessary
+                padding: "0.5rem", // Adds some space around the text for readability
+            }}
         >
-            Nearby Places (2 km)
+            Nearby Places (2 kms)
         </Typography>
 
             {/* Mapping through each POI within 2km of the current listing */}

@@ -125,15 +125,21 @@ function Profile() {
         else {
         return (
         <Grid2 container style={{
-            width: '50%', 
+            width: '45%', 
             marginLeft: 'auto', 
             marginRight: 'auto',
             border: "5px solid black",
             marginTop: '1rem',
-            padding: '5px'}}>
-            <Grid2 xs={6}>
+            padding: '5px',
+            flexDirection: { xs: 'column', sm: 'row' },
+            alignItems: 'center' }}>
+
+            {/* Profile photo */}
+            <Grid2 xs={12} sm={6} 
+            display="flex" justifyContent="center"
+            style={{ marginBottom: '1rem' }}>
                 <img 
-                style={{height:"10rem",width: "15rem"}} 
+                style={{height:"10rem",width: "15rem",objectFit: "cover"}} 
                 src={state.userProfile.profilePic !== null ?
                     state.userProfile.profilePic 
                     : defaultProfilePicture
@@ -144,11 +150,10 @@ function Profile() {
             container
             direction='column'
             justifyContent="center"
-            xs={6}
-            marginLeft='18rem'
-            marginTop='-8rem'
-            marginBottom= '4rem'> 
-                <Grid2>
+            xs={12} sm={6}
+            sx={{ padding: '1rem',marginLeft: { xs: 0, lg: "3rem" }, }}
+            >
+            <Grid2>
                     <Typography 
                         variant="h5"
                         style={{textAlign: 'center',marginTop: '1rem'}}>

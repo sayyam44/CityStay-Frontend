@@ -207,9 +207,10 @@ function AddProperty() {
     const GlobalState = useContext(StateContext);
 
     const initialState = {
-        titleValue: "",
+    titleValue: "",
 		listingTypeValue: "",
 		descriptionValue: "",
+    addressValue:"",
 		areaValue: "",
 		boroughValue: "",
 		latitudeValue: "",
@@ -219,8 +220,8 @@ function AddProperty() {
 		rentalFrequencyValue: "",
 		roomsValue: "",
 		furnishedValue: false,
-		poolValue: false,
-		elevatorValue: false,
+		utilitiesValue: false,
+		petfriendlyValue: false,
 		cctvValue: false,
 		parkingValue: false,
 		picture1Value: "",
@@ -252,6 +253,10 @@ function AddProperty() {
     
     //below are to define the initial states for each field of the form and to manage errors related to them
     titleErrors: {
+			hasErrors: false,
+			errorMessage: "",
+		},
+    addressErrors: {
 			hasErrors: false,
 			errorMessage: "",
 		},
@@ -293,10 +298,17 @@ function AddProperty() {
 				draft.listingTypeErrors.hasErrors = false;
 				draft.listingTypeErrors.errorMessage = "";
 				break;
+      
+      case "catchAddressChange":
+        draft.addressValue = action.addressChosen;
+        draft.addressErrors.hasErrors = false;
+				draft.addressErrors.errorMessage = "";
+        break;
 
 			case "catchDescriptionChange":
 				draft.descriptionValue = action.descriptionChosen;
 				break;
+      
 
 			case "catchAreaChange":
 				draft.areaValue = action.areaChosen;
@@ -346,12 +358,12 @@ function AddProperty() {
 				draft.furnishedValue = action.furnishedChosen;
 				break;
 
-			case "catchPoolChange":
-				draft.poolValue = action.poolChosen;
+			case "catchutilitiesChange":
+				draft.utilitiesValue = action.utilitiesChosen;
 				break;
 
-			case "catchElevatorChange":
-				draft.elevatorValue = action.elevatorChosen;
+			case "catchpetfriendlyChange":
+				draft.petfriendlyValue = action.petfriendlyChosen;
 				break;
 
 			case "catchCctvChange":
@@ -445,6 +457,13 @@ function AddProperty() {
           draft.titleErrors.errorMessage = "This field must not be empty";
         }
         break;
+      
+      case "catchAddressErrors":
+        if (action.addressChosen.length === 0) {
+          draft.addressErrors.hasErrors = true;
+          draft.addressErrors.errorMessage = "This field must not be empty";
+        }
+        break;
 
       case "catchListingTypeErrors":
         if (action.listingTypeChosen.length === 0) {
@@ -487,6 +506,11 @@ function AddProperty() {
       case "emptyTitle":
         draft.titleErrors.hasErrors = true;
         draft.titleErrors.errorMessage = "This field must not be empty";
+        break;
+      
+      case "emptyAddress":
+        draft.addressErrors.hasErrors = true;
+        draft.addressErrors.errorMessage = "This field must not be empty";
         break;
 
       case "emptyListingType":
@@ -844,6 +868,7 @@ function AddProperty() {
         //the form will only submit if there is no alert or none of the fields are empty
         else if (
           !state.titleErrors.hasErrors &&
+          !state.addressErrors.hasErrors &&
           !state.listingTypeErrors.hasErrors &&
           !state.propertyStatusErrors.hasErrors &&
           !state.priceErrors.hasErrors &&
@@ -859,7 +884,12 @@ function AddProperty() {
           //show the error message on top of the screen and automatically scroll up on the screen
           dispatch({ type: "emptyTitle" });
           window.scrollTo(0, 0);
-        } else if (state.listingTypeValue === "") {
+        } else if (state.addressValue === "") {  
+          //below are all the cases if the required fields are empty then the form will not submit and will 
+          //show the error message on top of the screen and automatically scroll up on the screen
+          dispatch({ type: "emptyAddress" });
+          window.scrollTo(0, 0);
+        }else if (state.listingTypeValue === "") {
           dispatch({ type: "emptyListingType" });
           window.scrollTo(0, 0);
         } else if (state.propertyStatusValue === "") {
@@ -883,6 +913,7 @@ function AddProperty() {
         async function AddProperty(){
           const formData = new FormData()
           formData.append("title", state.titleValue);
+          formData.append("address", state.addressValue);
           formData.append("description", state.descriptionValue);
           formData.append("area", state.areaValue);
           formData.append("borough", state.boroughValue);
@@ -892,8 +923,8 @@ function AddProperty() {
           formData.append("rental_frequency", state.rentalFrequencyValue);
           formData.append("rooms", state.roomsValue);
           formData.append("furnished", state.furnishedValue);
-          formData.append("pool", state.poolValue);
-          formData.append("elevator", state.elevatorValue);
+          formData.append("utilities", state.utilitiesValue);
+          formData.append("petfriendly", state.petfriendlyValue);
           formData.append("cctv", state.cctvValue);
           formData.append("parking", state.parkingValue);
           formData.append("latitude", state.latitudeValue);
@@ -1293,19 +1324,19 @@ function AddProperty() {
                 <Grid2 xs={2} style={{ marginTop: "1rem" }}>
                 <FormControlLabel 
                 control={<Checkbox 
-                    checked={state.poolValue}
-                    onChange = {(e)=>dispatch({type: 'catchPoolChange', 
-                        poolChosen: e.target.checked})}/>} 
-                label="Pool" />
+                    checked={state.utilitiesValue}
+                    onChange = {(e)=>dispatch({type: 'catchutilitiesChange', 
+                        utilitiesChosen: e.target.checked})}/>} 
+                label="Utilities" />
                 </Grid2>
 
                 <Grid2 xs={2} style={{ marginTop: "1rem" }}>
                 <FormControlLabel 
                 control={<Checkbox 
-                    checked={state.elevatorValue}
-                    onChange = {(e)=>dispatch({type: 'catchElevatorChange', 
-                        elevatorChosen: e.target.checked})}/>} 
-                label="Elevator" />
+                    checked={state.petfriendlyValue}
+                    onChange = {(e)=>dispatch({type: 'catchpetfriendlyChange', 
+                        petfriendlyChosen: e.target.checked})}/>} 
+                label="Pet Friendly" />
                 </Grid2>
 
                 <Grid2 xs={2} style={{ marginTop: "1rem" }}>
@@ -1326,8 +1357,30 @@ function AddProperty() {
                         parkingChosen: e.target.checked})}/>} 
                 label="Parking" />
                 </Grid2>
+                
             </Grid2>
             
+            {/* address */}
+            <Grid2 container style={{ marginTop: "1rem" }}>
+                <TextField 
+                id="address" 
+                label="Address*" 
+                variant="outlined"
+                fullWidth
+                value = {state.addressValue}
+                onChange = {(e)=>dispatch({type: 'catchAddressChange', addressChosen: e.target.value})}  
+                
+                // this is to show alerts related to address field 
+                onBlur={(e) =>
+                  dispatch({
+                    type: "catchAddressErrors",
+                    addressChosen: e.target.value,
+                  })
+                }
+                error={state.addressErrors.hasErrors ? true : false}
+                helperText={state.addressErrors.errorMessage} 
+                />
+            </Grid2>
 
             <Grid2 container justifyContent="space-between">
             <Grid2 style={{ marginTop: "1rem" , width: "47%"  }}>
@@ -1410,6 +1463,7 @@ function AddProperty() {
 
                 </TextField>
             </Grid2>
+            
             </Grid2>
         
 

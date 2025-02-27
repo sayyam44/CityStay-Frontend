@@ -129,10 +129,11 @@ function Header() {
                         <Tooltip title="Messages" arrow>
                             <IconButton 
                             color="inherit" 
-                            onClick={() => navigate("/Messages")}>
+                            onClick={() => navigate("/Messages")}
+                            sx={{ marginRight: 1 }}>
                                 <Badge color="error">
                                     <MailIcon />
-                                </Badge>
+                                </Badge>                           
                             </IconButton>
                         </Tooltip>
                         <Button
