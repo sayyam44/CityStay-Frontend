@@ -114,7 +114,7 @@ function ListingDetail() {
             
             //here we are getting the id of the agency by params.id 
             // using the useParams hook above
-            `http://127.0.0.1:8000/api/listings/${params.id}/`);
+            `https://www.citystayinnl.com/api/listings/${params.id}/`);
             console.log(response.data);
             //response.data holds all the data of the user who 
             //is signed in and have clicked on add property button
@@ -137,7 +137,7 @@ function ListingDetail() {
                 
                 //here we are getting the id of the agency by params.id 
                 // using the useParams hook above
-                `http://127.0.0.1:8000/api/profiles/${state.listingInfo.seller}/`);
+                `https://www.citystayinnl.com/api/profiles/${state.listingInfo.seller}/`);
                 console.log(response.data);
                 //response.data holds all the data of the user who 
                 //is signed in and have clicked on add property button
@@ -201,7 +201,7 @@ function ListingDetail() {
             try {
                 //deleting the listing on the basis of the listings id
                 const response = 
-                await Axios.delete(`http://127.0.0.1:8000/api/listings/${params.id}/delete/`);
+                await Axios.delete(`https://www.citystayinnl.com/api/listings/${params.id}/delete/`);
                 console.log(response.data);
                 dispatch({type: 'openTheSnack'}); //this is to show the popup when user successfully uploads a listing
                 // navigate("/listings");

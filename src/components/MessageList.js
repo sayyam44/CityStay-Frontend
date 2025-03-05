@@ -15,7 +15,7 @@ function MessageList() {
         async function fetchMessages() {
             try {
                 const response = await Axios.get(
-                    `http://127.0.0.1:8000/api/profiles/${GlobalState.userId}/messages/`
+                    `https://www.citystayinnl.com/api/profiles/${GlobalState.userId}/messages/`
                 );
 
                 console.log("Fetched messages:", response.data);
@@ -42,7 +42,7 @@ function MessageList() {
         if (!confirmDelete) return;
 
         try {
-            await Axios.delete(`http://127.0.0.1:8000/api/profiles/${GlobalState.userId}/messages/${messageId}/`);
+            await Axios.delete(`https://www.citystayinnl.com/api/profiles/${GlobalState.userId}/messages/${messageId}/`);
 
             setMessages((prevMessages) => {
                 const updatedMessages = prevMessages.filter((message) => message.id !== messageId);

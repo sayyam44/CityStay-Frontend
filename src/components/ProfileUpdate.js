@@ -109,7 +109,7 @@ function ProfileUpdate(props) {
                 //since the profile of the user already exists that is 
                 //why we send the patch request
               const response = await Axios.patch(
-                `http://127.0.0.1:8000/api/profiles/${GlobalState.userId}/update/`,
+                `https://www.citystayinnl.com/api/profiles/${GlobalState.userId}/update/`,
                 formData
               );
               console.log("Success:", response.data);

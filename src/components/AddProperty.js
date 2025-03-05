@@ -831,7 +831,7 @@ function AddProperty() {
         try{
           const response = await Axios.get(
             // GlobalState.userId gives the info of currently logged in user
-            `http://127.0.0.1:8000/api/profiles/${GlobalState.userId}/`);
+            `https://www.citystayinnl.com/api/profiles/${GlobalState.userId}/`);
             console.log(response.data);
             //response.data holds all the data of the user who 
             //is signed in and have clicked on add property button
@@ -939,7 +939,7 @@ function AddProperty() {
 
           try {
             const response = await Axios.post(
-              "http://127.0.0.1:8000/api/listings/create/",
+              "https://www.citystayinnl.com/api/listings/create/",
               formData
             );
             console.log("Success:", response.data);

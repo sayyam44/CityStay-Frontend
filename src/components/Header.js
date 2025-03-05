@@ -59,7 +59,7 @@ function Header() {
         if (confirmLogout) {
             try {
                 await Axios.post(
-                    "http://127.0.0.1:8000/api-auth-djoser/token/logout/",
+                    "https://www.citystayinnl.com/api-auth-djoser/token/logout/",
                     GlobalState.userToken,
                     {
                         headers: { Authorization: "Token " + GlobalState.userToken },

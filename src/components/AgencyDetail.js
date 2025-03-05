@@ -74,7 +74,7 @@ function AgencyDetail() {
             
             //here we are getting the id of the agency by params.id 
             // using the useParams hook above
-            `http://127.0.0.1:8000/api/profiles/${params.id}/`);
+            `https://www.citystayinnl.com/api/profiles/${params.id}/`);
             console.log(response.data);
             //response.data holds all the data of the user who 
             //is signed in and have clicked on add property button
@@ -208,8 +208,8 @@ function AgencyDetail() {
                         //to get over the issue of not getting the 
                         //full path of each listing in each card
                         //because django does not allow it directly.
-                        `http://127.0.0.1:8000${listing.picture1}`
-                        ? `http://127.0.0.1:8000${listing.picture1}` :
+                        `https://www.citystayinnl.com${listing.picture1}`
+                        ? `https://www.citystayinnl.com${listing.picture1}` :
                         defaultProfilePicture }
                     alt="Listing Picture"
                     onClick={()=>navigate(`/listings/${listing.id}`)}

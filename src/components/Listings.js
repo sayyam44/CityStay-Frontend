@@ -218,7 +218,7 @@ function ReducerFunction(draft, action) {
     async function GetAllListings(){
       try{
         //response holds all the lising data
-      const response = await Axios.get('http://citystayinnl.com/api/listings/',{cancelToken: source.token});
+      const response = await Axios.get('https://www.citystayinnl.com/api/listings/',{cancelToken: source.token});
       console.log(response.data);
       setAllListings(response.data);
       setFilteredListings(response.data); // Set filtered list initially

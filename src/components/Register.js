@@ -200,7 +200,7 @@ function Register() {
             async function SignUp() {
                 try {
                     const response = await Axios.post(
-                        'http://127.0.0.1:8000/api-auth-djoser/users/', // Fixed the URL here
+                        'https://www.citystayinnl.com/api-auth-djoser/users/', // Fixed the URL here
                         {
                             username: state.usernameValue,
                             email: state.emailValue,

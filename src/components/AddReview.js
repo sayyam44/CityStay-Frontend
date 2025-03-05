@@ -82,7 +82,7 @@ function AddReview(props) {
             const AddReviewToBackend = async () => {
                 try {
                     const response = await Axios.post(
-                        `http://127.0.0.1:8000/api/listings/${props.listingData.id}/add_review/`,
+                        `https://www.citystayinnl.com/api/listings/${props.listingData.id}/add_review/`,
                         {
                             review: state.reviewText,
                             rating: state.ratingValue,

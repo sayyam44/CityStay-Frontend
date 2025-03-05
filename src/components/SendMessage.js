@@ -105,7 +105,7 @@ function SendMessage(props) {
             const SendMessageToBackend = async () => {
                 try {
                     const response = await Axios.post(
-                        `http://127.0.0.1:8000/api/messages/send/`,
+                        `https://www.citystayinnl.com/api/messages/send/`,
                         {
                             sender: GlobalState.userId,  // sender of the message
                             recipient: props.recipientId, //receipient of the current listing

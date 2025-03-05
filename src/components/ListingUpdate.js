@@ -247,7 +247,7 @@ function ListingUpdate(props) {
           
           try {
             const response = await Axios.patch(
-              `http://127.0.0.1:8000/api/listings/${props.listingData.id}/update/`,
+              `https://www.citystayinnl.com/api/listings/${props.listingData.id}/update/`,
               formData
             );
             console.log("Success:", response.data);
