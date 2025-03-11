@@ -208,8 +208,8 @@ function AgencyDetail() {
                         //to get over the issue of not getting the 
                         //full path of each listing in each card
                         //because django does not allow it directly.
-                        `https://www.citystayinnl.com${listing.picture1}`
-                        ? `https://www.citystayinnl.com${listing.picture1}` :
+                        listing.picture1
+                        ? listing.picture1 :
                         defaultProfilePicture }
                     alt="Listing Picture"
                     onClick={()=>navigate(`/listings/${listing.id}`)}
