@@ -15,7 +15,8 @@ import Agencies from "./components/Agencies";
 import AgencyDetail from "./components/AgencyDetail";
 import ListingDetail from "./components/ListingDetail";
 import MessageList from "./components/MessageList";
-
+import AccountCreated from "./components/AccountCreated";
+import Activation from "./components/Activation";
 // Context for sharing the props from app.js to header.js 
 import DispatchContext from "./Contexts/DispatchContext";
 import StateContext from "./Contexts/StateContext";
@@ -84,6 +85,8 @@ function App() {
             <Routes>
               <Route path='/' element={<Home />}/>
               <Route path='/login' element={<Login />}/>
+              <Route path='/activate/:uid/:token' element={<Activation />}/>
+              <Route path='/created' element={<AccountCreated />}/>
               <Route path="/Register" element={<Register />} />
               <Route path="/addproperty" element={<AddProperty />} />
               <Route path="/profile" element={<Profile />} />

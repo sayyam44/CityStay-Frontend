@@ -252,7 +252,7 @@ function Register() {
     useEffect(()=>{
         if (state.openSnack){
             setTimeout(()=>{
-                navigate("/");
+                navigate("/created");
             },1500);
         }
     },[state.openSnack])
