@@ -19,11 +19,13 @@ function AccountCreated() {
         boxSizing: "border-box", // Ensures padding is inside the border
       }}
     >
-      <Typography variant="h4" align="center">
-        Thanks for signing up! To activate your account, please click on the
-        link that has been sent to you on your email!
-        <br />
-        <br />
+      <Typography variant="h4" align="center" gutterBottom>
+        Thanks for signing up!
+      </Typography>
+      <Typography variant="body1" align="center" paragraph>
+        To activate your account, please click on the link that has been sent to you on your email!
+      </Typography>
+      <Typography variant="body1" align="center">
         By Sayyam Kundra from citystaynl.com
       </Typography>
     </Box>
