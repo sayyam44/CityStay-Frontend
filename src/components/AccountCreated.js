@@ -1,52 +1,33 @@
 import React, { useEffect, useContext } from "react";
-import Axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useImmerReducer } from "use-immer";
 // MUI
-import {
-	Grid2,
-	AppBar,
-	Typography,
-	Button,
-	Card,
-	CardHeader,
-	CardMedia,
-	CardContent,
-	CircularProgress,
-	TextField,
-	Snackbar,
-	Alert,
-} from "@mui/material";
-
-// Contexts
-import DispatchContext from "../Contexts/DispatchContext";
-import StateContext from "../Contexts/StateContext";
+import { Typography, Box } from "@mui/material";
 
 function AccountCreated() {
-	const navigate = useNavigate();
+  const navigate = useNavigate();
 
-	const GlobalDispatch = useContext(DispatchContext);
-	const GlobalState = useContext(StateContext);
-
-	return (
-		<div
-			sx={{
-				width: "50%",
-				marginLeft: "auto",
-				marginRight: "auto",
-				marginTop: "3rem",
-				border: "5px solid black",
-				padding: "3rem",
-			}}
-		>
-			<Typography variant="h4">
-				Thanks for signing up! To activate your account, please click on the
-				link that has been sent to you on your email!
-
-                By Sayyam Kundra from citystaynl.com
-			</Typography>
-		</div>
-	);
+  return (
+    <Box
+      sx={{
+        width: "100%", // 100% width to make it responsive
+        maxWidth: "600px", // Maximum width for larger screens
+        marginLeft: "auto",
+        marginRight: "auto",
+        marginTop: "3rem",
+        border: "5px solid black",
+        padding: "3rem",
+        boxSizing: "border-box", // Ensures padding is inside the border
+      }}
+    >
+      <Typography variant="h4" align="center">
+        Thanks for signing up! To activate your account, please click on the
+        link that has been sent to you on your email!
+        <br />
+        <br />
+        By Sayyam Kundra from citystaynl.com
+      </Typography>
+    </Box>
+  );
 }
 
 export default AccountCreated;
