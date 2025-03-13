@@ -59,7 +59,7 @@ function Profile() {
             const response = await Axios.get(
             // GlobalState.userId gives the info of currently logged in user
             `https://www.citystayinnl.com/api/profiles/${GlobalState.userId}/`);
-            console.log(response.data);
+            // console.log(response.data);
             //response.data holds all the data of the user who 
             //is signed in and have clicked on add property button
             dispatch({
@@ -71,7 +71,7 @@ function Profile() {
                 type: 'loadingdone',
             })
             } catch(e){
-            console.log(e.response);
+            // console.log(e.response);
           }
         }
         GetProfileInfo()

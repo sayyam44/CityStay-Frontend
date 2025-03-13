@@ -18,7 +18,7 @@ function MessageList() {
                     `https://www.citystayinnl.com/api/profiles/${GlobalState.userId}/messages/`
                 );
 
-                console.log("Fetched messages:", response.data);
+                // console.log("Fetched messages:", response.data);
 
                 // Sort messages by created timestamp (newest first)
                 const sortedMessages = response.data.sort(
@@ -28,7 +28,7 @@ function MessageList() {
                 setMessages(sortedMessages);
                 setLoading(false);
             } catch (error) {
-                console.error("Error fetching messages:", error);
+                // console.error("Error fetching messages:", error);
                 setLoading(false);
             }
         }
@@ -46,11 +46,11 @@ function MessageList() {
 
             setMessages((prevMessages) => {
                 const updatedMessages = prevMessages.filter((message) => message.id !== messageId);
-                console.log("Updated messages after delete:", updatedMessages); // Logging the updated messages
+                // console.log("Updated messages after delete:", updatedMessages); // Logging the updated messages
                 return updatedMessages;
             });
         } catch (error) {
-            console.error("Error deleting message:", error);
+            // console.error("Error deleting message:", error);
         }
     }
 

@@ -176,7 +176,7 @@ function Register() {
 
     function FormSubmit(e) {
         e.preventDefault();
-        console.log('yessssssssssssssss');
+        // console.log('yessssssssssssssss');
         //we need to submit the form only if there is no error in any of the fields
         if (
 			!state.usernameErrors.hasErrors &&
@@ -211,13 +211,13 @@ function Register() {
                             cancelToken: source.token
                         }
                     );
-                    console.log(response);
+                    // console.log(response);
                     // navigate('/')
                     dispatch({type: 'openTheSnack'}) //this is to show the popup when user registers
     
                 } catch (error) {
                     dispatch({type: 'allowTheButton'})
-                    console.log(error.response);
+                    // console.log(error.response);
     
                     if (error.response.data.username) { //this is to handle the error if the username already exists
                         dispatch({type: 'usernameExists'});

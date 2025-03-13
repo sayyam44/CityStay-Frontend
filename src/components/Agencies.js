@@ -53,7 +53,7 @@ function Agencies() {
           try{
             const response = await Axios.get(
             `https://www.citystayinnl.com/api/profiles/`);
-            console.log(response.data);
+            // console.log(response.data);
             
             // Filter agencies where agency_name is not null
             const filteredAgencies = response.data
@@ -70,7 +70,7 @@ function Agencies() {
                 type: 'loadingDone',
             })
             } catch(e){
-            console.log(e.response);
+            // console.log(e.response);
           }
         }
         GetAgencies();

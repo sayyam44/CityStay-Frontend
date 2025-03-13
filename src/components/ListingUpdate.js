@@ -197,7 +197,7 @@ function ListingUpdate(props) {
     //this function sends the data from frontend to backend as the form is submitted
     function FormSubmit(e) {
         e.preventDefault();
-        console.log('yessssssssssssssss');
+        // console.log('yessssssssssssssss');
         dispatch({type: 'changeSendRequest'});
         dispatch({type: 'disabledButton'})
     }
@@ -250,11 +250,11 @@ function ListingUpdate(props) {
               `https://www.citystayinnl.com/api/listings/${props.listingData.id}/update/`,
               formData
             );
-            console.log("Success:", response.data);
+            // console.log("Success:", response.data);
             dispatch({type: 'openTheSnack'}) //this is to show the popup when user successfully logs in
             // navigate(0);
           } catch (e) {
-            console.log(e.response);
+            // console.log(e.response);
             dispatch({type: 'allowTheButton'});
           }
         }

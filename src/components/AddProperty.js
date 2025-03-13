@@ -832,7 +832,7 @@ function AddProperty() {
           const response = await Axios.get(
             // GlobalState.userId gives the info of currently logged in user
             `https://www.citystayinnl.com/api/profiles/${GlobalState.userId}/`);
-            console.log(response.data);
+            // console.log(response.data);
             //response.data holds all the data of the user who 
             //is signed in and have clicked on add property button
             dispatch({
@@ -840,7 +840,7 @@ function AddProperty() {
               profileObject: response.data})
 
           } catch(e){
-          console.log(e.response);
+          // console.log(e.response);
         }
       }
       GetProfileInfo()
@@ -851,7 +851,7 @@ function AddProperty() {
     //this function sends the data from frontend to backend as the form is submitted
     function FormSubmit(e) {
         e.preventDefault();
-        console.log('yessssssssssssssss');
+        // console.log('yessssssssssssssss');
 
         // Check if the number of uploaded pictures is valid
         if (state.uploadedPictures.length === 0) {
@@ -942,12 +942,12 @@ function AddProperty() {
               "https://www.citystayinnl.com/api/listings/create/",
               formData
             );
-            console.log("Success:", response.data);
+            // console.log("Success:", response.data);
             dispatch({type: 'openTheSnack'})
             // navigate('/listings');
           } catch (e) {
             dispatch({type: 'allowTheButton'});
-            console.log(e.response);
+            // console.log(e.response);
           }
         }
         AddProperty()

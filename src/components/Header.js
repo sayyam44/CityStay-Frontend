@@ -73,7 +73,7 @@ function Header() {
                 GlobalDispatch({ type: "logout" });
                 setOpenSnack(true);
             } catch (e) {
-                console.log(e.response);
+                // console.log(e.response);
             }
         }
     }

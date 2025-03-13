@@ -14,7 +14,7 @@ function ProfileUpdate(props) {
     const navigate = useNavigate();
     const GlobalState = useContext(StateContext);
 
-    console.log(props.userProfile);
+    // console.log(props.userProfile);
 
     //here we are getting the prefilled values in the user profile 
     // form from the props
@@ -112,11 +112,11 @@ function ProfileUpdate(props) {
                 `https://www.citystayinnl.com/api/profiles/${GlobalState.userId}/update/`,
                 formData
               );
-              console.log("Success:", response.data);
+            //   console.log("Success:", response.data);
               dispatch({type: 'openTheSnack'}) //this is to show the popup when user successfully updates its profile
             //   navigate(0);//here navigate is 0 that is to update the profile
             } catch (e) {
-              console.log(e.response);
+            //   console.log(e.response);
               dispatch({type: 'allowTheButton'})
             }
           }

@@ -136,9 +136,9 @@ function ReducerFunction(draft, action) {
   };
 
   // Handle recognition errors
-  recognition.onerror = (event) => {
-    console.error("Speech recognition error", event.error);
-  };
+  // recognition.onerror = (event) => {
+  //   console.error("Speech recognition error", event.error);
+  // };
 
   // Toggle speech recognition on and off on the basis of the 
   // access given or not given to the microphone
@@ -219,12 +219,12 @@ function ReducerFunction(draft, action) {
       try{
         //response holds all the lising data
       const response = await Axios.get('https://www.citystayinnl.com/api/listings/',{cancelToken: source.token});
-      console.log(response.data);
+      // console.log(response.data);
       setAllListings(response.data);
       setFilteredListings(response.data); // Set filtered list initially
       setDataIsLoading(false);
     } catch(error){
-      console.log(error.response);
+      // console.log(error.response);
     }}
     GetAllListings();
     return ()=>{
@@ -232,9 +232,9 @@ function ReducerFunction(draft, action) {
     }
   }, []);
 
-  if (dataIsLoading === false) {
-    console.log(allListings[0].location);
-  }
+  // if (dataIsLoading === false) {
+  //   console.log(allListings[0].location);
+  // }
 
   // initially the filtered listings holds all the listings 
   //then if the user have allowed the location permisiion then filtering happens on the basis of the location

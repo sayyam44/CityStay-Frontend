@@ -62,7 +62,7 @@ function Login() {
 
     function FormSubmit(e) {
       e.preventDefault();
-      console.log('yessssssssssssssss');
+    //   console.log('yessssssssssssssss');
       dispatch({type: 'changeSendRequest'});
       dispatch({type: 'disabledButton'})
     }
@@ -121,7 +121,7 @@ function Login() {
                         cancelToken: source.token,
                     }
                 );
-                console.log(response);
+                // console.log(response);
 
                 // Reset location access in localStorage after login
                 localStorage.setItem("locationAccess", null);
@@ -135,7 +135,7 @@ function Login() {
                 dispatch({type: 'openTheSnack'}) //this is to show the popup when user successfully logs in
                 
             } catch (error) {
-                console.log(error.response);
+                // console.log(error.response);
             }
         }
         GetUserInfo();

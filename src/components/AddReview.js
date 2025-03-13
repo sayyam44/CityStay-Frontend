@@ -90,16 +90,16 @@ function AddReview(props) {
                             user: GlobalState.userId,  // Pass the user_id
                         }
                     );
-                    console.log('Success:', response.data);
+                    // console.log('Success:', response.data);
                     dispatch({ type: 'openTheSnack' });
                 } catch (e) {
                     if (e.response) {
-                        console.log('Error status:', e.response.status);
-                        console.log('Error data:', e.response.data);
+                        // console.log('Error status:', e.response.status);
+                        // console.log('Error data:', e.response.data);
                     } else if (e.request) {
-                        console.log('Request error:', e.request);
+                        // console.log('Request error:', e.request);
                     } else {
-                        console.log('Error message:', e.message);
+                        // console.log('Error message:', e.message);
                     }
                     dispatch({ type: 'allowTheButton' });
                 }

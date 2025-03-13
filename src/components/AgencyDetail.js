@@ -75,7 +75,7 @@ function AgencyDetail() {
             //here we are getting the id of the agency by params.id 
             // using the useParams hook above
             `https://www.citystayinnl.com/api/profiles/${params.id}/`);
-            console.log(response.data);
+            // console.log(response.data);
             //response.data holds all the data of the user who 
             //is signed in and have clicked on add property button
             dispatch({
@@ -87,7 +87,7 @@ function AgencyDetail() {
                 type: 'loadingdone',
             })
             } catch(e){
-            console.log(e.response);
+            // console.log(e.response);
           }
         }
         GetProfileInfo()

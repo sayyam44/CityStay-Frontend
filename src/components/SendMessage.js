@@ -116,10 +116,10 @@ function SendMessage(props) {
                             headers: { Authorization: `Token ${GlobalState.userToken}` },  // Djoser Token Authentication
                         }
                     );
-                    console.log('Message sent successfully:', response.data);
+                    // console.log('Message sent successfully:', response.data);
                     dispatch({ type: 'openTheSnack' });
                 } catch (e) {
-                    console.log('Error sending message:', e);
+                    // console.log('Error sending message:', e);
                     dispatch({ type: 'allowTheButton' });
                 }
             };
