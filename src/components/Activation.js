@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useState  } from "react";
 import Axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 // MUI
@@ -14,6 +14,7 @@ function Activation() {
 
   const GlobalDispatch = useContext(DispatchContext);
   const GlobalState = useContext(StateContext);
+  const [error, setError] = useState("");
 
   async function ActivationHandler() {
     try {
@@ -23,12 +24,16 @@ function Activation() {
           uid: params.uid,
           token: params.token,
         },
-        { withCredentials: true } // This will include credentials like cookies or tokens
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
       // Once the user is activated, navigate to login page
       navigate("/login");
     } catch (e) {
-      // Handle error (optional)
+      setError("Activation failed. Please try again.");
     }
   }
 
@@ -48,6 +53,11 @@ function Activation() {
       <Typography variant="h4" align="center" gutterBottom>
         Please click on the button below to activate your account!
       </Typography>
+      {error && (
+        <Typography variant="body1" color="error" align="center">
+          {error}
+        </Typography>
+      )}
       <Button
         variant="contained"
         fullWidth
