@@ -22,7 +22,8 @@ function Activation() {
         {
           uid: params.uid,
           token: params.token,
-        }
+        },
+        { withCredentials: true } // This will include credentials like cookies or tokens
       );
       // Once the user is activated, navigate to login page
       navigate("/login");
