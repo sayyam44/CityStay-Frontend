@@ -1,63 +1,51 @@
-import React, { useEffect, useContext, useState } from "react";
+import React, { useEffect, useContext } from "react";
 import Axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import { useImmerReducer } from "use-immer";
 // MUI
-import { Typography, Button, Box } from "@mui/material";
+import {
+	Grid2,
+	AppBar,
+	Typography,
+	Button,
+  Box,
+	Card,
+	CardHeader,
+	CardMedia,
+	CardContent,
+	CircularProgress,
+	TextField,
+	Snackbar,
+	Alert,
+} from "@mui/material";
 
 // Contexts
 import DispatchContext from "../Contexts/DispatchContext";
 import StateContext from "../Contexts/StateContext";
 
 function Activation() {
-  const navigate = useNavigate();
-  const params = useParams();
-  const GlobalDispatch = useContext(DispatchContext);
-  const GlobalState = useContext(StateContext);
-  const [error, setError] = useState("");
+	const navigate = useNavigate();
+    //because we need uid and 
+	const params = useParams();
 
-  // Ensure the uid and token exist before proceeding
-  useEffect(() => {
-    if (!params.uid || !params.token) {
-      setError("Invalid or missing activation parameters.");
-    }
-  }, [params]);
+	const GlobalDispatch = useContext(DispatchContext);
+	const GlobalState = useContext(StateContext);
 
-  async function ActivationHandler() {
-    try {
-      const csrftoken = document.cookie.split("csrftoken=")[1];
-      if (!csrftoken) {
-        setError("CSRF token missing. Please try again.");
-        return;
-      }
+	async function ActivationHandler() {
+		try {
+			const response = await Axios.post(
+				"https://www.citystayinnl.com/api-auth-djoser/users/activation/",
+				{
+					uid: params.uid,
+					token: params.token,
+				}
+			);
+			navigate("/login"); //once the user is activated then navigate the user to login page
+		} catch (e) {}
+	}
 
-      const response = await Axios.post(
-        "https://www.citystayinnl.com/api-auth-djoser/users/activation/",
-        {
-          uid: params.uid,
-          token: params.token,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": csrftoken, // Add CSRF token here
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        // Once the user is activated, navigate to the login page
-        navigate("/login");
-      } else {
-        setError("Activation failed. Please try again.");
-      }
-    } catch (e) {
-      console.error(e);
-      setError("Activation failed. Please try again.");
-    }
-  }
-
-  return (
-    <Box
+	return (
+		<Box
       sx={{
         width: "100%", // Full width
         maxWidth: "600px", // Max width for large screens
@@ -86,7 +74,7 @@ function Activation() {
         ACTIVATE
       </Button>
     </Box>
-  );
+	);
 }
 
 export default Activation;
