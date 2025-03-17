@@ -33,6 +33,7 @@ function Activation() {
       // Once the user is activated, navigate to login page
       navigate("/login");
     } catch (e) {
+      console.error(e);
       setError("Activation failed. Please try again.");
     }
   }
