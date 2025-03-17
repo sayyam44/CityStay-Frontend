@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState  } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import Axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 // MUI
@@ -11,13 +11,25 @@ import StateContext from "../Contexts/StateContext";
 function Activation() {
   const navigate = useNavigate();
   const params = useParams();
-
   const GlobalDispatch = useContext(DispatchContext);
   const GlobalState = useContext(StateContext);
   const [error, setError] = useState("");
 
+  // Ensure the uid and token exist before proceeding
+  useEffect(() => {
+    if (!params.uid || !params.token) {
+      setError("Invalid or missing activation parameters.");
+    }
+  }, [params]);
+
   async function ActivationHandler() {
     try {
+      const csrftoken = document.cookie.split("csrftoken=")[1];
+      if (!csrftoken) {
+        setError("CSRF token missing. Please try again.");
+        return;
+      }
+
       const response = await Axios.post(
         "https://www.citystayinnl.com/api-auth-djoser/users/activation/",
         {
@@ -27,11 +39,17 @@ function Activation() {
         {
           headers: {
             "Content-Type": "application/json",
+            "X-CSRFToken": csrftoken, // Add CSRF token here
           },
         }
       );
-      // Once the user is activated, navigate to login page
-      navigate("/login");
+
+      if (response.status === 200) {
+        // Once the user is activated, navigate to the login page
+        navigate("/login");
+      } else {
+        setError("Activation failed. Please try again.");
+      }
     } catch (e) {
       console.error(e);
       setError("Activation failed. Please try again.");
