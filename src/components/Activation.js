@@ -60,11 +60,6 @@ function Activation() {
       <Typography variant="h4" align="center" gutterBottom>
         Please click on the button below to activate your account!
       </Typography>
-      {error && (
-        <Typography variant="body1" color="error" align="center">
-          {error}
-        </Typography>
-      )}
       <Button
         variant="contained"
         fullWidth
