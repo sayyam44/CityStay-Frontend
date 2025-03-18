@@ -162,19 +162,28 @@ function Header() {
                             color: "black",
                             backgroundColor: "white",
                             width: "10rem",
-                            fontSize: "clamp(0.7rem, 4vw, 1.1rem)", // Dynamically adjust font size
+                            fontSize: "1.1rem", // Default font size
                             marginLeft: "1rem",
                             display: "flex",
                             justifyContent: "center",
                             alignItems: "center",
                             overflow: "hidden",
                             whiteSpace: "nowrap",
-                            minWidth: 0, // Allows content to shrink inside
                             textAlign: "center",
                             "&:hover": { backgroundColor: "orange" },
                         }}
                     >
-                        {GlobalState.userUsername}
+                        <Typography 
+                            sx={{
+                                fontSize: "clamp(0.6rem, 4vw, 1rem)", // Adjusts based on available space
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
+                                maxWidth: "100%", // Ensures it doesn't overflow the button width
+                            }}
+                        >
+                            {GlobalState.userUsername}
+                        </Typography>
                     </Button>
                 ) : (
                     <Button
@@ -191,6 +200,7 @@ function Header() {
                         Login
                     </Button>
                 )}
+
 
                 {/* Profile & Logout Menu */}
                 <Menu
