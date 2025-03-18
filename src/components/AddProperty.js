@@ -1114,6 +1114,26 @@ function AddProperty() {
         }
     },[state.openSnack])
 
+
+    const [showAlert, setShowAlert] = useState(false);
+    useEffect(() => {
+        // Set a timeout to show the alert after 2 seconds
+        const timer = setTimeout(() => {
+            if (
+                GlobalState.userIsLogged &&
+                (state.userProfile.agencyName === null ||
+                state.userProfile.agencyName === "" ||
+                state.userProfile.phoneNumber === null ||
+                state.userProfile.phoneNumber === "")
+            ) {
+                setShowAlert(true); // Show the alert if conditions are met
+            }
+        }, 2000); // 2 seconds delay
+
+        // Cleanup the timer when the component unmounts
+        return () => clearTimeout(timer);
+    }, [GlobalState.userIsLogged, state.userProfile]);
+
     return (
         <div
             style={{
@@ -1128,16 +1148,12 @@ function AddProperty() {
         <form onSubmit={FormSubmit}>
           
         {/* Showing an alert if the user havent created its profile yet */}
-        {GlobalState.userIsLogged && 
-            (state.userProfile.agencyName === null ||
-            state.userProfile.agencyName === "" ||
-            state.userProfile.phoneNumber === null ||
-            state.userProfile.phoneNumber === "") && (
-            <Grid2 xs={12} sx={{ textAlign: "center", marginBottom: "1rem" }}>
-                <Alert severity="error" sx={{ fontWeight: "bold" }}>
-                    You cannot submit a property without creating a profile!
-                </Alert>
-            </Grid2>
+        {showAlert && (
+                <Grid2 xs={12} sx={{ textAlign: "center", marginBottom: "1rem" }}>
+                    <Alert severity="error" sx={{ fontWeight: "bold" }}>
+                        You cannot submit a property without creating a profile!
+                    </Alert>
+                </Grid2>
         )}
 
           {/* this is to give an alert if the photos are less than 1 or more than 5 */}
