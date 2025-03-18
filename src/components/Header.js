@@ -157,34 +157,36 @@ function Header() {
                 {/* Login/Profile Button */}
                 {GlobalState.userIsLogged ? (
                     <Button
-                        onClick={handleClick}
+                    onClick={handleClick}
+                    sx={{
+                        color: "black",
+                        backgroundColor: "white",
+                        width: "10rem", // Keep button width fixed
+                        height: "2.5rem", // Keep button height same as "Login" button
+                        fontSize: "1.1rem", // Same font size as "Login"
+                        fontFamily: "inherit", // Ensures the font remains consistent
+                        marginLeft: "1rem",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        "&:hover": { backgroundColor: "orange" },
+                    }}
+                >
+                    <Typography 
                         sx={{
-                            color: "black",
-                            backgroundColor: "white",
-                            width: "10rem",
-                            fontSize: "1.1rem", // Default font size
-                            marginLeft: "1rem",
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
+                            fontSize: "clamp(0.7rem, 4vw, 1.1rem)", // Dynamically adjust text size
+                            fontFamily: "inherit", // Same font style as "Login"
+                            fontWeight: "inherit", // Ensures consistent weight
                             overflow: "hidden",
+                            textOverflow: "ellipsis",
                             whiteSpace: "nowrap",
-                            textAlign: "center",
-                            "&:hover": { backgroundColor: "orange" },
+                            maxWidth: "100%",
                         }}
                     >
-                        <Typography 
-                            sx={{
-                                fontSize: "clamp(0.6rem, 4vw, 1rem)", // Adjusts based on available space
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                whiteSpace: "nowrap",
-                                maxWidth: "100%", // Ensures it doesn't overflow the button width
-                            }}
-                        >
-                            {GlobalState.userUsername}
-                        </Typography>
-                    </Button>
+                        {GlobalState.userUsername}
+                    </Typography>
+                </Button>
+                
                 ) : (
                     <Button
                         sx={{
