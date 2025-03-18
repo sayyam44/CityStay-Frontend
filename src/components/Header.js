@@ -160,13 +160,30 @@ function Header() {
                     sx={{
                         color: "black",
                         backgroundColor: "white",
-                        width: "10rem",
-                        fontSize: "1.1rem",
+                        width: "10rem", // Fixed width for the button
+                        fontSize: "1.1rem", // Default font size
                         marginLeft: "1rem",
                         "&:hover": { backgroundColor: "orange" },
+                        whiteSpace: "nowrap", // Prevent text from wrapping
+                        overflow: "hidden", // Hide overflow text
+                        textOverflow: "ellipsis", // Add ellipsis for overflow text
                     }}
                 >
-                    {GlobalState.userIsLogged ? GlobalState.userUsername : "Login"}
+                    {GlobalState.userIsLogged ? (
+                        <span
+                            style={{
+                                display: "inline-block",
+                                maxWidth: "100%", // Ensure the span doesn't exceed the button width
+                                fontSize: "clamp(0.8rem, 2.5vw, 1.1rem)", // Dynamically adjust font size
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                            }}
+                        >
+                            {GlobalState.userUsername}
+                        </span>
+                    ) : (
+                        "Login"
+                    )}
                 </Button>
 
                 {/* Profile & Logout Menu */}
