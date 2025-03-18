@@ -161,31 +161,37 @@ function Header() {
                     sx={{
                         color: "black",
                         backgroundColor: "white",
-                        width: "10rem", // Keep button width fixed
-                        height: "2.5rem", // Keep button height same as "Login" button
-                        fontSize: "1.1rem", // Same font size as "Login"
-                        fontFamily: "inherit", // Ensures the font remains consistent
+                        width: "10rem", // Ensure a fixed width
+                        height: "2.5rem", // Ensure a fixed height like the Login button
+                        fontSize: "1.1rem", // Keep font size the same
+                        fontFamily: "inherit",
                         marginLeft: "1rem",
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
+                        textTransform: "none", // Prevents uppercase transformation
                         "&:hover": { backgroundColor: "orange" },
+                        whiteSpace: "nowrap", // Ensures text stays in one line
+                        overflow: "hidden", // Prevents content from expanding the button
                     }}
                 >
                     <Typography 
                         sx={{
-                            fontSize: "clamp(0.7rem, 4vw, 1.1rem)", // Dynamically adjust text size
-                            fontFamily: "inherit", // Same font style as "Login"
-                            fontWeight: "inherit", // Ensures consistent weight
+                            fontSize: "clamp(0.7rem, 4vw, 1.1rem)", // Adjusts font size dynamically
+                            fontFamily: "inherit",
+                            fontWeight: "inherit",
+                            maxWidth: "9.5rem", // Ensures text does not push the button size
+                            textOverflow: "ellipsis", // Adds "..." if text is too long
                             overflow: "hidden",
-                            textOverflow: "ellipsis",
                             whiteSpace: "nowrap",
-                            maxWidth: "100%",
+                            display: "block", // Ensures text doesn't affect button layout
+                            textAlign: "center",
                         }}
                     >
                         {GlobalState.userUsername}
                     </Typography>
                 </Button>
+                
                 
                 ) : (
                     <Button
