@@ -457,18 +457,19 @@ function ReducerFunction(draft, action) {
             <br /> Location - {listing.borough}
           </Typography>
           <Box display="flex" justifyContent="space-between" alignItems="center" p={1}>
-            <Typography variant="h6" fontWeight="bold" color="primary">
-              Owner: {listing.seller_username}
-            </Typography>
-            <Typography
-              variant="h6"
-              fontWeight="bold"
-              color="primary"
-              sx={{ cursor: "pointer" }}
+          <Typography variant="h6" fontWeight="bold" color="primary">
+              Owner: <Typography component="span" variant="body1" color="black">{listing.seller_username}</Typography>
+          </Typography>
+
+          <Typography 
+              variant="h6" 
+              fontWeight="bold" 
+              color="primary" 
+              sx={{ cursor: "pointer" }} 
               onClick={() => navigate(`/agencies/${listing.seller}`)}
-            >
-              Agency: {listing.seller_agency_name}
-            </Typography>
+          >
+              Agency: <Typography component="span" variant="body1" color="black">{listing.seller_agency_name}</Typography>
+          </Typography>
           </Box>
         </Card>
       ))}

@@ -116,12 +116,12 @@ function AgencyDetail() {
             border: "5px solid black",
             padding: "5px",
             display: "flex",
-            flexDirection: { xs: "column", sm: "row" },
+            flexDirection: "column",
             alignItems: "center",
         }}
         >
         {/* Profile Picture */}
-        <Grid2 xs={12} sm={6} display="flex" justifyContent="center">
+        <Grid2 xs={12} display="flex" justifyContent="center">
             <img
             style={{ height: "10rem", width: "15rem" }}
             src={

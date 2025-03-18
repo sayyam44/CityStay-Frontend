@@ -162,8 +162,15 @@ function Header() {
                             color: "black",
                             backgroundColor: "white",
                             width: "10rem",
-                            fontSize: "1.1rem",
+                            fontSize: "clamp(0.7rem, 4vw, 1.1rem)", // Dynamically adjust font size
                             marginLeft: "1rem",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            overflow: "hidden",
+                            whiteSpace: "nowrap",
+                            minWidth: 0, // Allows content to shrink inside
+                            textAlign: "center",
                             "&:hover": { backgroundColor: "orange" },
                         }}
                     >

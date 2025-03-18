@@ -1126,6 +1126,20 @@ function AddProperty() {
             }}
         >
         <form onSubmit={FormSubmit}>
+          
+        {/* Showing an alert if the user havent created its profile yet */}
+        {GlobalState.userIsLogged && 
+            (state.userProfile.agencyName === null ||
+            state.userProfile.agencyName === "" ||
+            state.userProfile.phoneNumber === null ||
+            state.userProfile.phoneNumber === "") && (
+            <Grid2 xs={12} sx={{ textAlign: "center", marginBottom: "1rem" }}>
+                <Alert severity="error" sx={{ fontWeight: "bold" }}>
+                    You cannot submit a property without creating a profile!
+                </Alert>
+            </Grid2>
+        )}
+
           {/* this is to give an alert if the photos are less than 1 or more than 5 */}
             {state.alertMessage && (
               <Grid2 xs={12} sx={{ textAlign: "center" }}>
