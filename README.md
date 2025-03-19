@@ -8,14 +8,7 @@ This repository contains the frontend code for the application, built using **Re
 
 ---
 
-## Project Background
-St. John’s has seen a **surge in immigration**, especially among international students, in recent years. Many newcomers face challenges in finding suitable housing due to limited resources and unfamiliarity with the city. CityStayNL was developed to bridge this gap by providing a **user-friendly platform** that helps users find rental or purchase properties in St. John’s .
-
-The platform integrates **interactive maps**, **distance-based search**, and **voice-based search** to make it easier for users to explore properties based on their preferences. Additionally, features like **user authentication**, **messaging**, and **reviews** ensure a secure and interactive experience.
-
----
-
-## Features
+## Key Features
 - **Interactive Maps**: Integrated with React-Leaflet and PostGIS for geographic data handling.
 - **Nearby Places**: Displays nearby amenities (e.g., schools, hospitals, grocery stores) within a **3 km radius** of a particular listing, helping users evaluate the convenience of the location.
 - **User Authentication**: Secure user authentication using Djoser for managing listings, messaging, and reviews.
