@@ -1,4 +1,52 @@
-# Getting Started with Create React App
+# CityStayNL Frontend
+
+![CityStayNL](https://citystaynl.com/static/images/logo.png)  
+**Live Website:** [citystaynl.com](https://citystaynl.com)
+
+CityStayNL is a full-stack location-based real estate web application designed to help users find rental or purchase properties in St. John’s, Newfoundland, for the period of **December 2024 - March 2025**. This repository contains the frontend code for the application, built using **React**, **React-Leaflet**, and **Material UI**.
+
+---
+
+## Table of Contents
+- [Features](#features)
+- [Technologies Used](#technologies-used)
+- [Installation](#installation)
+- [Deployment](#deployment)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## Features
+- **Interactive Maps**: Integrated with React-Leaflet and PostGIS for geographic data handling.
+- **User Authentication**: Secure user authentication using Djoser for managing listings, messaging, and reviews.
+- **Search Functionality**: Distance-based and voice-based search for rental listings.
+- **Pagination**: Efficient browsing of rental listings with pagination.
+- **Media Optimization**: Reduced media file size to 35% of the original size using Python libraries, improving performance and storage efficiency.
+- **Secure Deployment**: SSL certificate integration for website security and email verification during signup.
+
+---
+
+## Technologies Used
+### Frontend
+- **React**: JavaScript library for building the user interface.
+- **React-Leaflet**: For integrating interactive maps.
+- **Material UI**: For designing a responsive and modern UI.
+
+### Backend (Linked Repository)
+- **Django REST Framework (DRF)**: For building the backend API.
+- **GeoDjango**: For handling geographic data.
+- **PostGIS & PostgreSQL**: For spatial queries and database management.
+
+### Deployment
+- **DigitalOcean**: Hosting the application.
+- **Nginx & Gunicorn**: For serving the application.
+- **DigitalOcean Spaces**: Leveraging Amazon S3 for cloud storage and media management.
+- **Namecheap Private Email**: For email verification during user signup.
+
+---
+
+## Installation (Getting Started with Create React App)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
