@@ -512,7 +512,7 @@ function ListingDetail() {
                 padding: "0.5rem", // Adds some space around the text for readability
             }}
         >
-            Nearby Places (2 kms)
+            Nearby Places (3 kms)
         </Typography>
 
             {/* Mapping through each POI within 2km of the current listing */}
