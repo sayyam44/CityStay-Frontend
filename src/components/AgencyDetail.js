@@ -164,8 +164,7 @@ function AgencyDetail() {
             {state.userProfile.bio}
             </Typography>
 
-            {GlobalState.userId !== params.id && GlobalState.userIsLogged && (
-            <Grid2 container justifyContent="center" alignItems="center">
+            {String(GlobalState.userId) !== String(params.id) && GlobalState.userIsLogged && (            <Grid2 container justifyContent="center" alignItems="center">
                 <Button
                 variant="contained"
                 color="primary"
