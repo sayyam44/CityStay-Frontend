@@ -1,29 +1,28 @@
 # CityStayNL Frontend
 
-![CityStayNL](https://citystaynl.com/static/images/logo.png)  
 **Live Website:** [citystaynl.com](https://citystaynl.com)
 
-CityStayNL is a full-stack location-based real estate web application designed to help users find rental or purchase properties in St. John’s, Newfoundland, for the period of **December 2024 - March 2025**. This repository contains the frontend code for the application, built using **React**, **React-Leaflet**, and **Material UI**.
+CityStayNL is a full-stack location-based real estate web application designed to address the growing need for rental and purchase properties in St. John’s, Newfoundland. With the **significant increase in immigrants, particularly international students, over the past few years**, CityStayNL aims to simplify the process of finding affordable and convenient housing for newcomers.
+
+This repository contains the frontend code for the application, built using **React**, **React-Leaflet**, and **Material UI**.
 
 ---
 
-## Table of Contents
-- [Features](#features)
-- [Technologies Used](#technologies-used)
-- [Installation](#installation)
-- [Deployment](#deployment)
-- [Contributing](#contributing)
-- [License](#license)
+## Project Background
+St. John’s has seen a **surge in immigration**, especially among international students, in recent years. Many newcomers face challenges in finding suitable housing due to limited resources and unfamiliarity with the city. CityStayNL was developed to bridge this gap by providing a **user-friendly platform** that helps users find rental or purchase properties in St. John’s .
+
+The platform integrates **interactive maps**, **distance-based search**, and **voice-based search** to make it easier for users to explore properties based on their preferences. Additionally, features like **user authentication**, **messaging**, and **reviews** ensure a secure and interactive experience.
 
 ---
 
 ## Features
 - **Interactive Maps**: Integrated with React-Leaflet and PostGIS for geographic data handling.
+- **Nearby Places**: Displays nearby amenities (e.g., schools, hospitals, grocery stores) within a **3 km radius** of a particular listing, helping users evaluate the convenience of the location.
 - **User Authentication**: Secure user authentication using Djoser for managing listings, messaging, and reviews.
 - **Search Functionality**: Distance-based and voice-based search for rental listings.
 - **Pagination**: Efficient browsing of rental listings with pagination.
 - **Media Optimization**: Reduced media file size to 35% of the original size using Python libraries, improving performance and storage efficiency.
-- **Secure Deployment**: SSL certificate integration for website security and email verification during signup.
+- **Secure Deployment**: SSL certificate integration for website security .
 
 ---
 
@@ -33,7 +32,7 @@ CityStayNL is a full-stack location-based real estate web application designed t
 - **React-Leaflet**: For integrating interactive maps.
 - **Material UI**: For designing a responsive and modern UI.
 
-### Backend (Linked Repository)
+### Backend 
 - **Django REST Framework (DRF)**: For building the backend API.
 - **GeoDjango**: For handling geographic data.
 - **PostGIS & PostgreSQL**: For spatial queries and database management.
@@ -46,73 +45,58 @@ CityStayNL is a full-stack location-based real estate web application designed t
 
 ---
 
-## Installation (Getting Started with Create React App)
+## Installation
+To run the frontend locally, follow these steps:
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/your-username/citystaynl-frontend.git
+   cd citystaynl-frontend
+2. **Install dependencies**:
+   ```bash
+   npm install
+3. **Set up environment variables**:
+    Create a .env file in the root directory and add the necessary environment variables (e.g., API endpoints):
+   ```bash
+   REACT_APP_API_URL=https://api.citystaynl.com
+4. **Run the development server**:
+   ```bash
+   npm start
+The application will be available at http://localhost:3000.
 
 ### Deployment
+The application is deployed on DigitalOcean using the following stack:
+**Nginx**: As a reverse proxy server.
+**Gunicorn**: For serving the Django backend.
+**DigitalOcean Spaces**: Leveraging Amazon S3 for cloud storage and media management.
+**SSL Certificate**: Integrated for secure HTTPS connections.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### Contributing
+Contributions are welcome! If you'd like to contribute to this project, please follow these steps:
 
-### `npm run build` fails to minify
+1)Fork the repository:
+Click the "Fork" button on the top right of the repository page.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+2)Create a new branch:
+  ```bash
+  git checkout -b feature/your-feature-name
+
+3)Stage and commit your changes
+  ```bash
+  git add .
+  git commit -m "Add your meaningful commit message"
+
+4)Push to the branch:
+  ```bash
+  git push origin feature/your-feature-name
+
+5)Submit a pull request:
+Go to the original repository and click "New Pull Request".
+Select your branch and provide a detailed description of your changes.
+
+License
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+Developed by Sayyam Kundra.
+Live Website: citystaynl.com
+Backend Repository: https://github.com/sayyam44/CityStay-Backend
