@@ -30,7 +30,7 @@ function ListingDetail() {
     //GlobalState--> Bringing data from parent component i.e. app.js
     const GlobalState = useContext(StateContext);
     
-    // console.log(useParams());
+    console.log(useParams());
     const params = useParams(); //useParams hook is used to get the
     //id of the particular agency from the url by using params.id 
     const navigate = useNavigate();
@@ -115,14 +115,14 @@ function ListingDetail() {
             //here we are getting the id of the agency by params.id 
             // using the useParams hook above
             `https://www.citystayinnl.com/api/listings/${params.id}/`);
-            // console.log(response.data);
+            console.log(response.data);
             //response.data holds all the data of the user who 
             //is signed in and have clicked on add property button
             dispatch({
             type: 'catchListingInfo', 
             listingObject: response.data});
             } catch(e){
-            // console.log(e.response);
+            console.log(e.response);
           }
         }
         GetListingInfo()
@@ -138,7 +138,7 @@ function ListingDetail() {
                 //here we are getting the id of the agency by params.id 
                 // using the useParams hook above
                 `https://www.citystayinnl.com/api/profiles/${state.listingInfo.seller}/`);
-                // console.log(response.data);
+                console.log(response.data);
                 //response.data holds all the data of the user who 
                 //is signed in and have clicked on add property button
                 dispatch({
@@ -150,7 +150,7 @@ function ListingDetail() {
                     type: 'loadingdone',
                 })
                 } catch(e){
-                // console.log(e.response);
+                console.log(e.response);
             }
             }
             GetProfileInfo()
@@ -202,13 +202,13 @@ function ListingDetail() {
                 //deleting the listing on the basis of the listings id
                 const response = 
                 await Axios.delete(`https://www.citystayinnl.com/api/listings/${params.id}/delete/`);
-                // console.log(response.data);
+                console.log(response.data);
                 dispatch({type: 'openTheSnack'}); //this is to show the popup when user successfully uploads a listing
                 // navigate("/listings");
                 dispatch({type: 'disabledButton'});
             }catch(e){
                 dispatch({type: 'allowTheButton'});
-                // console.log(e.response.data)
+                console.log(e.response.data)
             }
         }
     }

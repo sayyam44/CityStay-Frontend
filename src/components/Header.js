@@ -108,7 +108,7 @@ function Header() {
                     sx={{ flexGrow: 1, cursor: "pointer" }}
                     onClick={() => navigate("/")}
                 >
-                    CityStay
+                    CityStayNL
                 </Typography>
 
                 {/* Desktop Navigation */}
