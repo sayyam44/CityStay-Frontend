@@ -103,13 +103,14 @@ function Header() {
                 )}
 
                 {/* Logo */}
-                <Typography
+                <Typography 
                     variant="h4"
-                    sx={{ flexGrow: 1, cursor: "pointer" }}
+                    sx={{ flexGrow: 1, cursor: "pointer", color: "#FFA500" }}
                     onClick={() => navigate("/")}
                 >
-                    CityStayNL
+                    CityStay<span style={{ color: "#FFA500" }}>NL</span>
                 </Typography>
+
 
                 {/* Desktop Navigation */}
                 {!isMobile && (
