@@ -110,9 +110,15 @@ Contributions are welcome! If you'd like to contribute to this project, please f
    -> Go to the original repository and click "New Pull Request".
    -> Select your branch and provide a detailed description of your changes.
 
-License: 
+## **License**
 This project is licensed under the MIT License. See the LICENSE file for details.
 
-Developed by Sayyam Kundra.
-Live Website: citystaynl.com
-Backend Repository: [CityStay-Backend](https://github.com/sayyam44/CityStay-Backend)
+## **Developed by**
+Sayyam Kundra.
+
+## **Live Website**
+[citystaynl.com](https://citystaynl.com)
+
+## **Backend Repository**
+[CityStay-Backend](https://github.com/sayyam44/CityStay-Backend)
+
