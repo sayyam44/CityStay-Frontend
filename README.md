@@ -27,13 +27,30 @@ This repository contains the frontend code for the application, built using **Re
 ## Technologies Used
 ### Frontend
 - **React**: JavaScript library for building the user interface.
-- **React-Leaflet**: For integrating interactive maps.
-- **Material UI**: For designing a responsive and modern UI.
+- **React-Router-Dom**: For handling routing and navigation in the application.
+- **@mui/material, @emotion/react, @emotion/styled**: For building a modern and responsive UI using Material UI.
+- **Leaflet**: For interactive maps and handling geographical data.
+- **React-Leaflet**: For integrating Leaflet maps in the React environment.
+- **Axios**: For making HTTP requests to the backend.
+- **Immer**: For working with immutable data structures.
+- **Use-Immer**: A hook for using Immer with React’s state management.
+- **Other Dependencies**: Various other libraries for state management, styling, and performance optimization.
 
 ### Backend 
+### Backend
 - **Django REST Framework (DRF)**: For building the backend API.
 - **GeoDjango**: For handling geographic data.
 - **PostGIS & PostgreSQL**: For spatial queries and database management.
+- **Boto3**: AWS SDK for Python to integrate with AWS services.
+- **Django**: Python web framework for building web applications.
+- **Django-Cors-Headers**: For handling Cross-Origin Resource Sharing (CORS) in Django.
+- **Django-Storages**: For integrating with cloud storage backends such as AWS S3.
+- **Django REST Framework (DRF)**: For creating and managing the API endpoints.
+- **Django REST Framework GIS**: For spatial queries and geographic data management in DRF.
+- **Djoser**: A lightweight REST framework for handling authentication-related tasks.
+- **Pillow**: For image processing and management in Django.
+- **Psycopg2**: PostgreSQL adapter for Python, used to interact with PostgreSQL databases.
+
 Find the backend code here: [CityStay-Backend](https://github.com/sayyam44/CityStay-Backend)
 
 ### Deployment
@@ -93,7 +110,7 @@ Contributions are welcome! If you'd like to contribute to this project, please f
    -> Go to the original repository and click "New Pull Request".
    -> Select your branch and provide a detailed description of your changes.
 
-License
+License: 
 This project is licensed under the MIT License. See the LICENSE file for details.
 
 Developed by Sayyam Kundra.
