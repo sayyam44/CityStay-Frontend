@@ -15,7 +15,12 @@ This repository contains the frontend code for the application, built using **Re
 - **Search Functionality**: Distance-based and voice-based search for rental listings.
 - **Pagination**: Efficient browsing of rental listings with pagination.
 - **Media Optimization**: Reduced media file size to 35% of the original size using Python libraries, improving performance and storage efficiency.
-- **Secure Deployment**: SSL certificate integration for website security .
+- **Secure Deployment**: 
+  - SSL certificate integration for secure HTTPS connections.
+  - **Nginx**: Used as a reverse proxy server to manage requests and improve performance.
+  - **Gunicorn**: A WSGI server used for serving the Django backend.
+  - **Firewall**: Configured to restrict unauthorized access and protect the server from external threats.
+
 
 ---
 
