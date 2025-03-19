@@ -29,7 +29,7 @@ import SendMessage from './SendMessage';
 function ListingDetail() {
     //GlobalState--> Bringing data from parent component i.e. app.js
     const GlobalState = useContext(StateContext);
-    
+
     console.log(useParams());
     const params = useParams(); //useParams hook is used to get the
     //id of the particular agency from the url by using params.id 
@@ -256,10 +256,10 @@ function ListingDetail() {
             </Grid2>
         );
     }
-    console.log("GlobalState.userId:", GlobalState.userId);
-    console.log("state.listingInfo.seller:", state.listingInfo.seller);
-
-  return (
+    console.log("GlobalState.userId:", GlobalState.userId, "Type:", typeof GlobalState.userId);
+    console.log("state.listingInfo.seller:", state.listingInfo.seller, "Type:", typeof state.listingInfo.seller);
+  
+    return (
     <div style={{ margin: "1rem" }}>
         {/* Breadcrumbs on Top Left */}
         <Grid2 xs={12} sx={{ display: "flex", justifyContent: "flex-start" }}>
