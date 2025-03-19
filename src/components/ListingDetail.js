@@ -256,6 +256,8 @@ function ListingDetail() {
             </Grid2>
         );
     }
+    console.log("GlobalState.userId:", GlobalState.userId);
+    console.log("state.listingInfo.seller:", state.listingInfo.seller);
 
   return (
     <div style={{ margin: "1rem" }}>
@@ -464,6 +466,7 @@ function ListingDetail() {
                     </Grid2>
                     ) : null}
 
+                    
                     {/* Messaging Button (Visible to Logged-in Users Except Seller) */}
                     {GlobalState.userId !== state.listingInfo.seller && GlobalState.userIsLogged ? (
                     <Grid2
