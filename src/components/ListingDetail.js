@@ -662,7 +662,7 @@ function ListingDetail() {
 
 {/* Add Review Button */}
 <Box sx={{ mt: 4, textAlign: "center" }}>
-    {GlobalState.userIsLogged && GlobalState.userId !== state.listingInfo.seller ? (
+    {GlobalState.userIsLogged && String(GlobalState.userId) !== String(state.listingInfo.seller) ? (
         <>
             <Button 
                 sx={{
