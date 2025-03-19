@@ -36,6 +36,7 @@ The platform integrates **interactive maps**, **distance-based search**, and **v
 - **Django REST Framework (DRF)**: For building the backend API.
 - **GeoDjango**: For handling geographic data.
 - **PostGIS & PostgreSQL**: For spatial queries and database management.
+Find the backend code here: [CityStay-Backend](https://github.com/sayyam44/CityStay-Backend)
 
 ### Deployment
 - **DigitalOcean**: Hosting the application.
@@ -74,29 +75,29 @@ The application is deployed on DigitalOcean using the following stack:
 ### Contributing
 Contributions are welcome! If you'd like to contribute to this project, please follow these steps:
 
-1)Fork the repository:
-Click the "Fork" button on the top right of the repository page.
+1. Fork the repository:
+    Click the "Fork" button on the top right of the repository page.
+   
+2. Create a new branch:
+   ```bash
+   git checkout -b feature/your-feature-name
+   
+3. Stage and commit your changes:
+   ```bash
+   git add .
+   git commit -m "Add your meaningful commit message"
 
-2)Create a new branch:
-  ```bash
-  git checkout -b feature/your-feature-name
-
-3)Stage and commit your changes
-  ```bash
-  git add .
-  git commit -m "Add your meaningful commit message"
-
-4)Push to the branch:
-  ```bash
-  git push origin feature/your-feature-name
-
-5)Submit a pull request:
-Go to the original repository and click "New Pull Request".
-Select your branch and provide a detailed description of your changes.
+4) Push to the branch:
+   ```bash
+   git push origin feature/your-feature-name
+   
+5) Submit a pull request
+   -> Go to the original repository and click "New Pull Request".
+   -> Select your branch and provide a detailed description of your changes.
 
 License
 This project is licensed under the MIT License. See the LICENSE file for details.
 
 Developed by Sayyam Kundra.
 Live Website: citystaynl.com
-Backend Repository: https://github.com/sayyam44/CityStay-Backend
+Backend Repository: [CityStay-Backend](https://github.com/sayyam44/CityStay-Backend)
