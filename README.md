@@ -106,12 +106,9 @@ Contributions are welcome! If you'd like to contribute to this project, please f
    ```bash
    git push origin feature/your-feature-name
    
-5) Submit a pull request
-   -> Go to the original repository and click "New Pull Request".
-   -> Select your branch and provide a detailed description of your changes.
-
-## **License**
-This project is licensed under the MIT License. See the LICENSE file for details.
+5) Submit a pull request:
+   - Go to the original repository and click "New Pull Request".
+   - Select your branch and provide a detailed description of your changes.
 
 ## **Developed by**
 Sayyam Kundra.
@@ -122,3 +119,5 @@ Sayyam Kundra.
 ## **Backend Repository**
 [CityStay-Backend](https://github.com/sayyam44/CityStay-Backend)
 
+## **License**
+This project is licensed under the MIT License. See the LICENSE file for details.
