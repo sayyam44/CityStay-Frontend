@@ -36,7 +36,6 @@ This repository contains the frontend code for the application, built using **Re
 - **Use-Immer**: A hook for using Immer with React’s state management.
 - **Other Dependencies**: Various other libraries for state management, styling, and performance optimization.
 
-### Backend 
 ### Backend
 - **Django REST Framework (DRF)**: For building the backend API.
 - **GeoDjango**: For handling geographic data.
@@ -53,11 +52,17 @@ This repository contains the frontend code for the application, built using **Re
 
 Find the backend code here: [CityStay-Backend](https://github.com/sayyam44/CityStay-Backend)
 
+### Database
+- **PostgreSQL**: The application uses PostgreSQL for database management, storing rental listings, user information, and other relevant data.
+- **PostGIS**: An extension of PostgreSQL for handling geographic data, enabling spatial queries and geospatial data management.
+- **Psycopg2**: PostgreSQL adapter for Python used to interact with the PostgreSQL database.
+
 ### Deployment
-- **DigitalOcean**: Hosting the application.
-- **Nginx & Gunicorn**: For serving the application.
+- **DigitalOcean**: The application is hosted on DigitalOcean for production use.
+- **Nginx & Gunicorn**: Nginx is used as a reverse proxy, and Gunicorn is the WSGI server for serving the Django application.
 - **DigitalOcean Spaces**: Leveraging Amazon S3 for cloud storage and media management.
-- **Namecheap Private Email**: For email verification during user signup.
+- **SSL Certificate**: Secure connections with HTTPS using SSL certificates.
+- **Firewall**: Configured to restrict unauthorized access and protect the server from external threats.
 
 ---
 
@@ -79,13 +84,6 @@ To run the frontend locally, follow these steps:
    ```bash
    npm start
 The application will be available at http://localhost:3000.
-
-### Deployment
-The application is deployed on DigitalOcean using the following stack:
-**Nginx**: As a reverse proxy server.
-**Gunicorn**: For serving the Django backend.
-**DigitalOcean Spaces**: Leveraging Amazon S3 for cloud storage and media management.
-**SSL Certificate**: Integrated for secure HTTPS connections.
 
 ### Contributing
 Contributions are welcome! If you'd like to contribute to this project, please follow these steps:
