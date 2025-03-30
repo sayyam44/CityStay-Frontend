@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import React, {useEffect} from "react";
 import { useImmerReducer } from 'use-immer';
 //Components
@@ -17,6 +17,8 @@ import ListingDetail from "./components/ListingDetail";
 import MessageList from "./components/MessageList";
 import AccountCreated from "./components/AccountCreated";
 import Activation from "./components/Activation";
+import Footer from "./components/Footer";
+import About from "./components/About";
 // Context for sharing the props from app.js to header.js 
 import DispatchContext from "./Contexts/DispatchContext";
 import StateContext from "./Contexts/StateContext";
@@ -74,32 +76,48 @@ function App() {
     }
   },[state.userIsLogged])
 
+  // Inner component that has access to Router context
+  const AppContent = () => {
+    const location = useLocation();
+    // Array of paths where footer should be hidden
+    const hideFooterPaths = ['/', '/Messages'];
+    
     return (
+      <>
+        <Header />
+        <Routes>
+          <Route path='/' element={<Home />}/>
+          <Route path='/login' element={<Login />}/>
+          <Route path='/activate/:uid/:token' element={<Activation />}/>
+          <Route path='/created' element={<AccountCreated />}/>
+          <Route path="/Register" element={<Register />} />
+          <Route path="/addproperty" element={<AddProperty />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/agencies" element={<Agencies />} />  
+          <Route path="/agencies/:id" element={<AgencyDetail />} />
+          <Route path="/listings/:id" element={<ListingDetail />} /> 
+          <Route path="/Listings" element={<Listings />} />
+          <Route path="/Testing" element={<Testing />} />    
+          <Route path="/Messages" element={<MessageList />} /> 
+          <Route path="/about" element={<About />} />       
+        </Routes>
+        {/* Only show footer if current path is not in hideFooterPaths */}
+        {!hideFooterPaths.includes(location.pathname) && <Footer />}
+      </>
+    );
+  };
+
+  return (
     //Below I am using the context to share the value here 
     //i.e. dispatch component to share among all its child components
     <StateContext.Provider value={state}>
       <DispatchContext.Provider value={dispatch}>
         <BrowserRouter>
-        <CssBaseline />
-            <Header />
-            <Routes>
-              <Route path='/' element={<Home />}/>
-              <Route path='/login' element={<Login />}/>
-              <Route path='/activate/:uid/:token' element={<Activation />}/>
-              <Route path='/created' element={<AccountCreated />}/>
-              <Route path="/Register" element={<Register />} />
-              <Route path="/addproperty" element={<AddProperty />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/agencies" element={<Agencies />} />  
-              <Route path="/agencies/:id" element={<AgencyDetail />} />
-              <Route path="/listings/:id" element={<ListingDetail />} /> 
-              <Route path="/Listings" element={<Listings />} />
-              <Route path="/Testing" element={<Testing />} />    
-              <Route path="/Messages" element={<MessageList />} />        
-            </Routes>
-          </BrowserRouter>
+          <CssBaseline />
+          <AppContent />
+        </BrowserRouter>
       </DispatchContext.Provider>
-      </StateContext.Provider>
-    );
+    </StateContext.Provider>
+  );
 }
 export default App;

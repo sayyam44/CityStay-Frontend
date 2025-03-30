@@ -122,6 +122,9 @@ function Header() {
                         <Button color="inherit" sx={{ fontSize: "1.2rem" }} onClick={() => navigate("/agencies")}>
                             Agencies
                         </Button>
+                        <Button color="inherit" sx={{ fontSize: "1.2rem" }} onClick={() => navigate("/about")}>
+                            About
+                        </Button>
                     </Box>
                 )}
 
