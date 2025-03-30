@@ -220,6 +220,9 @@ function Header() {
                     <ListItem button onClick={() => navigate("/agencies")}>
                         <ListItemText primary="Agencies" />
                     </ListItem>
+                    <ListItem button onClick={() => navigate("/about")}>
+                        <ListItemText primary="About" />
+                    </ListItem>
                 </List>
             </Drawer>
         </AppBar>
