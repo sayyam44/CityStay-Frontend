@@ -40,14 +40,20 @@ function About() {
             About CityStayNL
           </Typography>
           <Typography variant="body1" paragraph>
-            The idea behind CityStayNL began with a simple vision i.e. to simplify the process
-            of finding rental properties for newcomers in St. John's, Newfoundland, particularly
-            international students. CityStayNL is a full-stack, location-based real estate
-            web application designed to address the growing need for rental and purchase
-            properties in St. John's. With the significant increase in immigrants 
-            and students, over the past few years, CityStayNL aims to
-            provide a user-friendly platform that connects people with affordable, convenient
-            housing options.
+          The idea behind CityStayNL began with a simple 
+          vision i.e. to simplify the process of renting or 
+          buying reliable properties in St. John's, Newfoundland,
+           for both the newcomers and residents of the city. As 
+           the demand for housing has surged due to a 
+           significant increase in immigrants and students 
+           over the past few years, CityStayNL aims to bridge 
+           the gap by providing a full-stack, location-based 
+           real estate web application. CityStayNL is designed 
+           to address the growing need for both rental and 
+           purchase properties in the city. With a focus on 
+           ease of use, it connects people with affordable and 
+           convenient housing options, helping them find the 
+           right place to call home in St. John’s.
           </Typography>
         </Box>
       </Box>
@@ -66,16 +72,18 @@ function About() {
             Meet the Developer
           </Typography>
           <Typography variant="body1" paragraph>
-            Hello! I'm Sayyam Kundra, an experienced software 
-            engineer and full-stack developer passionate about 
-            creating meaningful web applications and software.
-            With a Master's degree in Computer Engineering from 
-            Memorial University of Newfoundland in St. John's, 
-            I have always been driven to solve real-world 
-            problems through technology. CitystayNL is one of 
-            my recent projects which aims to solve 
-            the issue of finding rentals for newcomers and 
-            international students in St. John's, NL.
+          Hello! I'm Sayyam Kundra, an experienced software 
+          engineer and full-stack developer with a passion 
+          for creating meaningful web applications and software 
+          solutions. I hold a Master's degree in Computer 
+          Engineering from Memorial University of Newfoundland 
+          in St. John's. I’ve always been driven to solve
+           real-world problems using technology.One of my 
+           recent projects, CityStayNL, aims to address the 
+           challenges of renting or buying reliable properties 
+           in St. John’s, Newfoundland, providing a 
+           user-friendly platform for both newcomers and 
+           residents of the city.
           </Typography>
           <Box sx={{ 
             display: "flex", 
