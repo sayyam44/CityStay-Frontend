@@ -40,20 +40,14 @@ function About() {
             About CityStayNL
           </Typography>
           <Typography variant="body1" paragraph>
-          The idea behind CityStayNL began with a simple 
-          vision i.e. to simplify the process of renting or 
-          buying reliable properties in St. John's, Newfoundland,
-           for both the newcomers and residents of the city. As 
-           the demand for housing has surged due to a 
-           significant increase in immigrants and students 
-           over the past few years, CityStayNL aims to bridge 
-           the gap by providing a full-stack, location-based 
-           real estate web application. CityStayNL is designed 
-           to address the growing need for both rental and 
-           purchase properties in the city. With a focus on 
-           ease of use, it connects people with affordable and 
-           convenient housing options, helping them find the 
-           right place to call home in St. John’s.
+          The idea behind CityStayNL is to simplify the process of renting or
+          buying reliable properties in St. John's, Newfoundland, for 
+          both newcomers and residents. With the growing demand for 
+          housing due to a surge in immigrants and students, CityStayNL 
+          bridges the gap by providing a full-stack, location-based real estate 
+          web application. Designed for ease of use, it connects people 
+          with affordable and convenient housing options, helping them
+          find the right place to call home in St.John's.
           </Typography>
         </Box>
       </Box>
