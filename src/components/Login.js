@@ -151,7 +151,7 @@ function Login() {
 useEffect(()=>{
     if (state.openSnack){
         setTimeout(()=>{
-            navigate("/");
+            navigate("/Listings");
         },1500);
     }
 },[state.openSnack])
