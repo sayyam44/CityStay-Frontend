@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation  } from "react-router-dom";
 import React, {useEffect} from "react";
 import { useImmerReducer } from 'use-immer';
 //Components
@@ -35,7 +35,7 @@ function App() {
     // globalMessage: "hahahahaahahah",
     //below useIsLoggedin will be used in the header.js to keep the 
     //button name of the user thoughtout even on refreshing the page
-		userIsLogged: localStorage.getItem("theUserUsername") ? true : false,
+    userIsLogged: localStorage.getItem("theUserUsername") ? true : false,
   };
   function ReducerFunction(draft, action) {
       switch (action.type) {
@@ -70,54 +70,39 @@ function App() {
     else {//when the user logs out from the header.js's logout button
       //we need to delete the content of this user from the localstorage
       localStorage.removeItem("theUserUsername");
-			localStorage.removeItem("theUserEmail");
-			localStorage.removeItem("theUserId");
-			localStorage.removeItem("theUserToken");
+      localStorage.removeItem("theUserEmail");
+      localStorage.removeItem("theUserId");
+      localStorage.removeItem("theUserToken");
     }
   },[state.userIsLogged])
 
-  // Inner component that has access to Router context
-  const AppContent = () => {
-    const location = useLocation();
-    // Array of paths where footer should be hidden
-    const hideFooterPaths = ['/', '/Messages'];
-    
     return (
-      <>
-        <Header />
-        <Routes>
-          <Route path='/' element={<Home />}/>
-          <Route path='/login' element={<Login />}/>
-          <Route path='/activate/:uid/:token' element={<Activation />}/>
-          <Route path='/created' element={<AccountCreated />}/>
-          <Route path="/Register" element={<Register />} />
-          <Route path="/addproperty" element={<AddProperty />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/agencies" element={<Agencies />} />  
-          <Route path="/agencies/:id" element={<AgencyDetail />} />
-          <Route path="/listings/:id" element={<ListingDetail />} /> 
-          <Route path="/Listings" element={<Listings />} />
-          <Route path="/Testing" element={<Testing />} />    
-          <Route path="/Messages" element={<MessageList />} /> 
-          <Route path="/about" element={<About />} />       
-        </Routes>
-        {/* Only show footer if current path is not in hideFooterPaths */}
-        {!hideFooterPaths.includes(location.pathname) && <Footer />}
-      </>
-    );
-  };
-
-  return (
     //Below I am using the context to share the value here 
     //i.e. dispatch component to share among all its child components
     <StateContext.Provider value={state}>
       <DispatchContext.Provider value={dispatch}>
         <BrowserRouter>
-          <CssBaseline />
-          <AppContent />
-        </BrowserRouter>
+        <CssBaseline />
+            <Header />
+            <Routes>
+              <Route path='/' element={<Home />}/>
+              <Route path='/login' element={<Login />}/>
+              <Route path='/activate/:uid/:token' element={<Activation />}/>
+              <Route path='/created' element={<AccountCreated />}/>
+              <Route path="/Register" element={<Register />} />
+              <Route path="/addproperty" element={<AddProperty />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/agencies" element={<Agencies />} />  
+              <Route path="/agencies/:id" element={<AgencyDetail />} />
+              <Route path="/listings/:id" element={<ListingDetail />} /> 
+              <Route path="/Listings" element={<Listings />} />
+              <Route path="/Testing" element={<Testing />} />    
+              <Route path="/Messages" element={<MessageList />} />        
+              <Route path="/about" element={<About />} /> 
+            </Routes>
+          </BrowserRouter>
       </DispatchContext.Provider>
-    </StateContext.Provider>
-  );
+      </StateContext.Provider>
+    );
 }
 export default App;
