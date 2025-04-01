@@ -175,7 +175,7 @@ useEffect(()=>{
 
                 {/* in order to show alert message when the credentials are wrong */}
                 {state.serverError ? (
-                <Alert severity="success">Incorrect Username or Password</Alert>
+                <Alert severity="error">Incorrect Username or Password</Alert>
                 ):(
                     ""
                 ) }
