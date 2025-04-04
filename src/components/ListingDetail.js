@@ -363,7 +363,7 @@ function ListingDetail() {
                 {state.listingInfo.description && (
                     <Grid2 sx={{ padding: "1rem", border: "1px solid black", marginTop: "1rem" }}>
                         <Typography variant="h5">Description</Typography>
-                        <Typography variant="h6">{state.listingInfo.description}</Typography>
+                        <Typography variant="h8">{state.listingInfo.description}</Typography>
                     </Grid2>
                 )}
             </Grid2>
