@@ -199,11 +199,6 @@ const rentalFrequencyOptions = [
 
 function AddProperty() {
     const navigate = useNavigate();
-
-    //The useContext hook in React allows you to access the value of 
-    //a context within a functional component, enabling you to share 
-    //state or values across components without passing props down 
-    //manually.(here it is used to store userid for seller in this form)
     const GlobalState = useContext(StateContext);
 
     const initialState = {

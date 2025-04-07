@@ -156,7 +156,7 @@ function Profile() {
             <Grid2>
                     <Typography 
                         variant="h5"
-                        style={{textAlign: 'center',marginTop: '1rem'}}>
+                   z     style={{textAlign: 'center',marginTop: '1rem'}}>
                             Welcome{" "}
                             <span style={{color: 'green',fontWeight:'bolder'}}>
                             {GlobalState.userUsername}</span>
