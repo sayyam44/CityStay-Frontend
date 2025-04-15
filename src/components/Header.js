@@ -129,7 +129,7 @@ function Header() {
                 )}
 
                 {/* User Actions */}
-                {GlobalState.userIsLogged && (
+                {/* {GlobalState.userIsLogged && (
                     <>
                         <Tooltip title="Messages" arrow>
                             <IconButton 
@@ -157,7 +157,41 @@ function Header() {
                             Add Property
                         </Button>
                     </>
-                )}
+                )} */}
+
+                <>
+                    {GlobalState.userIsLogged && (
+                        <Tooltip title="Messages" arrow>
+                            <IconButton 
+                                color="inherit" 
+                                onClick={() => navigate("/Messages")}
+                                sx={{ marginRight: 1 }}
+                            >
+                                <Badge color="error">
+                                    <MailIcon />
+                                </Badge>                           
+                            </IconButton>
+                        </Tooltip>
+                    )}
+
+                    <Button
+                        sx={{
+                            color: "white",
+                            backgroundColor: "green",
+                            width: "10rem",
+                            fontSize: "1.1rem",
+                            marginRight: "1rem",
+                            whiteSpace: "nowrap",
+                            flexShrink: 0,
+                            "&:hover": { backgroundColor: "blue" },
+                        }}
+                        onClick={() => navigate("/addproperty")}
+                    >
+                        Add Property
+                    </Button>
+                </>
+
+
 
                 {/* Login/Profile Button */}
                 <Button

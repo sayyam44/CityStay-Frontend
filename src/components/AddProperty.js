@@ -967,6 +967,65 @@ function AddProperty() {
     // to display the submit button for the add property page
     //only when the user is logged in or the user puts in 
     //info for its agency name and agency phone number .
+    // function SubmitButtonDisplay() {
+    //   if (
+    //     GlobalState.userIsLogged &&
+    //     state.userProfile.agencyName !== null &&
+    //     state.userProfile.agencyName !== "" &&
+    //     state.userProfile.phoneNumber !== null &&
+    //     state.userProfile.phoneNumber !== ""
+    //   ) {
+    //     return (
+    //     <Button
+    //         variant="contained"
+    //         fullWidth
+    //         type="submit"
+    //         sx={{
+    //             color: "white",
+    //             backgroundColor: "green",
+    //             fontSize: "1rem",
+    //             marginLeft: "1rem",
+    //             marginRight: "1rem",
+    //             marginTop: "-2rem",
+    //             "&:hover": {
+    //                 backgroundColor: "orange",
+    //             },
+    //         }}
+    //         disabled={state.disabledBtn}
+    //         >
+    //         SUBMIT
+    //     </Button>
+    //     );
+    //   } else if (
+    //     GlobalState.userIsLogged &&
+    //     (state.userProfile.agencyName === null ||
+    //       state.userProfile.agencyName === "" ||
+    //       state.userProfile.phoneNumber === null ||
+    //       state.userProfile.phoneNumber === "")
+    //   ) {
+    //     return (
+    //       <Button
+    //         variant="outlined"
+    //         fullWidth
+    //         onClick={()=>navigate('/profile')}
+    //         // type="submit"
+    //         sx={{
+    //             color: "white",
+    //             backgroundColor: "green",
+    //             fontSize: "1rem",
+    //             marginLeft: "1rem",
+    //             marginRight: "1rem",
+    //             marginTop: "-2rem",
+    //             "&:hover": {
+    //                 backgroundColor: "orange",
+    //             },
+    //         }}
+    //         >
+    //         PLEASE COMPLETE YOUR PROFILE TO ADD A PROPERTY!
+    //     </Button>
+    //     );
+
+
     function SubmitButtonDisplay() {
       if (
         GlobalState.userIsLogged &&
@@ -976,25 +1035,25 @@ function AddProperty() {
         state.userProfile.phoneNumber !== ""
       ) {
         return (
-        <Button
+          <Button
             variant="contained"
             fullWidth
             type="submit"
             sx={{
-                color: "white",
-                backgroundColor: "green",
-                fontSize: "1rem",
-                marginLeft: "1rem",
-                marginRight: "1rem",
-                marginTop: "-2rem",
-                "&:hover": {
-                    backgroundColor: "orange",
-                },
+              color: "white",
+              backgroundColor: "green",
+              fontSize: "1rem",
+              marginLeft: "1rem",
+              marginRight: "1rem",
+              marginTop: "-2rem",
+              "&:hover": {
+                backgroundColor: "orange",
+              },
             }}
             disabled={state.disabledBtn}
-            >
+          >
             SUBMIT
-        </Button>
+          </Button>
         );
       } else if (
         GlobalState.userIsLogged &&
@@ -1007,23 +1066,47 @@ function AddProperty() {
           <Button
             variant="outlined"
             fullWidth
-            onClick={()=>navigate('/profile')}
-            // type="submit"
+            onClick={() => navigate('/profile')}
             sx={{
-                color: "white",
-                backgroundColor: "green",
-                fontSize: "1rem",
-                marginLeft: "1rem",
-                marginRight: "1rem",
-                marginTop: "-2rem",
-                "&:hover": {
-                    backgroundColor: "orange",
-                },
+              color: "white",
+              backgroundColor: "green",
+              fontSize: "1rem",
+              marginLeft: "1rem",
+              marginRight: "1rem",
+              marginTop: "-2rem",
+              "&:hover": {
+                backgroundColor: "orange",
+              },
             }}
-            >
+          >
             PLEASE COMPLETE YOUR PROFILE TO ADD A PROPERTY!
-        </Button>
+          </Button>
         );
+      } else {
+        // Case: user is not logged in
+        return (
+          <Button
+            variant="outlined"
+            fullWidth
+            onClick={() => navigate('/login')}
+            sx={{
+              color: "white",
+              backgroundColor: "red",
+              fontSize: "1rem",
+              marginLeft: "1rem",
+              marginRight: "1rem",
+              marginTop: "-2rem",
+              "&:hover": {
+                backgroundColor: "darkred",
+              },
+            }}
+          >
+            YOU NEED TO LOGIN/SIGN UP TO ADD NEW PROPERTY!
+          </Button>
+        );
+
+
+
     //   } else if (!GlobalState.userIsLogged) {
     //     return (
     //       <Button
@@ -1129,6 +1212,20 @@ function AddProperty() {
         return () => clearTimeout(timer);
     }, [GlobalState.userIsLogged, state.userProfile]);
 
+    // this is to show alert if the user is not logged in 
+    const [showAlertlogin, setShowAlertlogin] = useState(false);
+    useEffect(() => {
+        // Set a timeout to show the alert after 2 seconds
+        const timer = setTimeout(() => {
+            if (!GlobalState.userIsLogged) {
+                setShowAlertlogin(true); // Show the alert if conditions are met
+            }
+        }, 2000); // 2 seconds delay
+
+        // Cleanup the timer when the component unmounts
+        return () => clearTimeout(timer);
+    },[]);
+
     return (
         <div
             style={{
@@ -1147,6 +1244,15 @@ function AddProperty() {
                 <Grid2 xs={12} sx={{ textAlign: "center", marginBottom: "1rem" }}>
                     <Alert severity="error" sx={{ fontWeight: "bold" }}>
                         You cannot submit a property without creating a profile!
+                    </Alert>
+                </Grid2>
+        )}
+
+        {/* Showing an alert if the user is not logged in*/}
+        {showAlertlogin && (
+                <Grid2 xs={12} sx={{ textAlign: "center", marginBottom: "1rem" }}>
+                    <Alert severity="error" sx={{ fontWeight: "bold" }}>
+                        You need to Login/Sign up to add new property!
                     </Alert>
                 </Grid2>
         )}
