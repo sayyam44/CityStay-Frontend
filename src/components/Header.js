@@ -25,6 +25,7 @@ import Axios from "axios";
 // Contexts
 import StateContext from "../Contexts/StateContext";
 import DispatchContext from "../Contexts/DispatchContext";
+import Logo from './Assets/logo.JPG';
 
 function Header() {
     const navigate = useNavigate();
@@ -101,6 +102,14 @@ function Header() {
                         <MenuIcon />
                     </IconButton>
                 )}
+
+                 {/* Logo Image */}
+                <img
+                    src={Logo}
+                    alt="logo"
+                    style={{ height: 40, marginRight: 10, cursor: "pointer" }}
+                    onClick={() => navigate("/")}
+                />
 
                 {/* Logo */}
                 <Typography 
