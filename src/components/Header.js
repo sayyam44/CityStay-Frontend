@@ -25,7 +25,7 @@ import Axios from "axios";
 // Contexts
 import StateContext from "../Contexts/StateContext";
 import DispatchContext from "../Contexts/DispatchContext";
-import Logo from './Assets/logo.jpg';
+import Logo from './Assets/logo.png';
 
 function Header() {
     const navigate = useNavigate();
@@ -107,7 +107,7 @@ function Header() {
                 <img
                     src={Logo}
                     alt="logo"
-                    style={{ height: 60, width: 60, marginRight: -2, cursor: "pointer" }}
+                    style={{ height: 60, width: 60, marginLeft:2, marginRight: -4, cursor: "pointer" }}
                     onClick={() => navigate("/")}
                 />
 
