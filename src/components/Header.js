@@ -25,7 +25,7 @@ import Axios from "axios";
 // Contexts
 import StateContext from "../Contexts/StateContext";
 import DispatchContext from "../Contexts/DispatchContext";
-import Logo from './Assets/logo.JPG';
+import Logo from './Assets/logo.jpg';
 
 function Header() {
     const navigate = useNavigate();
