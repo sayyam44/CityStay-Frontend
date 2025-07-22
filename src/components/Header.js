@@ -107,7 +107,7 @@ function Header() {
                 <img
                     src={Logo}
                     alt="logo"
-                    style={{ height: 60, width: 60, marginRight: 4, cursor: "pointer" }}
+                    style={{ height: 60, width: 60, marginRight: -2, cursor: "pointer" }}
                     onClick={() => navigate("/")}
                 />
 
